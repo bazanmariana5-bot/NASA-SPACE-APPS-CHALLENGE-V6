@@ -19,7 +19,7 @@
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background: rgba(10, 16, 32, .5);
+  background: var(--surf);
   position: relative;
   overflow: hidden;
 }
@@ -36,7 +36,7 @@
 
 .cc.on {
   border-color: var(--cc);
-  background: rgba(127, 178, 255, .1);
+  background: rgba(var(--ac-rgb), .1);
   box-shadow: 0 0 0 1px var(--cc);
 }
 

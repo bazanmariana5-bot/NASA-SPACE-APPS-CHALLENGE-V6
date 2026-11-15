@@ -33,7 +33,7 @@
 }
 
 #alert-toast-red {
-  background: #1a0f1a;
+  background: var(--toast-bad);
   color: var(--tx);
   border: 2px solid var(--bad);
   box-shadow: 0 0 22px rgba(255, 107, 107, .5);
@@ -69,7 +69,7 @@
   font-size: 14px;
   cursor: pointer;
 }
-.alert-x:hover { background: rgba(255, 255, 255, .1); color: var(--tx); }
+.alert-x:hover { background: var(--hov); color: var(--tx); }
 
 /* barra que se vacía durante el tiempo que dura el aviso */
 .alert-bar {

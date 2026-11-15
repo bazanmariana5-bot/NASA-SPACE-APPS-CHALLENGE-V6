@@ -27,7 +27,7 @@ function tColors() {
 
     function show(i) {
       if (i >= 10) {
-        bx.style.background = "#10192e";
+        bx.style.background = "var(--bx)";
         bx.textContent = "¡Repite la secuencia!";
         $("pad").style.display = "grid";
         return play();
@@ -36,7 +36,7 @@ function tColors() {
       bx.textContent = PALETTE[seq[i]][0];
       bx.style.color = "#06101f";
       later(() => {
-        bx.style.background = "#10192e";
+        bx.style.background = "var(--bx)";
         bx.textContent = "";
         later(() => show(i + 1), 300);
       }, 600);

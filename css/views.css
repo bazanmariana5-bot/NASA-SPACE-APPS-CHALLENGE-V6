@@ -116,11 +116,11 @@ html.lock {
 }
 
 .nl:hover {
-  background: rgba(127, 178, 255, .08);
+  background: rgba(var(--ac-rgb), .08);
 }
 
 .nl.on {
-  background: rgba(127, 178, 255, .18);
+  background: rgba(var(--ac-rgb), .18);
   box-shadow: inset 2px 0 var(--ac);
 }
 

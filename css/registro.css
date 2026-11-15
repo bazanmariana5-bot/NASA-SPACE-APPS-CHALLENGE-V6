@@ -28,7 +28,7 @@
 }
 
 .tb tr.cur td {
-  background: rgba(127, 178, 255, .1);
+  background: rgba(var(--ac-rgb), .1);
 }
 
 .tb .chip {

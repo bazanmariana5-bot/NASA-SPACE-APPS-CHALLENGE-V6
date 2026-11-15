@@ -43,4 +43,5 @@ const C = (day = S.day, cr = crewOf()) => {
 };
 
 const refText = p => p.dir === "none" ? "Sin umbral definido" : `Base ${fmt(p, p.base)} · Precaución ${p.dir === "lt" ? "≤" : "≥"} ${fmt(p, p.y)} · Alerta ${p.dir === "lt" ? "≤" : "≥"} ${fmt(p, p.r)}`;
-const SC = ["#2ee6a6", "#ffb547", "#ff6b6b", "#6d788f"];
+/* variables CSS: cambian solas con el tema (también funcionan dentro de atributos SVG) */
+const SC = ["var(--ok)", "var(--warn)", "var(--bad)", "var(--s3)"];

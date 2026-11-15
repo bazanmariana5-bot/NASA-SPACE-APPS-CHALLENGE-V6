@@ -2,9 +2,9 @@
 "use strict";
 
 const CREW = [
-  { id: "c1", name: "Juli Diaz", role: "Comandante", bio: "Especialista EVA · 28 años · 1,62 m · 57 kg", age: 42, h: 162, sens: 1, col: "#7fb2ff" },
-  { id: "c2", name: "Mariana Bazán", role: "Médico de vuelo", bio: "Biología espacial · 38 años · 1,68 m · 62 kg", age: 38, h: 168, sens: 1.12, col: "#ff8ad8" },
-  { id: "c3", name: "Pablo Gómez", role: "Ing. de sistemas", bio: "Robótica y soporte · 35 años · 1,75 m · 70 kg", age: 35, h: 175, sens: .9, col: "#ffd23f" }
+  { id: "c1", name: "Juli Diaz", role: "Comandante", bio: "Especialista EVA · 28 años · 1,62 m · 57 kg", age: 42, h: 162, sens: 1, col: "var(--cw1)" },
+  { id: "c2", name: "Mariana Bazán", role: "Médico de vuelo", bio: "Biología espacial · 38 años · 1,68 m · 62 kg", age: 38, h: 168, sens: 1.12, col: "var(--cw2)" },
+  { id: "c3", name: "Pablo Gómez", role: "Ing. de sistemas", bio: "Robótica y soporte · 35 años · 1,75 m · 70 kg", age: 35, h: 175, sens: .9, col: "var(--cw3)" }
 ];
 
 const ENVS = {

@@ -3,7 +3,7 @@
 
 /* estado inicial de elementos que el JS modifica en vivo */
 #pad { display: none; }
-#bx { background: #10192e; }
+#bx { background: var(--bx); }
 
 /* ---------- Utilidades que antes estaban inline en index.html ---------- */
 .val { color: var(--tx); }
@@ -25,8 +25,8 @@
 .u-bd-1-dashed-line { border: 1px dashed var(--line) !important; }
 .u-br-12 { border-radius: 12px !important; }
 .u-bt-1-solid-line { border-top: 1px solid var(--line) !important; }
-.u-c-7fb2ff { color: #7fb2ff !important; }
-.u-c-fff { color: #fff !important; }
+.u-c-7fb2ff { color: var(--ac) !important; }
+.u-c-fff { color: var(--sel) !important; }
 .u-c-bad { color: var(--bad) !important; }
 .u-c-mu { color: var(--mu) !important; }
 .u-c-tx { color: var(--tx) !important; }

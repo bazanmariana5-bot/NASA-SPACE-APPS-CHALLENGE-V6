@@ -53,7 +53,7 @@ function tPVT() {
     if (lap >= 1) sc -= 2;
     sc = Math.max(1, sc);
     save({ "reaccion.rt": Math.round(avg), "reaccion.fast": Math.min(...tr), "reaccion.rs": sc, "reaccion.fs": fs, "reaccion.rl": lap }, { pvt: { trials: tr, sc } });
-    bx.style.background = "#10192e";
+    bx.style.background = "var(--bx)";
     bx.style.color = "";
     bx.textContent = "Fin";
     $("res").innerHTML = alertBox(sc >= 6 ? 0 : sc >= 5 ? 1 : 2, `Puntaje <b>${sc}/10</b> · ${base[2]}. ${base[3]}<br>Habilitación para EVA: <b>${sc >= 6 ? "sí" : "no"}</b> (se requiere 6 o más)`) + `<p class="mono u-fs-12 u-c-mu">Intentos ${tr.join(" · ")} ms · promedio ${Math.round(avg)} ms · salidas en falso ${fs} · lapsos ${lap}</p>`;

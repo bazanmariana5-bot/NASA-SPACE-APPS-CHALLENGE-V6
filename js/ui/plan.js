@@ -12,14 +12,12 @@ const ROUT = [
   { id: "resp", t: "Respiración diafragmática y descompresión mental", min: 10, adh: 0, zones: ["pulmones", "cerebro"], why: "Mejora la ventilación y ayuda a sobrellevar el aislamiento.", steps: ["Sentarse con la espalda apoyada y una mano en el abdomen", "Inhalar 4 segundos y exhalar 6 segundos, 5 minutos", "Cerrar con 3 minutos de atención en los sonidos del entorno"] },
   { id: "vest", t: "Equilibrio y entrenamiento vestibular", min: 15, adh: 0, zones: ["cerebro", "corazon"], why: "Prepara el sistema del equilibrio para volver a la gravedad.", steps: ["Movimientos lentos de cabeza con la vista fija: 2 series de 10", "Marcha en tándem con apoyo: 2 pasadas", "Pasar de acostado a de pie en 3 tiempos"] },
   { id: "hid", t: "Hidratación y prevención renal", min: 5, adh: 0, zones: ["rinones"], why: "Diluye el calcio en orina y reduce el riesgo de cálculos.", steps: ["Planificar entre 2,5 y 3 L de agua en el día", "Revisar el sodio de las comidas", "Registrar la diuresis"] },
-  { id: "regreso", t: "Plan estabilización y acondicionamiento para el regreso", min: 25, adh: 5, zones: ["corazon", "vasos"], why: "Para contrarrestar la hipovolemia plasmática, la falla vasomotora y barorrefleja, utiliza los parámetros del PDF de la NASA: índice de Valsalva, curva de presión arterial y evaluación de compensación de fuerza G.", steps: [] }
+  { id: "regreso", t: "Plan estabilización y acondicionamiento para el regreso", min: 25, adh: 5, zones: ["corazon", "vasos"], why: "Para contrarrestar la hipovolemia plasmática, la falla vasomotora y barorrefleja, utiliza los parámetros del PDF de la NASA: índice de Valsalva, curva de presión arterial y evaluación de compensación de fuerza G.", steps: ["Fase 1, pre-reentrada (72 a 24 h): maniobra anti-G M-1/L-1 con biofeedback y carga resistiva del tren inferior", "Fase 2, reentrada (1,5 G a 4 G): contracción isométrica de miembros inferiores con metrónomo M-1/L-1", "Fase 3, posaterrizaje (2 h): bombeo de tobillos, sedestación asistida y bipedestación progresiva"] }
 ];
 
-const PLAN_LV = ["Mantenimiento", "Recomendada", "Prioridad alta"],
-      LEVELS = [[0, "Cadete"], [200, "Tripulante"], [400, "Especialista"], [700, "Comandante"]],
-      level = x => LEVELS.filter(l => x >= l[0]).pop()[1];
+const PLAN_LV = ["Mantenimiento", "Recomendada", "Prioridad alta"];
 
-/* ---------- Progreso por tripulante (localStorage): XP, rutinas completadas por día y datos del test de Valsalva ---------- */
+/* ---------- Progreso por tripulante (localStorage): rutinas completadas por día y datos del test de Valsalva ---------- */
 const Plan = {
   K: "orbital_plan_v1",
   ver: 0,
@@ -32,7 +30,6 @@ const Plan = {
   },
   of(c = S.crew) {
     const o = this.d[c] = this.d[c] || {};
-    o.xp = o.xp || 0;
     o.done = o.done || {};
     o.vs = o.vs || {};
     return o;
@@ -168,27 +165,23 @@ function regresoBody() {
 function routineCard(x) {
   const { r, p } = x,
         ok = Plan.isDone(r.id),
-        wide = r.id === "regreso";
-  return `<section class="card plc ${wide ? "plw" : ""}" id="pl-${r.id}"><div class="rw u-jc-space-between u-gap-8"><h3>${r.t}</h3><span class="bd t${p}" ${wide ? 'id="vsbd"' : ""}>${PLAN_LV[p]}</span></div><p class="mono u-m-6-0">${r.min} min</p><p class="u-m-0 u-fs-13 u-c-mu">${r.why}</p>${wide ? regresoBody() : `<ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>`}<button class="btn u-mt-10" data-done="${r.id}" ${ok ? "disabled" : ""}>${ok ? "Completada" : "Completar rutina (+50 XP)"}</button></section>`;
+        reg = r.id === "regreso";
+  return `<section class="card plc" id="pl-${r.id}"><div class="rw u-jc-space-between u-gap-8"><h3>${r.t}</h3><span class="bd t${p}" ${reg ? 'id="vsbd"' : ""}>${PLAN_LV[p]}</span></div><p class="mono u-m-6-0">${r.min} min</p><p class="u-m-0 u-fs-13 u-c-mu">${r.why}</p><ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol><div class="plb">${reg ? '<button class="btn o sm" data-vs-open>Test de Valsalva y plan detallado</button>' : ""}<button class="btn" data-done="${r.id}" ${ok ? "disabled" : ""}>${ok ? "Completada" : "Completar rutina"}</button></div></section>`;
 }
 
 function viewPlan() {
-  const cr = crewOf(),
-        o = Plan.of(),
-        blocks = [];
-  let grid = [];
-  const flush = () => { if (grid.length) blocks.push(`<div class="plg">${grid.join("")}</div>`); grid = []; };
-  planRows().forEach(x => {
-    if (x.r.id === "regreso") { flush(); blocks.push(routineCard(x)); }
-    else grid.push(routineCard(x));
-  });
-  flush();
-  return `<div class="g pn"><div class="rw u-jc-space-between u-fw-wrap u-gap-10"><div><b>Plan de ejercicio de ${cr.name}</b><p class="u-m-2-0-0 u-c-mu u-fs-13">Las rutinas se ordenan según el estado de cada zona del cuerpo en el día ${S.day}. Completar una rutina suma experiencia y mejora el cumplimiento de ejercicio del modelo.</p></div><span class="chip on mono" id="plxp">${o.xp} XP · ${level(o.xp)}</span></div></div>
+  const cr = crewOf();
+  return `<div class="g pn"><div class="rw u-jc-space-between u-fw-wrap u-gap-10"><div><b>Plan de ejercicio de ${cr.name}</b><p class="u-m-2-0-0 u-c-mu u-fs-13">Las rutinas se ordenan según el estado de cada zona del cuerpo en el día ${S.day}. Completar una rutina mejora el cumplimiento de ejercicio del modelo.</p></div></div></div>
 <div class="g pn" id="pl-hoy">${planToday()}</div>
-<div class="u-d-grid u-gap-12" id="pl-rut">${blocks.join("")}</div>`;
+<div class="plg" id="pl-rut">${planRows().map(routineCard).join("")}</div>`;
 }
 
 /* ---------- Eventos de la pestaña ---------- */
+document.addEventListener("click", e => {
+  if (!e.target.closest("[data-vs-open]")) return;
+  openDlg(head("Test de Valsalva y plan en 3 fases", "Parámetros del PDF de la NASA.") + regresoBody() + foot());
+});
+
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-done]");
   if (!b || b.disabled) return;
@@ -196,11 +189,10 @@ document.addEventListener("click", e => {
   if (!r) return;
   const o = Plan.of();
   (o.done[S.day] = o.done[S.day] || {})[r.id] = 1;
-  o.xp += 50;
   cfg().adh = Math.min(100, cfg().adh + r.adh);
   Plan.save();
   Plan.ver++;
-  toast("Rutina completada: +50 XP");
+  toast("Rutina completada");
   render();
 });
 

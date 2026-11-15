@@ -8,14 +8,14 @@ svg.body {
 
 .sil-a * {
   fill: none;
-  stroke: #9ec5ff;
+  stroke: var(--sil);
   stroke-opacity: .6;
   stroke-width: 3;
   stroke-linejoin: round;
 }
 
 .sil-b * {
-  fill: #0a1128;
+  fill: var(--sil-fill);
   stroke: none;
 }
 
@@ -30,14 +30,14 @@ svg.body {
 }
 
 .gh .f {
-  fill: rgba(190, 215, 255, .07);
-  stroke: rgba(190, 215, 255, .2);
+  fill: rgba(var(--fig-rgb), .07);
+  stroke: rgba(var(--fig-rgb), .2);
   stroke-width: .6;
 }
 
 .gh .s {
   fill: none;
-  stroke: rgba(190, 215, 255, .18);
+  stroke: rgba(var(--fig-rgb), .18);
 }
 
 .gh .d,
@@ -48,12 +48,12 @@ svg.body {
 
 .rings circle {
   fill: none;
-  stroke: rgba(127, 178, 255, .14);
+  stroke: rgba(var(--ac-rgb), .14);
   stroke-dasharray: 2 5;
 }
 
 .scan {
-  fill: rgba(127, 178, 255, .35);
+  fill: rgba(var(--ac-rgb), .35);
   animation: scan 5s linear infinite;
 }
 
@@ -70,7 +70,7 @@ svg.body {
 .z .f {
   fill: currentColor;
   fill-opacity: .62;
-  stroke: rgba(5, 8, 18, .55);
+  stroke: rgba(var(--edge-rgb), .55);
   stroke-width: .7;
 }
 
@@ -84,14 +84,14 @@ svg.body {
 
 .z .d {
   fill: none;
-  stroke: rgba(5, 8, 18, .6);
+  stroke: rgba(var(--edge-rgb), .6);
   stroke-width: .9;
   stroke-linecap: round;
   pointer-events: none;
 }
 
 .z .k {
-  fill: #060912;
+  fill: var(--bg);
   fill-opacity: .85;
   pointer-events: none;
 }
@@ -99,16 +99,16 @@ svg.body {
 .z.s0 { color: var(--ok); filter: drop-shadow(0 0 3px rgba(46, 230, 166, .6)); }
 .z.s1 { color: var(--warn); filter: drop-shadow(0 0 3px rgba(255, 181, 71, .7)); }
 .z.s2 { color: var(--bad); filter: drop-shadow(0 0 4px rgba(255, 107, 107, .85)); }
-.z.s3 { color: #6d788f; filter: none; }
+.z.s3 { color: var(--s3); filter: none; }
 
 .z.sel .f {
-  stroke: #fff;
+  stroke: var(--sel);
   stroke-width: 1.2;
   fill-opacity: .88;
 }
 
 .z.sel {
-  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 7px currentColor);
+  filter: drop-shadow(0 0 2px var(--sel)) drop-shadow(0 0 7px currentColor);
 }
 
 .z:hover {
@@ -122,7 +122,7 @@ svg.body {
   padding: 6px 10px;
   border-radius: 10px;
   font-size: 12px;
-  background: rgba(5, 8, 18, .95);
+  background: var(--drawer);
   border: 1px solid var(--line);
   display: none;
   white-space: nowrap;

@@ -66,7 +66,7 @@ function viewPanel() {
         items = PANEL.filter(a => S.cat === "all" || a[2] === S.cat);
   const cc = CREW.map(x => {
     const sm = Engine.summary(x);
-    return `<button class="cc ${x.id === S.crew ? "on" : ""}" data-c="${x.id}" style="--cc:${x.col}" aria-pressed="${x.id === S.crew}"><div class="av" style="background:${x.col};color:#06101f">${x.name.split(" ")[1][0]}</div><div class="ci"><b>${x.name}</b><span>${x.role}</span><div class="mini">${sm.n.map((v, i) => `<i class="t${i}">${v} ${["normal", "precaución", "alerta"][i]}</i>`).join("")}</div></div></button>`;
+    return `<button class="cc ${x.id === S.crew ? "on" : ""}" data-c="${x.id}" style="--cc:${x.col}" aria-pressed="${x.id === S.crew}"><div class="av" style="background:${x.col};color:var(--on-ac)">${x.name.split(" ")[1][0]}</div><div class="ci"><b>${x.name}</b><span>${x.role}</span><div class="mini">${sm.n.map((v, i) => `<i class="t${i}">${v} ${["normal", "precaución", "alerta"][i]}</i>`).join("")}</div></div></button>`;
   }).join("");
   
   const grid = items.map(([zi, pi]) => {

@@ -3,6 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060912">
+  <script>
+    /* Aplica el tema antes del primer dibujado (evita el destello): elección guardada, o la del sistema. */
+    (function () {
+      var t = "dark";
+      try {
+        var v = localStorage.getItem("ks-theme");
+        t = v === "light" || v === "dark" ? v : (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      } catch (e) {}
+      document.documentElement.setAttribute("data-theme", t);
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute("content", t === "light" ? "#eef2fa" : "#060912");
+    })();
+  </script>
   <title>Kinesoft: Asistente Médico de Tripulación</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +25,7 @@
 /* css/base.css — Variables de diseño, reinicio y tipografía. */
 
 :root {
+  /* ---- Tema oscuro (predeterminado) ---- */
   --bg: #060912;
   --glass: rgba(16, 24, 44, .62);
   --line: rgba(140, 180, 255, .16);
@@ -20,10 +35,90 @@
   --ok: #2ee6a6;
   --warn: #ffb547;
   --bad: #ff6b6b;
+  --s3: #6d788f;
+
+  --on-ac: #06101f;          /* texto sobre el color de acento */
+  --on-ok: #042;             /* texto sobre fondo --ok */
+  --ac-rgb: 127, 178, 255;   /* acento en RGB, para fondos translúcidos */
+  --fig-rgb: 190, 215, 255;  /* trazos de la figura anatómica */
+  --edge-rgb: 5, 8, 18;      /* contornos de zonas */
+
+  --surf: rgba(10, 16, 32, .55);   /* tarjetas */
+  --field: rgba(5, 8, 18, .7);     /* campos de formulario */
+  --solid: #0a1020;                /* diálogos */
+  --drawer: rgba(8, 12, 26, .95);  /* menú lateral y tooltip */
+  --scrim: rgba(0, 0, 0, .55);
+  --scrim-dlg: rgba(0, 0, 0, .7);
+  --hov: rgba(255, 255, 255, .08);
+  --bx: #10192e;                   /* caja de las pruebas */
+  --toast-bad: #1a0f1a;
+
+  --sky-1: rgba(90, 70, 200, .28);
+  --sky-2: rgba(20, 120, 170, .22);
+  --star-1: #fff;
+  --star-2: #cfe0ff;
+  --star-op: 1;
+
+  --sil: #9ec5ff;
+  --sil-fill: #0a1128;
+  --sel: #fff;               /* resalte de selección y puntos reales */
+  --grid: #8cb4ff;           /* rejilla de los gráficos */
+
+  --cw1: #7fb2ff;            /* colores de tripulantes */
+  --cw2: #ff8ad8;
+  --cw3: #ffd23f;
+
   color-scheme: dark;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Tema claro ---- */
+:root[data-theme="light"] {
+  --bg: #eef2fa;
+  --glass: rgba(255, 255, 255, .74);
+  --line: rgba(30, 60, 120, .18);
+  --tx: #0f1a33;
+  --mu: #55627d;
+  --ac: #2a5fd1;
+  --ok: #0a8f65;
+  --warn: #b36b00;
+  --bad: #d12f45;
+  --s3: #7b869e;
+
+  --on-ac: #fff;
+  --on-ok: #fff;
+  --ac-rgb: 42, 95, 209;
+  --fig-rgb: 40, 70, 130;
+  --edge-rgb: 255, 255, 255;
+
+  --surf: rgba(255, 255, 255, .62);
+  --field: rgba(255, 255, 255, .9);
+  --solid: #fff;
+  --drawer: rgba(255, 255, 255, .97);
+  --scrim: rgba(15, 26, 51, .35);
+  --scrim-dlg: rgba(15, 26, 51, .5);
+  --hov: rgba(15, 26, 51, .07);
+  --bx: #dfe7f6;
+  --toast-bad: #fff0f2;
+
+  --sky-1: rgba(90, 70, 200, .12);
+  --sky-2: rgba(20, 120, 170, .1);
+  --star-1: #3d5aa0;
+  --star-2: #5a74b8;
+  --star-op: .35;
+
+  --sil: #3d6bc4;
+  --sil-fill: #d6e1f5;
+  --sel: #0f1a33;
+  --grid: #28468c;
+
+  --cw1: #2a5fd1;
+  --cw2: #c2288f;
+  --cw3: #a87400;
+
+  color-scheme: light;
 }
 
 *,
@@ -56,24 +151,24 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(60% 50% at 80% 10%, rgba(90, 70, 200, .28), transparent),
-              radial-gradient(50% 40% at 10% 90%, rgba(20, 120, 170, .22), transparent);
+  background: radial-gradient(60% 50% at 80% 10%, var(--sky-1), transparent),
+              radial-gradient(50% 40% at 10% 90%, var(--sky-2), transparent);
 }
 
 .sky i {
   position: absolute;
   inset: -260px 0 0;
-  background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
-                    radial-gradient(1px 1px at 90px 80px, #cfe0ff, transparent),
-                    radial-gradient(1.2px 1.2px at 150px 140px, #fff, transparent);
+  background-image: radial-gradient(1.5px 1.5px at 20px 30px, var(--star-1), transparent),
+                    radial-gradient(1px 1px at 90px 80px, var(--star-2), transparent),
+                    radial-gradient(1.2px 1.2px at 150px 140px, var(--star-1), transparent);
   background-size: 180px 180px;
-  opacity: .55;
+  opacity: calc(.55 * var(--star-op));
   animation: drift 90s linear infinite;
 }
 
 .sky i + i {
   background-size: 260px 260px;
-  opacity: .35;
+  opacity: calc(.35 * var(--star-op));
   animation-duration: 150s;
 }
 
@@ -123,7 +218,7 @@ header h1 {
 select,
 input,
 textarea {
-  background: rgba(5, 8, 18, .7);
+  background: var(--field);
   color: var(--tx);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -157,7 +252,7 @@ button {
 
 .btn {
   background: var(--ac);
-  color: #06101f;
+  color: var(--on-ac);
   border: 0;
   border-radius: 10px;
   padding: 9px 14px;
@@ -184,6 +279,17 @@ button {
   font-size: 18px;
 }
 
+/* Botón de tema: muestra el ícono de lo que se activará al tocarlo (sol en oscuro, luna en claro). */
+#theme {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+#theme .ic { display: block; }
+:root[data-theme="light"] #theme .ic-sun,
+:root:not([data-theme="light"]) #theme .ic-moon { display: none; }
+
 .app {
   position: relative;
   z-index: 1;
@@ -205,7 +311,7 @@ button {
   transition: transform .3s;
   padding: 16px;
   border-radius: 0 18px 18px 0;
-  background: rgba(8, 12, 26, .95);
+  background: var(--drawer);
   overflow: auto;
 }
 
@@ -217,7 +323,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 35;
-  background: rgba(0, 0, 0, .55);
+  background: var(--scrim);
   display: none;
 }
 
@@ -239,7 +345,7 @@ button {
 }
 
 .crew.on {
-  background: rgba(127, 178, 255, .14);
+  background: rgba(var(--ac-rgb), .14);
   border-color: var(--ac);
 }
 
@@ -329,7 +435,7 @@ button {
 .t0 { color: var(--ok); }
 .t1 { color: var(--warn); }
 .t2 { color: var(--bad); }
-.t3 { color: #7b869e; }
+.t3 { color: var(--s3); }
 
 .rail {
   display: flex;
@@ -380,7 +486,7 @@ button {
 
 .tab.on {
   background: var(--ac);
-  color: #06101f;
+  color: var(--on-ac);
   border-color: var(--ac);
 }
 
@@ -423,14 +529,14 @@ svg.body {
 
 .sil-a * {
   fill: none;
-  stroke: #9ec5ff;
+  stroke: var(--sil);
   stroke-opacity: .6;
   stroke-width: 3;
   stroke-linejoin: round;
 }
 
 .sil-b * {
-  fill: #0a1128;
+  fill: var(--sil-fill);
   stroke: none;
 }
 
@@ -445,14 +551,14 @@ svg.body {
 }
 
 .gh .f {
-  fill: rgba(190, 215, 255, .07);
-  stroke: rgba(190, 215, 255, .2);
+  fill: rgba(var(--fig-rgb), .07);
+  stroke: rgba(var(--fig-rgb), .2);
   stroke-width: .6;
 }
 
 .gh .s {
   fill: none;
-  stroke: rgba(190, 215, 255, .18);
+  stroke: rgba(var(--fig-rgb), .18);
 }
 
 .gh .d,
@@ -463,12 +569,12 @@ svg.body {
 
 .rings circle {
   fill: none;
-  stroke: rgba(127, 178, 255, .14);
+  stroke: rgba(var(--ac-rgb), .14);
   stroke-dasharray: 2 5;
 }
 
 .scan {
-  fill: rgba(127, 178, 255, .35);
+  fill: rgba(var(--ac-rgb), .35);
   animation: scan 5s linear infinite;
 }
 
@@ -485,7 +591,7 @@ svg.body {
 .z .f {
   fill: currentColor;
   fill-opacity: .62;
-  stroke: rgba(5, 8, 18, .55);
+  stroke: rgba(var(--edge-rgb), .55);
   stroke-width: .7;
 }
 
@@ -499,14 +605,14 @@ svg.body {
 
 .z .d {
   fill: none;
-  stroke: rgba(5, 8, 18, .6);
+  stroke: rgba(var(--edge-rgb), .6);
   stroke-width: .9;
   stroke-linecap: round;
   pointer-events: none;
 }
 
 .z .k {
-  fill: #060912;
+  fill: var(--bg);
   fill-opacity: .85;
   pointer-events: none;
 }
@@ -514,16 +620,16 @@ svg.body {
 .z.s0 { color: var(--ok); filter: drop-shadow(0 0 3px rgba(46, 230, 166, .6)); }
 .z.s1 { color: var(--warn); filter: drop-shadow(0 0 3px rgba(255, 181, 71, .7)); }
 .z.s2 { color: var(--bad); filter: drop-shadow(0 0 4px rgba(255, 107, 107, .85)); }
-.z.s3 { color: #6d788f; filter: none; }
+.z.s3 { color: var(--s3); filter: none; }
 
 .z.sel .f {
-  stroke: #fff;
+  stroke: var(--sel);
   stroke-width: 1.2;
   fill-opacity: .88;
 }
 
 .z.sel {
-  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 7px currentColor);
+  filter: drop-shadow(0 0 2px var(--sel)) drop-shadow(0 0 7px currentColor);
 }
 
 .z:hover {
@@ -537,7 +643,7 @@ svg.body {
   padding: 6px 10px;
   border-radius: 10px;
   font-size: 12px;
-  background: rgba(5, 8, 18, .95);
+  background: var(--drawer);
   border: 1px solid var(--line);
   display: none;
   white-space: nowrap;
@@ -551,7 +657,7 @@ svg.body {
   padding: 14px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background: rgba(10, 16, 32, .55);
+  background: var(--surf);
   text-align: left;
   display: block;
 }
@@ -581,7 +687,7 @@ svg.body {
 .bar {
   height: 6px;
   border-radius: 9px;
-  background: rgba(255, 255, 255, .08);
+  background: var(--hov);
   overflow: hidden;
   margin: 8px 0;
 }
@@ -598,14 +704,14 @@ svg.body {
   font-size: 11px;
   padding: 1px 8px;
   border-radius: 6px;
-  background: rgba(127, 178, 255, .15);
+  background: rgba(var(--ac-rgb), .15);
   color: var(--ac);
   font-style: normal;
 }
 
 .src.r {
   background: var(--ac);
-  color: #06101f;
+  color: var(--on-ac);
   font-weight: 700;
 }
 
@@ -656,7 +762,7 @@ details p {
 
 .pr.on {
   border-color: var(--ac);
-  background: rgba(127, 178, 255, .1);
+  background: rgba(var(--ac-rgb), .1);
 }
 
 .pr > span:last-child {
@@ -689,7 +795,7 @@ details p {
 dialog {
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #0a1020;
+  background: var(--solid);
   color: var(--tx);
   padding: 18px;
   width: min(620px, 94vw);
@@ -697,7 +803,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background: rgba(0, 0, 0, .7);
+  background: var(--scrim-dlg);
 }
 
 .fg {
@@ -734,7 +840,7 @@ dialog::backdrop {
 
 .chip.on {
   background: var(--ac);
-  color: #06101f;
+  color: var(--on-ac);
   border-color: var(--ac);
 }
 
@@ -799,7 +905,7 @@ table.tb {
   bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   background: var(--ok);
-  color: #042;
+  color: var(--on-ok);
   padding: 8px 16px;
   border-radius: 99px;
   font-weight: 700;
@@ -880,7 +986,7 @@ a {
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background: rgba(10, 16, 32, .5);
+  background: var(--surf);
   position: relative;
   overflow: hidden;
 }
@@ -897,7 +1003,7 @@ a {
 
 .cc.on {
   border-color: var(--cc);
-  background: rgba(127, 178, 255, .1);
+  background: rgba(var(--ac-rgb), .1);
   box-shadow: 0 0 0 1px var(--cc);
 }
 
@@ -1031,7 +1137,7 @@ a {
 }
 
 .tb tr.cur td {
-  background: rgba(127, 178, 255, .1);
+  background: rgba(var(--ac-rgb), .1);
 }
 
 .tb .chip {
@@ -1205,11 +1311,11 @@ html.lock {
 }
 
 .nl:hover {
-  background: rgba(127, 178, 255, .08);
+  background: rgba(var(--ac-rgb), .08);
 }
 
 .nl.on {
-  background: rgba(127, 178, 255, .18);
+  background: rgba(var(--ac-rgb), .18);
   box-shadow: inset 2px 0 var(--ac);
 }
 
@@ -1256,16 +1362,23 @@ html.lock {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  align-items: start;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 .card.plc {
   width: auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.card.plw {
-  grid-column: 1 / -1;
+.plb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
 }
 
 .plc h3 {
@@ -1358,7 +1471,7 @@ svg.neck text {
 }
 
 #alert-toast-red {
-  background: #1a0f1a;
+  background: var(--toast-bad);
   color: var(--tx);
   border: 2px solid var(--bad);
   box-shadow: 0 0 22px rgba(255, 107, 107, .5);
@@ -1394,7 +1507,7 @@ svg.neck text {
   font-size: 14px;
   cursor: pointer;
 }
-.alert-x:hover { background: rgba(255, 255, 255, .1); color: var(--tx); }
+.alert-x:hover { background: var(--hov); color: var(--tx); }
 
 /* barra que se vacía durante el tiempo que dura el aviso */
 .alert-bar {
@@ -1463,7 +1576,7 @@ svg.neck text {
 
 /* estado inicial de elementos que el JS modifica en vivo */
 #pad { display: none; }
-#bx { background: #10192e; }
+#bx { background: var(--bx); }
 
 /* ---------- Utilidades que antes estaban inline en index.html ---------- */
 .val { color: var(--tx); }
@@ -1485,8 +1598,8 @@ svg.neck text {
 .u-bd-1-dashed-line { border: 1px dashed var(--line) !important; }
 .u-br-12 { border-radius: 12px !important; }
 .u-bt-1-solid-line { border-top: 1px solid var(--line) !important; }
-.u-c-7fb2ff { color: #7fb2ff !important; }
-.u-c-fff { color: #fff !important; }
+.u-c-7fb2ff { color: var(--ac) !important; }
+.u-c-fff { color: var(--sel) !important; }
 .u-c-bad { color: var(--bad) !important; }
 .u-c-mu { color: var(--mu) !important; }
 .u-c-tx { color: var(--tx) !important; }
@@ -1548,6 +1661,10 @@ svg.neck text {
     <button class="btn o sm" id="dys">Días</button>
     <button class="btn o sm" id="upl">Cargar archivo</button>
     <button class="btn" id="log">+ Registro diario</button>
+    <button class="ib" id="theme" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro">
+      <svg class="ic ic-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="ic ic-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
   </header>
 
   <div id="scrim"></div>
@@ -1596,9 +1713,9 @@ svg.neck text {
 "use strict";
 
 const CREW = [
-  { id: "c1", name: "Juli Diaz", role: "Comandante", bio: "Especialista EVA · 28 años · 1,62 m · 57 kg", age: 42, h: 162, sens: 1, col: "#7fb2ff" },
-  { id: "c2", name: "Mariana Bazán", role: "Médico de vuelo", bio: "Biología espacial · 38 años · 1,68 m · 62 kg", age: 38, h: 168, sens: 1.12, col: "#ff8ad8" },
-  { id: "c3", name: "Pablo Gómez", role: "Ing. de sistemas", bio: "Robótica y soporte · 35 años · 1,75 m · 70 kg", age: 35, h: 175, sens: .9, col: "#ffd23f" }
+  { id: "c1", name: "Juli Diaz", role: "Comandante", bio: "Especialista EVA · 28 años · 1,62 m · 57 kg", age: 42, h: 162, sens: 1, col: "var(--cw1)" },
+  { id: "c2", name: "Mariana Bazán", role: "Médico de vuelo", bio: "Biología espacial · 38 años · 1,68 m · 62 kg", age: 38, h: 168, sens: 1.12, col: "var(--cw2)" },
+  { id: "c3", name: "Pablo Gómez", role: "Ing. de sistemas", bio: "Robótica y soporte · 35 años · 1,75 m · 70 kg", age: 35, h: 175, sens: .9, col: "var(--cw3)" }
 ];
 
 const ENVS = {
@@ -2453,7 +2570,8 @@ const C = (day = S.day, cr = crewOf()) => {
 };
 
 const refText = p => p.dir === "none" ? "Sin umbral definido" : `Base ${fmt(p, p.base)} · Precaución ${p.dir === "lt" ? "≤" : "≥"} ${fmt(p, p.y)} · Alerta ${p.dir === "lt" ? "≤" : "≥"} ${fmt(p, p.r)}`;
-const SC = ["#2ee6a6", "#ffb547", "#ff6b6b", "#6d788f"];
+/* variables CSS: cambian solas con el tema (también funcionan dentro de atributos SVG) */
+const SC = ["var(--ok)", "var(--warn)", "var(--bad)", "var(--s3)"];
 
   </script>
   <script>
@@ -2601,7 +2719,7 @@ function lineChartRaw(z, p, o = {}) {
   };
 
   const bands = p.dir === "none" ? "" : p.dir === "lt" ? band(mn, p.r, SC[2]) + band(p.r, p.y, SC[1]) + band(p.y, mx, SC[0]) : band(mn, p.y, SC[0]) + band(p.y, p.r, SC[1]) + band(p.r, mx, SC[2]);
-  const th = (v, c) => p.dir === "none" && c !== "#7fb2ff" ? "" : `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${c}" stroke-opacity=".85" stroke-dasharray="4 3"/>`;
+  const th = (v, c) => p.dir === "none" && c !== "var(--ac)" ? "" : `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${c}" stroke-opacity=".85" stroke-dasharray="4 3"/>`;
   const pl = a => a.map(q => X(q[0]).toFixed(1) + "," + Y(q[1]).toFixed(1)).join(" ");
   const area = `M${X(0)},${Y(mn)} L${pl(model).replace(/ /g, " L")} L${X(XM)},${Y(mn)}Z`;
   
@@ -2609,12 +2727,12 @@ function lineChartRaw(z, p, o = {}) {
         isReal = !!(rec && rec.v && rec.v[key] != null),
         cv = isReal ? rec.v[key] : p.v(C(S.day, cr)),
         cs = stat(p, cv),
-        col = cs < 0 ? "#7fb2ff" : SC[cs];
+        col = cs < 0 ? "var(--ac)" : SC[cs];
         
-  const grid = [mn, (mn + mx) / 2, mx].map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#8cb4ff" stroke-opacity=".1"/><text x="${L - 4}" y="${Y(v) + 3}" text-anchor="end" fill="#8d9bb8" font-size="9">${tk(v)}</text>`).join("");
-  const xt = [0, Math.round(XM / 3), Math.round(XM * 2 / 3), XM].map(d => `<line x1="${X(d)}" x2="${X(d)}" y1="${T}" y2="${H - B}" stroke="#8cb4ff" stroke-opacity=".07"/><text x="${X(d)}" y="${H - 7}" text-anchor="${d === 0 ? "start" : d === XM ? "end" : "middle"}" fill="#8d9bb8" font-size="9">${d === 0 ? "Día 0" : d}</text>`).join("");
+  const grid = [mn, (mn + mx) / 2, mx].map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" stroke-opacity=".1"/><text x="${L - 4}" y="${Y(v) + 3}" text-anchor="end" fill="var(--mu)" font-size="9">${tk(v)}</text>`).join("");
+  const xt = [0, Math.round(XM / 3), Math.round(XM * 2 / 3), XM].map(d => `<line x1="${X(d)}" x2="${X(d)}" y1="${T}" y2="${H - B}" stroke="var(--grid)" stroke-opacity=".07"/><text x="${X(d)}" y="${H - 7}" text-anchor="${d === 0 ? "start" : d === XM ? "end" : "middle"}" fill="var(--mu)" font-size="9">${d === 0 ? "Día 0" : d}</text>`).join("");
 
-  return `<svg class="u-w-100pct u-h-auto u-d-block" viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de ${esc(p.n)} de ${esc(cr.name)}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cr.col}" stop-opacity=".28"/><stop offset="1" stop-color="${cr.col}" stop-opacity="0"/></linearGradient></defs>${bands}${grid}${xt}${th(p.base, "#7fb2ff")}${th(p.y, SC[1])}${th(p.r, SC[2])}<path d="${area}" fill="url(#${id})"/>${others.map(q => `<polyline fill="none" stroke="${q.x.col}" stroke-width="2.2" stroke-linejoin="round" points="${pl(q.pts)}"/>${q.real.length > 1 ? `<polyline fill="none" stroke="${q.x.col}" stroke-opacity=".9" stroke-width="1.4" stroke-dasharray="4 2" points="${pl(q.real)}"/>` : ""}${q.real.map(a => `<circle cx="${X(a[0])}" cy="${Y(a[1])}" r="3.4" fill="${q.x.col}" stroke="#fff" stroke-width="1.1"><title>${esc(q.x.name)} · día ${a[0]}: ${fmt(p, a[1])} ${esc(p.u)}</title></circle>`).join("")}`).join("")}<polyline fill="none" stroke="${cr.col}" stroke-width="2.2" stroke-linejoin="round" points="${pl(model)}"/>${real.length > 1 ? `<polyline fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="1.6" points="${pl(real)}"/>` : ""}${real.map(a => `<circle data-day="${a[0]}" data-k="${key}" data-v="${a[1]}" cx="${X(a[0])}" cy="${Y(a[1])}" r="3.8" fill="${SC[stat(p, a[1]) < 0 ? 0 : stat(p, a[1])]}" stroke="#fff" stroke-width="1.2"><title>Día ${a[0]}: ${fmt(p, a[1])} ${esc(p.u)}</title></circle>`).join("")}<line x1="${X(S.day)}" x2="${X(S.day)}" y1="${T}" y2="${H - B}" stroke="#fff" stroke-opacity=".4"/>${others.map(q => { const rc = Store.get(q.x.id, S.day), v = rc && rc.v && rc.v[key] != null ? rc.v[key] : p.v(C(S.day, q.x)); return `<circle cx="${X(S.day)}" cy="${Y(v)}" r="4" fill="${q.x.col}" stroke="#060912" stroke-width="2"/>`; }).join("")}<circle cx="${X(S.day)}" cy="${Y(cv)}" r="4.6" fill="${col}" stroke="#060912" stroke-width="2"/></svg>`;
+  return `<svg class="u-w-100pct u-h-auto u-d-block" viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de ${esc(p.n)} de ${esc(cr.name)}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cr.col}" stop-opacity=".28"/><stop offset="1" stop-color="${cr.col}" stop-opacity="0"/></linearGradient></defs>${bands}${grid}${xt}${th(p.base, "var(--ac)")}${th(p.y, SC[1])}${th(p.r, SC[2])}<path d="${area}" fill="url(#${id})"/>${others.map(q => `<polyline fill="none" stroke="${q.x.col}" stroke-width="2.2" stroke-linejoin="round" points="${pl(q.pts)}"/>${q.real.length > 1 ? `<polyline fill="none" stroke="${q.x.col}" stroke-opacity=".9" stroke-width="1.4" stroke-dasharray="4 2" points="${pl(q.real)}"/>` : ""}${q.real.map(a => `<circle cx="${X(a[0])}" cy="${Y(a[1])}" r="3.4" fill="${q.x.col}" stroke="var(--sel)" stroke-width="1.1"><title>${esc(q.x.name)} · día ${a[0]}: ${fmt(p, a[1])} ${esc(p.u)}</title></circle>`).join("")}`).join("")}<polyline fill="none" stroke="${cr.col}" stroke-width="2.2" stroke-linejoin="round" points="${pl(model)}"/>${real.length > 1 ? `<polyline fill="none" stroke="var(--sel)" stroke-opacity=".9" stroke-width="1.6" points="${pl(real)}"/>` : ""}${real.map(a => `<circle data-day="${a[0]}" data-k="${key}" data-v="${a[1]}" cx="${X(a[0])}" cy="${Y(a[1])}" r="3.8" fill="${SC[stat(p, a[1]) < 0 ? 0 : stat(p, a[1])]}" stroke="var(--sel)" stroke-width="1.2"><title>Día ${a[0]}: ${fmt(p, a[1])} ${esc(p.u)}</title></circle>`).join("")}<line x1="${X(S.day)}" x2="${X(S.day)}" y1="${T}" y2="${H - B}" stroke="var(--sel)" stroke-opacity=".4"/>${others.map(q => { const rc = Store.get(q.x.id, S.day), v = rc && rc.v && rc.v[key] != null ? rc.v[key] : p.v(C(S.day, q.x)); return `<circle cx="${X(S.day)}" cy="${Y(v)}" r="4" fill="${q.x.col}" stroke="var(--bg)" stroke-width="2"/>`; }).join("")}<circle cx="${X(S.day)}" cy="${Y(cv)}" r="4.6" fill="${col}" stroke="var(--bg)" stroke-width="2"/></svg>`;
 }
 
 const MEMO = new Map(),
@@ -2701,7 +2819,7 @@ function viewPanel() {
         items = PANEL.filter(a => S.cat === "all" || a[2] === S.cat);
   const cc = CREW.map(x => {
     const sm = Engine.summary(x);
-    return `<button class="cc ${x.id === S.crew ? "on" : ""}" data-c="${x.id}" style="--cc:${x.col}" aria-pressed="${x.id === S.crew}"><div class="av" style="background:${x.col};color:#06101f">${x.name.split(" ")[1][0]}</div><div class="ci"><b>${x.name}</b><span>${x.role}</span><div class="mini">${sm.n.map((v, i) => `<i class="t${i}">${v} ${["normal", "precaución", "alerta"][i]}</i>`).join("")}</div></div></button>`;
+    return `<button class="cc ${x.id === S.crew ? "on" : ""}" data-c="${x.id}" style="--cc:${x.col}" aria-pressed="${x.id === S.crew}"><div class="av" style="background:${x.col};color:var(--on-ac)">${x.name.split(" ")[1][0]}</div><div class="ci"><b>${x.name}</b><span>${x.role}</span><div class="mini">${sm.n.map((v, i) => `<i class="t${i}">${v} ${["normal", "precaución", "alerta"][i]}</i>`).join("")}</div></div></button>`;
   }).join("");
   
   const grid = items.map(([zi, pi]) => {
@@ -2789,7 +2907,7 @@ function renderChrome() {
   $("adho").textContent = k.adh + " %";
   $("vas").value = k.vas;
   $("vaso").textContent = k.vas;
-  $("crew").innerHTML = CREW.map(x => `<button class="crew ${x.id === S.crew ? "on" : ""}" data-c="${x.id}"><div class="av" style="background:${x.col};color:#06101f">${x.name.split(" ")[1][0]}</div><div><b>${x.name}</b><span>${x.role}</span></div></button>`).join("");
+  $("crew").innerHTML = CREW.map(x => `<button class="crew ${x.id === S.crew ? "on" : ""}" data-c="${x.id}"><div class="av" style="background:${x.col};color:var(--on-ac)">${x.name.split(" ")[1][0]}</div><div><b>${x.name}</b><span>${x.role}</span></div></button>`).join("");
   $("hero").innerHTML = `<div>${bd(w)}<h2>${cr.name}</h2><p>${cr.role} · ${cr.bio}</p></div><div class="kp">${n.map((v, i) => `<div><small>${SN[i]}</small><b class="mono t${i}">${v}</b></div>`).join("")}</div>
 <details class="u-w-100pct"><summary>Alertas activas (${al.length})</summary>${al.length ? al.map(a => `<p>${bd(a.r.s)} ${a.z.n} · ${a.r.p.n}: <b class="mono">${fmt(a.r.p, a.r.v)} ${a.r.p.u}</b></p>`).join("") : "<p>Sin alertas: todos los parámetros están dentro de lo esperado.</p>"}${cx.map(t => `<p class="t1">${t}</p>`).join("")}</details>`;
   $("tabs").innerHTML = TABS.map(t => `<button class="tab ${t.id === S.tab ? "on" : ""}" data-t="${t.id}">${t.ic ? t.ic + " " : ""}${t.n}</button>`).join("");
@@ -2820,14 +2938,12 @@ const ROUT = [
   { id: "resp", t: "Respiración diafragmática y descompresión mental", min: 10, adh: 0, zones: ["pulmones", "cerebro"], why: "Mejora la ventilación y ayuda a sobrellevar el aislamiento.", steps: ["Sentarse con la espalda apoyada y una mano en el abdomen", "Inhalar 4 segundos y exhalar 6 segundos, 5 minutos", "Cerrar con 3 minutos de atención en los sonidos del entorno"] },
   { id: "vest", t: "Equilibrio y entrenamiento vestibular", min: 15, adh: 0, zones: ["cerebro", "corazon"], why: "Prepara el sistema del equilibrio para volver a la gravedad.", steps: ["Movimientos lentos de cabeza con la vista fija: 2 series de 10", "Marcha en tándem con apoyo: 2 pasadas", "Pasar de acostado a de pie en 3 tiempos"] },
   { id: "hid", t: "Hidratación y prevención renal", min: 5, adh: 0, zones: ["rinones"], why: "Diluye el calcio en orina y reduce el riesgo de cálculos.", steps: ["Planificar entre 2,5 y 3 L de agua en el día", "Revisar el sodio de las comidas", "Registrar la diuresis"] },
-  { id: "regreso", t: "Plan estabilización y acondicionamiento para el regreso", min: 25, adh: 5, zones: ["corazon", "vasos"], why: "Para contrarrestar la hipovolemia plasmática, la falla vasomotora y barorrefleja, utiliza los parámetros del PDF de la NASA: índice de Valsalva, curva de presión arterial y evaluación de compensación de fuerza G.", steps: [] }
+  { id: "regreso", t: "Plan estabilización y acondicionamiento para el regreso", min: 25, adh: 5, zones: ["corazon", "vasos"], why: "Para contrarrestar la hipovolemia plasmática, la falla vasomotora y barorrefleja, utiliza los parámetros del PDF de la NASA: índice de Valsalva, curva de presión arterial y evaluación de compensación de fuerza G.", steps: ["Fase 1, pre-reentrada (72 a 24 h): maniobra anti-G M-1/L-1 con biofeedback y carga resistiva del tren inferior", "Fase 2, reentrada (1,5 G a 4 G): contracción isométrica de miembros inferiores con metrónomo M-1/L-1", "Fase 3, posaterrizaje (2 h): bombeo de tobillos, sedestación asistida y bipedestación progresiva"] }
 ];
 
-const PLAN_LV = ["Mantenimiento", "Recomendada", "Prioridad alta"],
-      LEVELS = [[0, "Cadete"], [200, "Tripulante"], [400, "Especialista"], [700, "Comandante"]],
-      level = x => LEVELS.filter(l => x >= l[0]).pop()[1];
+const PLAN_LV = ["Mantenimiento", "Recomendada", "Prioridad alta"];
 
-/* ---------- Progreso por tripulante (localStorage): XP, rutinas completadas por día y datos del test de Valsalva ---------- */
+/* ---------- Progreso por tripulante (localStorage): rutinas completadas por día y datos del test de Valsalva ---------- */
 const Plan = {
   K: "orbital_plan_v1",
   ver: 0,
@@ -2840,7 +2956,6 @@ const Plan = {
   },
   of(c = S.crew) {
     const o = this.d[c] = this.d[c] || {};
-    o.xp = o.xp || 0;
     o.done = o.done || {};
     o.vs = o.vs || {};
     return o;
@@ -2976,27 +3091,23 @@ function regresoBody() {
 function routineCard(x) {
   const { r, p } = x,
         ok = Plan.isDone(r.id),
-        wide = r.id === "regreso";
-  return `<section class="card plc ${wide ? "plw" : ""}" id="pl-${r.id}"><div class="rw u-jc-space-between u-gap-8"><h3>${r.t}</h3><span class="bd t${p}" ${wide ? 'id="vsbd"' : ""}>${PLAN_LV[p]}</span></div><p class="mono u-m-6-0">${r.min} min</p><p class="u-m-0 u-fs-13 u-c-mu">${r.why}</p>${wide ? regresoBody() : `<ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>`}<button class="btn u-mt-10" data-done="${r.id}" ${ok ? "disabled" : ""}>${ok ? "Completada" : "Completar rutina (+50 XP)"}</button></section>`;
+        reg = r.id === "regreso";
+  return `<section class="card plc" id="pl-${r.id}"><div class="rw u-jc-space-between u-gap-8"><h3>${r.t}</h3><span class="bd t${p}" ${reg ? 'id="vsbd"' : ""}>${PLAN_LV[p]}</span></div><p class="mono u-m-6-0">${r.min} min</p><p class="u-m-0 u-fs-13 u-c-mu">${r.why}</p><ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol><div class="plb">${reg ? '<button class="btn o sm" data-vs-open>Test de Valsalva y plan detallado</button>' : ""}<button class="btn" data-done="${r.id}" ${ok ? "disabled" : ""}>${ok ? "Completada" : "Completar rutina"}</button></div></section>`;
 }
 
 function viewPlan() {
-  const cr = crewOf(),
-        o = Plan.of(),
-        blocks = [];
-  let grid = [];
-  const flush = () => { if (grid.length) blocks.push(`<div class="plg">${grid.join("")}</div>`); grid = []; };
-  planRows().forEach(x => {
-    if (x.r.id === "regreso") { flush(); blocks.push(routineCard(x)); }
-    else grid.push(routineCard(x));
-  });
-  flush();
-  return `<div class="g pn"><div class="rw u-jc-space-between u-fw-wrap u-gap-10"><div><b>Plan de ejercicio de ${cr.name}</b><p class="u-m-2-0-0 u-c-mu u-fs-13">Las rutinas se ordenan según el estado de cada zona del cuerpo en el día ${S.day}. Completar una rutina suma experiencia y mejora el cumplimiento de ejercicio del modelo.</p></div><span class="chip on mono" id="plxp">${o.xp} XP · ${level(o.xp)}</span></div></div>
+  const cr = crewOf();
+  return `<div class="g pn"><div class="rw u-jc-space-between u-fw-wrap u-gap-10"><div><b>Plan de ejercicio de ${cr.name}</b><p class="u-m-2-0-0 u-c-mu u-fs-13">Las rutinas se ordenan según el estado de cada zona del cuerpo en el día ${S.day}. Completar una rutina mejora el cumplimiento de ejercicio del modelo.</p></div></div></div>
 <div class="g pn" id="pl-hoy">${planToday()}</div>
-<div class="u-d-grid u-gap-12" id="pl-rut">${blocks.join("")}</div>`;
+<div class="plg" id="pl-rut">${planRows().map(routineCard).join("")}</div>`;
 }
 
 /* ---------- Eventos de la pestaña ---------- */
+document.addEventListener("click", e => {
+  if (!e.target.closest("[data-vs-open]")) return;
+  openDlg(head("Test de Valsalva y plan en 3 fases", "Parámetros del PDF de la NASA.") + regresoBody() + foot());
+});
+
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-done]");
   if (!b || b.disabled) return;
@@ -3004,11 +3115,10 @@ document.addEventListener("click", e => {
   if (!r) return;
   const o = Plan.of();
   (o.done[S.day] = o.done[S.day] || {})[r.id] = 1;
-  o.xp += 50;
   cfg().adh = Math.min(100, cfg().adh + r.adh);
   Plan.save();
   Plan.ver++;
-  toast("Rutina completada: +50 XP");
+  toast("Rutina completada");
   render();
 });
 
@@ -3256,7 +3366,7 @@ function tColors() {
 
     function show(i) {
       if (i >= 10) {
-        bx.style.background = "#10192e";
+        bx.style.background = "var(--bx)";
         bx.textContent = "¡Repite la secuencia!";
         $("pad").style.display = "grid";
         return play();
@@ -3265,7 +3375,7 @@ function tColors() {
       bx.textContent = PALETTE[seq[i]][0];
       bx.style.color = "#06101f";
       later(() => {
-        bx.style.background = "#10192e";
+        bx.style.background = "var(--bx)";
         bx.textContent = "";
         later(() => show(i + 1), 300);
       }, 600);
@@ -3363,7 +3473,7 @@ function tPVT() {
     if (lap >= 1) sc -= 2;
     sc = Math.max(1, sc);
     save({ "reaccion.rt": Math.round(avg), "reaccion.fast": Math.min(...tr), "reaccion.rs": sc, "reaccion.fs": fs, "reaccion.rl": lap }, { pvt: { trials: tr, sc } });
-    bx.style.background = "#10192e";
+    bx.style.background = "var(--bx)";
     bx.style.color = "";
     bx.textContent = "Fin";
     $("res").innerHTML = alertBox(sc >= 6 ? 0 : sc >= 5 ? 1 : 2, `Puntaje <b>${sc}/10</b> · ${base[2]}. ${base[3]}<br>Habilitación para EVA: <b>${sc >= 6 ? "sí" : "no"}</b> (se requiere 6 o más)`) + `<p class="mono u-fs-12 u-c-mu">Intentos ${tr.join(" · ")} ms · promedio ${Math.round(avg)} ms · salidas en falso ${fs} · lapsos ${lap}</p>`;
@@ -4283,6 +4393,48 @@ const Nav = {
 };
 
 Nav.start();
+
+  </script>
+  <script>
+/* theme.js — Modo claro/oscuro: botón del encabezado, persistencia y sincronía con el sistema. */
+"use strict";
+
+(() => {
+  const KEY = "ks-theme",
+        root = document.documentElement,
+        btn = document.getElementById("theme"),
+        mq = typeof matchMedia === "function" ? matchMedia("(prefers-color-scheme: light)") : null;
+
+  const saved = () => {
+    try {
+      const t = localStorage.getItem(KEY);
+      return t === "light" || t === "dark" ? t : null;
+    } catch (e) { return null; }
+  };
+  const system = () => mq && mq.matches ? "light" : "dark";
+
+  function apply(t) {
+    root.setAttribute("data-theme", t);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", t === "light" ? "#eef2fa" : "#060912");
+    if (btn) {
+      const label = t === "light" ? "Cambiar a modo oscuro" : "Cambiar a modo claro";
+      btn.setAttribute("aria-label", label);
+      btn.setAttribute("title", label);
+    }
+  }
+
+  apply(root.getAttribute("data-theme") === "light" ? "light" : "dark");
+
+  if (btn) btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    apply(next);
+  });
+
+  /* Mientras la persona no haya elegido, se sigue el cambio de tema del sistema. */
+  if (mq && mq.addEventListener) mq.addEventListener("change", () => { if (!saved()) apply(system()); });
+})();
 
   </script>
 </body>

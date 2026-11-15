@@ -1,6 +1,7 @@
 /* css/base.css — Variables de diseño, reinicio y tipografía. */
 
 :root {
+  /* ---- Tema oscuro (predeterminado) ---- */
   --bg: #060912;
   --glass: rgba(16, 24, 44, .62);
   --line: rgba(140, 180, 255, .16);
@@ -10,10 +11,90 @@
   --ok: #2ee6a6;
   --warn: #ffb547;
   --bad: #ff6b6b;
+  --s3: #6d788f;
+
+  --on-ac: #06101f;          /* texto sobre el color de acento */
+  --on-ok: #042;             /* texto sobre fondo --ok */
+  --ac-rgb: 127, 178, 255;   /* acento en RGB, para fondos translúcidos */
+  --fig-rgb: 190, 215, 255;  /* trazos de la figura anatómica */
+  --edge-rgb: 5, 8, 18;      /* contornos de zonas */
+
+  --surf: rgba(10, 16, 32, .55);   /* tarjetas */
+  --field: rgba(5, 8, 18, .7);     /* campos de formulario */
+  --solid: #0a1020;                /* diálogos */
+  --drawer: rgba(8, 12, 26, .95);  /* menú lateral y tooltip */
+  --scrim: rgba(0, 0, 0, .55);
+  --scrim-dlg: rgba(0, 0, 0, .7);
+  --hov: rgba(255, 255, 255, .08);
+  --bx: #10192e;                   /* caja de las pruebas */
+  --toast-bad: #1a0f1a;
+
+  --sky-1: rgba(90, 70, 200, .28);
+  --sky-2: rgba(20, 120, 170, .22);
+  --star-1: #fff;
+  --star-2: #cfe0ff;
+  --star-op: 1;
+
+  --sil: #9ec5ff;
+  --sil-fill: #0a1128;
+  --sel: #fff;               /* resalte de selección y puntos reales */
+  --grid: #8cb4ff;           /* rejilla de los gráficos */
+
+  --cw1: #7fb2ff;            /* colores de tripulantes */
+  --cw2: #ff8ad8;
+  --cw3: #ffd23f;
+
   color-scheme: dark;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Tema claro ---- */
+:root[data-theme="light"] {
+  --bg: #eef2fa;
+  --glass: rgba(255, 255, 255, .74);
+  --line: rgba(30, 60, 120, .18);
+  --tx: #0f1a33;
+  --mu: #55627d;
+  --ac: #2a5fd1;
+  --ok: #0a8f65;
+  --warn: #b36b00;
+  --bad: #d12f45;
+  --s3: #7b869e;
+
+  --on-ac: #fff;
+  --on-ok: #fff;
+  --ac-rgb: 42, 95, 209;
+  --fig-rgb: 40, 70, 130;
+  --edge-rgb: 255, 255, 255;
+
+  --surf: rgba(255, 255, 255, .62);
+  --field: rgba(255, 255, 255, .9);
+  --solid: #fff;
+  --drawer: rgba(255, 255, 255, .97);
+  --scrim: rgba(15, 26, 51, .35);
+  --scrim-dlg: rgba(15, 26, 51, .5);
+  --hov: rgba(15, 26, 51, .07);
+  --bx: #dfe7f6;
+  --toast-bad: #fff0f2;
+
+  --sky-1: rgba(90, 70, 200, .12);
+  --sky-2: rgba(20, 120, 170, .1);
+  --star-1: #3d5aa0;
+  --star-2: #5a74b8;
+  --star-op: .35;
+
+  --sil: #3d6bc4;
+  --sil-fill: #d6e1f5;
+  --sel: #0f1a33;
+  --grid: #28468c;
+
+  --cw1: #2a5fd1;
+  --cw2: #c2288f;
+  --cw3: #a87400;
+
+  color-scheme: light;
 }
 
 *,

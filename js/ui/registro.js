@@ -62,10 +62,6 @@ function renderChrome() {
   $("day").value = S.day;
   for (const i of ["env", "env2"]) $(i).value = S.env;
   $("envnote").textContent = ENVS[S.env].note + " Latencia de comunicación: " + ENVS[S.env].lat + ".";
-  $("adh").value = k.adh;
-  $("adho").textContent = k.adh + " %";
-  $("vas").value = k.vas;
-  $("vaso").textContent = k.vas;
   $("crew").innerHTML = CREW.map(x => `<button class="crew ${x.id === S.crew ? "on" : ""}" data-c="${x.id}"><div class="av" style="background:${x.col};color:var(--on-ac)">${x.name.split(" ")[1][0]}</div><div><b>${x.name}</b><span>${x.role}</span></div></button>`).join("");
   $("hero").innerHTML = `<div>${bd(w)}<h2>${cr.name}</h2><p>${cr.role} · ${cr.bio}</p></div><div class="kp">${n.map((v, i) => `<div><small>${SN[i]}</small><b class="mono t${i}">${v}</b></div>`).join("")}</div>
 <details class="u-w-100pct"><summary>Alertas activas (${al.length})</summary>${al.length ? al.map(a => `<p>${bd(a.r.s)} ${a.z.n} · ${a.r.p.n}: <b class="mono">${fmt(a.r.p, a.r.v)} ${a.r.p.u}</b></p>`).join("") : "<p>Sin alertas: todos los parámetros están dentro de lo esperado.</p>"}${cx.map(t => `<p class="t1">${t}</p>`).join("")}</details>`;

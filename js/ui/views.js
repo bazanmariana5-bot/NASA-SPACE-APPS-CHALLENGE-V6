@@ -24,7 +24,7 @@ ${e.rows.length ? `<div class="pl">${e.rows.map((r, i) => `<button class="pr ${i
 function cards(zs, sel, btn) {
   return zs.map(z => {
     const x = Engine.ev(z), f = x.rows[0];
-    return `<div class="card ${z.id === sel ? "sel" : ""}" data-z="${z.id}" role="button" tabindex="0"><small>${z.n}</small>${f ? `<div class="v mono">${fmt(f.p, f.v)} <em>${f.p.u}</em></div>` : `<div class="v mono">—</div>`}${bd(x.st)} <span class="src ${x.real ? "r" : ""}">${x.real ? "Dato real" : "Modelo"}</span><small class="u-d-block u-m-6-0">${z.txt.split(". ")[0].slice(0, 110)}</small>${btn && x.rows.length ? `<button class="btn sm" data-open="${z.id}">${z.id === "cognicion" || z.id === "reaccion" ? "Iniciar test" : "Iniciar registro"}</button>` : ""}</div>`;
+    return `<div class="card ${z.id === sel ? "sel" : ""}" data-z="${z.id}" role="button" tabindex="0"><small>${z.n}</small>${f ? `<div class="v mono">${fmt(f.p, f.v)} <em>${f.p.u}</em></div>` : `<div class="v mono">—</div>`}${bd(x.st)} <span class="src ${x.real ? "r" : ""}">${x.real ? "Dato real" : "Modelo"}</span><small class="u-d-block u-m-6-0">${z.txt.split(". ")[0].slice(0, 110)}</small>${btn && x.rows.length ? `<button class="btn sm" data-open="${z.id}">${z.id === "cognicion" || z.id === "reaccion" || z.id === "estres" ? "Iniciar test" : "Iniciar registro"}</button>` : ""}</div>`;
   }).join("");
 }
 

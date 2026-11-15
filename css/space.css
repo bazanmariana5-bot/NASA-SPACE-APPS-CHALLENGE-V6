@@ -17,13 +17,12 @@
 /* ---------- Escena de fondo ---------- */
 .scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, var(--scene-top) 0%, var(--scene-bot) 100%); }
 :root { --scene-top: #03050d; --scene-bot: #0a1024; --neb-a: rgba(112, 82, 230, .34); --neb-b: rgba(24, 148, 205, .26); --neb-c: rgba(230, 80, 160, .16); --earth-a: #1d5fd0; --earth-b: #0a2a6e; --astro-op: .9; }
-:root[data-theme="light"] { --scene-top: #dfe8fb; --scene-bot: #f4f7fe; --neb-a: rgba(112, 82, 230, .14); --neb-b: rgba(24, 148, 205, .14); --neb-c: rgba(230, 80, 160, .08); --earth-a: #7aa7ee; --earth-b: #b9d0f6; --astro-op: .8; }
 
 .scene .neb { position: absolute; inset: -20%; filter: blur(40px); animation: nebDrift 70s ease-in-out infinite alternate;
   background: radial-gradient(38% 32% at 24% 28%, var(--neb-a), transparent 70%), radial-gradient(34% 30% at 78% 20%, var(--neb-b), transparent 70%), radial-gradient(30% 26% at 62% 78%, var(--neb-c), transparent 70%); }
 @keyframes nebDrift { to { transform: translate3d(-4%, 3%, 0) rotate(4deg) scale(1.08); } }
 
-.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: var(--star-op); }
+.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; }
 
 /* Limbo de la Tierra al pie de la pantalla */
 .scene .earth { position: absolute; left: 50%; bottom: -118vmin; width: 150vmin; aspect-ratio: 1; margin-left: -75vmin; border-radius: 50%;
@@ -122,7 +121,6 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 .env-iss { left: -14vw; top: 10vh; width: min(80vw, 980px); aspect-ratio: 1500 / 1100; transform: rotate(-8deg); background-image: url("../img/estacion.jpg"), var(--img-iss); background-size: contain, 100% 100%; background-position: center, center; }
 
 :root:not([data-env]) .env-iss, :root[data-env="iss"] .env-iss, :root[data-env="moon"] .env-moon, :root[data-env="mars"] .env-mars { opacity: .92; }
-:root[data-theme="light"] .env-iss, :root[data-theme="light"] .env-moon, :root[data-theme="light"] .env-mars { filter: brightness(.9) contrast(1.05); }
 
 /* Limbo de la Tierra: solo desde la estación */
 .scene .earth { left: 0; right: 0; bottom: 0; width: 100%; height: auto; aspect-ratio: 2000 / 620; margin: 0; border-radius: 0; box-shadow: none; background: url("../img/tierra.jpg") center bottom / cover no-repeat, var(--img-earth) center bottom / 100% 100% no-repeat; opacity: .95; }
@@ -147,4 +145,4 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 
 /* Menos desenfoque para que el fondo del entorno se distinga detrás de los paneles */
 .g { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-:root:not([data-theme="light"]) .envs > div { mix-blend-mode: screen; }
+.envs > div { mix-blend-mode: screen; }

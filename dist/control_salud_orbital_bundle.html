@@ -1547,6 +1547,11 @@ svg.neck text {
   fill: var(--mu);
 }
 
+/* Cuello lateral: huesos de referencia un poco más visibles */
+svg.neck .gh .f { fill: rgba(var(--fig-rgb), .13); stroke: rgba(var(--fig-rgb), .38); stroke-width: .7; }
+svg.neck .gh .s { stroke: rgba(var(--fig-rgb), .34); stroke-width: 1.1; }
+svg.neck .nl2 { font-size: 6px; }
+
 
 /* css/alerts.css — Alertas: precaución (aviso grande), crítica (panel central) y emergencia vital (pantalla completa). */
 
@@ -1883,13 +1888,12 @@ html.vital-open body { overflow: hidden; }
 /* ---------- Escena de fondo ---------- */
 .scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, var(--scene-top) 0%, var(--scene-bot) 100%); }
 :root { --scene-top: #03050d; --scene-bot: #0a1024; --neb-a: rgba(112, 82, 230, .34); --neb-b: rgba(24, 148, 205, .26); --neb-c: rgba(230, 80, 160, .16); --earth-a: #1d5fd0; --earth-b: #0a2a6e; --astro-op: .9; }
-:root[data-theme="light"] { --scene-top: #dfe8fb; --scene-bot: #f4f7fe; --neb-a: rgba(112, 82, 230, .14); --neb-b: rgba(24, 148, 205, .14); --neb-c: rgba(230, 80, 160, .08); --earth-a: #7aa7ee; --earth-b: #b9d0f6; --astro-op: .8; }
 
 .scene .neb { position: absolute; inset: -20%; filter: blur(40px); animation: nebDrift 70s ease-in-out infinite alternate;
   background: radial-gradient(38% 32% at 24% 28%, var(--neb-a), transparent 70%), radial-gradient(34% 30% at 78% 20%, var(--neb-b), transparent 70%), radial-gradient(30% 26% at 62% 78%, var(--neb-c), transparent 70%); }
 @keyframes nebDrift { to { transform: translate3d(-4%, 3%, 0) rotate(4deg) scale(1.08); } }
 
-.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: var(--star-op); }
+.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; }
 
 /* Limbo de la Tierra al pie de la pantalla */
 .scene .earth { position: absolute; left: 50%; bottom: -118vmin; width: 150vmin; aspect-ratio: 1; margin-left: -75vmin; border-radius: 50%;
@@ -1988,7 +1992,6 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 .env-iss { left: -14vw; top: 10vh; width: min(80vw, 980px); aspect-ratio: 1500 / 1100; transform: rotate(-8deg); background-image: url("../img/estacion.jpg"), var(--img-iss); background-size: contain, 100% 100%; background-position: center, center; }
 
 :root:not([data-env]) .env-iss, :root[data-env="iss"] .env-iss, :root[data-env="moon"] .env-moon, :root[data-env="mars"] .env-mars { opacity: .92; }
-:root[data-theme="light"] .env-iss, :root[data-theme="light"] .env-moon, :root[data-theme="light"] .env-mars { filter: brightness(.9) contrast(1.05); }
 
 /* Limbo de la Tierra: solo desde la estación */
 .scene .earth { left: 0; right: 0; bottom: 0; width: 100%; height: auto; aspect-ratio: 2000 / 620; margin: 0; border-radius: 0; box-shadow: none; background: url("../img/tierra.jpg") center bottom / cover no-repeat, var(--img-earth) center bottom / 100% 100% no-repeat; opacity: .95; }
@@ -2013,7 +2016,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 
 /* Menos desenfoque para que el fondo del entorno se distinga detrás de los paneles */
 .g { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-:root:not([data-theme="light"]) .envs > div { mix-blend-mode: screen; }
+.envs > div { mix-blend-mode: screen; }
 
 
 /* css/suit.css — Selector de tripulante, traje INTI, visor HUD y chat del asistente. */
@@ -2083,11 +2086,11 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 }
 
 /* ---------- Asistente INTI (chat flotante) ---------- */
-.bfab { position: fixed; z-index: 60; left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgba(var(--ac-rgb), .6); background: var(--ac); color: var(--on-ac); font-weight: 700; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: transform .22s var(--ease-pop, ease), box-shadow .22s; }
+.bfab { position: fixed; z-index: 60; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgba(var(--ac-rgb), .6); background: var(--ac); color: var(--on-ac); font-weight: 700; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: transform .22s var(--ease-pop, ease), box-shadow .22s; }
 .bfab:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 36px rgba(var(--ac-rgb), .5); }
 .bfab.on { display: none; }
 .bfab-i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px rgba(255, 255, 255, .28); }
-.bchat { position: fixed; z-index: 70; left: 18px; bottom: 18px; width: min(400px, calc(100vw - 24px)); height: min(560px, calc(100vh - 100px)); display: flex; flex-direction: column; padding: 0; overflow: hidden; background: var(--drawer); box-shadow: 0 24px 70px rgba(0, 0, 0, .5); }
+.bchat { position: fixed; z-index: 70; right: 18px; bottom: 18px; width: min(400px, calc(100vw - 24px)); height: min(560px, calc(100vh - 100px)); display: flex; flex-direction: column; padding: 0; overflow: hidden; background: var(--drawer); box-shadow: 0 24px 70px rgba(0, 0, 0, .5); }
 .bchat[hidden] { display: none; }
 .bc-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); margin: 0; }
 .bc-h small { color: var(--mu); }
@@ -2103,7 +2106,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 
 .bc-f { display: flex; gap: 6px; padding: 10px 12px 12px; }
 .bc-f input { flex: 1; min-width: 0; }
 .bc-f .btn { padding: 8px 12px; }
-@media (max-width: 560px) { .bchat { left: 8px; right: 8px; bottom: 8px; width: auto; height: min(78vh, 560px); } .bfab { left: 10px; bottom: 10px; } }
+@media (max-width: 560px) { .bchat { left: 8px; right: 8px; bottom: 8px; width: auto; height: min(78vh, 560px); } .bfab { right: 10px; bottom: 10px; } }
 html.vital-open .bfab { display: none; }
 
 /* Pestañas y tripulantes legibles sobre el fondo */
@@ -2115,6 +2118,16 @@ html.vital-open .bfab { display: none; }
 .ncf label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
 .ncf input { width: 100%; }
 body > header h1 { flex: 1 1 280px; min-width: 240px; }
+
+.bc-vc { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--mu); }
+.bc-vc select { flex: 1; min-width: 0; padding: 4px 8px; font-size: 12px; }
+.bc-vc .btn { padding: 4px 10px; }
+
+.trstat { position: fixed; left: 50%; bottom: 16px; transform: translate(-50%, 10px); z-index: 90; padding: 7px 14px; border-radius: 999px; font-size: 12px; background: rgba(8, 14, 32, .88); color: #dbe7ff; border: 1px solid rgba(127, 178, 255, .35); opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+.trstat.on { opacity: 1; transform: translate(-50%, 0); }
+.sw button.on { outline: 2px solid var(--ac); outline-offset: 1px; }
+.sw[data-q] { margin: 6px 0 10px; gap: 6px; }
+.sw[data-q] button { aspect-ratio: auto; min-height: 44px; padding: 6px 4px; font-size: 12px; border-radius: 10px; }
 
 
 /* css/logo.css — Logo de Kinesoft (PNG incrustado). */
@@ -2180,8 +2193,6 @@ body > header h1 { flex: 1 1 280px; min-width: 240px; }
     <div class="mono sec">SIMULACIÓN</div>
     <label class="ctl stack mt12">Entorno de misión<select id="env2"></select></label>
     <p id="envnote" class="note"></p>
-    <label class="ctl stack mt8">Cumplimiento de ejercicio <b id="adho" class="mono val"></b><input type="range" id="adh" class="full" min="0" max="100" step="5"></label>
-    <label class="ctl stack mt12">Dolor lumbar (0 a 10) <b id="vaso" class="mono val"></b><input type="range" id="vas" class="full" min="0" max="10" step="1"></label>
   </aside>
 
   <div class="app">
@@ -2268,7 +2279,7 @@ const TABS = [
   { id: "huesos", n: "Huesos", cm: "Protocolo ARED: sentadilla y peso muerto, bisfosfonatos y vitamina D. El cumplimiento de ejercicio se ajusta en el menú de tripulación." },
   { id: "musculos", n: "Músculos", cm: "Cicloergómetro y resistencia isoinercial (ARED) 45 min diarios." },
   { id: "organos", n: "Órganos", cm: "Control de fluidos, sodio moderado y pantalones de presión negativa (LBNP)." },
-  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, memoria de 10 colores, reacción y ánimo; obligatorio antes de una EVA o acoplamiento." },
+  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, memoria de 10 colores, reacción, ánimo y estrés; obligatorio antes de una EVA o acoplamiento." },
   { id: "registro", n: "Registro", cm: "" },
   { id: "riesgos", n: "Riesgos NASA", cm: "" },
   { id: "plan", n: "Plan de ejercicio", cm: "" },
@@ -2350,6 +2361,13 @@ const ZONES = [
     P("ashw", "Tono muscular (Ashworth modificada, 0 a 4)", "puntos", .2, c => .2 + .5 * c.m * c.fk, "gt", 1, 2, 1, { mn: 0, mx: 4 }),
     P("refl", "Reflejos osteotendinosos (0 a 4)", "puntos", 2, c => 2 + .5 * c.m * c.fk, "gt", 3, 4, 1, { mn: 1, mx: 4 })
   ], "Neuromonitorización: perfusión, metabolismo, EEG y examen neurológico. Valores de referencia clínicos; el modelo simula su deriva en microgravedad.", "Sistema nervioso central"),
+  Z("organos", "medula", "Médula espinal", "La médula espinal va desde el bulbo raquídeo hasta la altura de L1-L2 dentro del canal vertebral y lleva las órdenes motoras y la sensibilidad entre el cerebro y el cuerpo. En microgravedad cambia la carga sobre la columna y el sistema nervioso se adapta, por eso se vigilan la conducción de las señales (potenciales evocados somatosensorial y motor, velocidad de conducción), la excitabilidad refleja (reflejo H) y la fuerza muscular.", [
+    fl("pess", "Latencia somatosensorial (PESS N20)", "ms", 19.5, 6, "gt", 22, 25),
+    fl("mep", "Latencia del potencial motor evocado (MEP)", "ms", 21, 6, "gt", 24, 27),
+    fl("vcm", "Velocidad de conducción motora", "m/s", 58, -6, "lt", 50, 42),
+    fl("hm", "Relación H/M del reflejo H", "ratio", .45, 25, "gt", .7, .9, 2),
+    fl("mrc", "Fuerza muscular (escala MRC, 0 a 5)", "puntos", 5, -4, "lt", 4.5, 3.5, 1)
+  ], "Neurofisiología: potenciales evocados, electroneurografía, reflejo H y escala MRC.", "Sistema nervioso central"),
   Z("organos", "vasos", "Cuello: yugular y carótida", "La sangre se acumula en el cuello y la vena yugular puede estancarse, con riesgo de coágulos. Las arterias además se vuelven más rígidas.", [P("ijv", "Estasis de la vena yugular", "grado 1 a 4", 1, c => 1 + .012 * c.d * c.fk, "gt", 2, 3), fl("stif", "Rigidez carotídea", "m/s", 6, 2, "gt", 6.36, 6.72, 2)], "Ecografía vascular Doppler.", "Cardiovascular"),
   Z("organos", "pulmones", "Pulmones", "Sin gravedad las vísceras abdominales suben y el diafragma se eleva: baja la capacidad residual. También se vigila el polvo en cabina y tras caminatas espaciales.", [fl("fvc", "Capacidad vital forzada", "L", 4.8, -1.4, "lt", 4.56, 4.32, 2), fl("fev1", "Volumen espiratorio en 1 s", "L", 3.9, -1.1, "lt", 3.7, 3.51, 2), fl("frc", "Capacidad residual funcional", "L", 2.6, -2.8, "lt", 2.21, 2.08, 2), fl("spo2", "Saturación de oxígeno", "%", 98, -.1, "lt", 95, 94), fl("pi", "Índice de perfusión", "%", 4, -4, "lt", 1, .5)], "Espirometría y oximetría de pulso.", "Respiratorio"),
   Z("organos", "corazon", "Corazón", "Sin gravedad el corazón trabaja menos y se achica un poco. También cambia la regulación de la presión al ponerse de pie, lo que causa mareos al volver a la gravedad.", [fl("lvef", "Fracción de eyección (FEVI)", "%", 62, -.8, "lt", 55, 50), mt("lvm", "Índice de masa del ventrículo izquierdo", "g/m²", 80, -2.5, "lt", 74, 72), fl("sv", "Volumen sistólico", "mL", 78, -2.6, "lt", 70, 66.3), fl("hr", "Frecuencia cardíaca en reposo", "lpm", 66, 1.2, "gt", 85, 95, 0), fl("hrv", "Variabilidad de la frecuencia (RMSSD)", "ms", 52, -4, "lt", 45, 39, 0), fl("ort", "Índice de tolerancia ortostática", "0 a 100", 90, -4.5, "lt", 75, 60, 0), fl("sbp", "Presión sistólica", "mmHg", 118, .6, "gt", 130, 140, 0), fl("dbp", "Presión diastólica", "mmHg", 76, .5, "gt", 85, 90, 0)], "Ecocardiografía, Holter, tensiómetro y prueba de presión negativa (LBNP).", "Cardiovascular"),
@@ -2362,6 +2380,13 @@ const ZONES = [
   Z("mente", "cognicion", "Memoria de trabajo (test de 10 colores)", "Se muestran 10 colores en orden aleatorio que nunca se repite y la persona los coloca en el mismo orden: 1 punto por acierto. Exige corteza prefrontal e hipocampo y es el primero en fallar por SANS, hipercapnia de cabina, falta de sueño o radiación. Escala de 1 a 10: 1 a 3 deficiente o crítico (rojo), 4 a 6 precaución (amarillo), 7 bueno, 8 y 9 muy bueno, 10 excelente (verde).", [fl("cog", "Puntaje de memoria", "1 a 10", 9, -0.2, "lt", 6, 3, 0), fl("acc", "Aciertos de posición", "de 10", 9, -0.2, "lt", 6, 3), fl("span", "Racha sin error", "pasos", 8.5, -2, "lt", 6, 5), fl("lat", "Latencia de inicio", "ms", 650, 1, "gt", 1000, 1200, 0), fl("itv", "Intervalo entre toques", "ms", 480, 1.5, "gt", 560, 624, 0), ev0("lap", "Lapsos atencionales", "eventos", c => Math.max(0, (c.d - 120) / 60), 1, 2)], "Test de memoria cromática inspirado en WinSCAT y bloques de Corsi.", "Neurocognitivo"),
   Z("mente", "reaccion", "Velocidad de reacción", "Tres intentos tras el cambio de rojo a verde. Escala del tiempo: de 0 a 1 s muy bueno (verde), de 1 a 3 s precaución (amarillo), más de 3 s crítico (rojo). El puntaje de 1 a 10 habilita caminatas espaciales con 6 o más y las bloquea con 4 o menos. Las salidas en falso restan 1 punto y un intento de más de 500 ms resta 2.", [fl("rt", "Tiempo medio de reacción", "ms", 220, 1.5, "gt", 1000, 3000, 0), fl("fast", "Mejor intento", "ms", 190, 1.5, "gt", 1000, 3000, 0), fl("rs", "Puntaje de reacción (1 a 10)", "puntos", 8.5, -1, "lt", 6, 4), ev0("fs", "Salidas en falso", "eventos", c => Math.max(0, (c.d - 150) / 70), 1, 2), ev0("rl", "Intentos mayores a 500 ms", "eventos", c => Math.max(0, (c.d - 180) / 60), 1, 2)], "Adaptación de la tarea de vigilancia psicomotora (PVT) de la NASA.", "Neurocognitivo"),
   Z("mente", "animo", "Ánimo del día", "Escala del 1 al 10 con etiquetas rápidas y bitácora de dos líneas. Con 3 o menos, o una caída de 4 puntos, se avisa de forma confidencial al equipo médico; 5 o 6 durante 7 días seguidos sugiere una videollamada con la familia.", [fl("mood", "Puntaje de ánimo (1 a 10)", "puntos", 7.5, -.8, "lt", 5, 3)], "Autorreporte nocturno de menos de 30 s.", "Emocional"),
+  Z("mente", "estres", "Estrés (monitoreo fisiológico y autoevaluación)", "Combina el puntaje que sale de un test breve de estrés con marcadores del cuerpo: cortisol salival de la mañana, equilibrio del sistema nervioso autónomo (relación LF/HF de la variabilidad cardíaca), conductancia de la piel (sudor emocional) y ritmo respiratorio. Puntaje de estrés de 1 a 10 (más alto es mejor, 10 es máxima calma): 1 a 5 crítico (rojo), 6 a 7 precaución (amarillo) y 8 a 10 bueno (verde).", [
+    fl("pss", "Puntaje de estrés (1 a 10)", "puntos", 9, -10, "lt", 7, 5, 0),
+    fl("cort", "Cortisol salival matutino", "nmol/L", 10, 30, "gt", 18, 24, 1),
+    fl("lfhf", "Equilibrio autonómico (LF/HF)", "ratio", 1.5, 40, "gt", 2.5, 3.5, 2),
+    fl("eda", "Conductancia de la piel (EDA)", "µS", 4, 35, "gt", 8, 12, 1),
+    fl("resp", "Frecuencia respiratoria en reposo", "resp/min", 14, 20, "gt", 20, 24, 0)
+  ], "Escala de estrés percibido (PSS-4 adaptada), cortisol salival, HRV, actividad electrodérmica y respiración.", "Neurocognitivo"),
   Z("mente", "esfuerzo", "Prueba de esfuerzo (CEVIS)", "Ergoespirometría en cicloergómetro: modo submáximo en órbita cada 15 a 21 días (se detiene al 85 % de FC máx. o RER 1,05) y máximo antes y después del vuelo. Se detiene sola con SpO₂ menor a 90 %, PtcCO₂ mayor a 55 mmHg, presión sistólica mayor a 220 mmHg o arritmia.", [mt("vo2", "VO₂máx estimado", "mL/kg/min", 50, -.6, "lt", 45, 42.5, 0), mt("awe", "Eficiencia aeróbica del trabajo", "mL O₂/min/W", 10.2, .8, "gt", 11.5, 12.5), mt("pw", "Potencia en umbral ventilatorio", "W/kg", 2.6, -1, "lt", 2.4, 2.29), mt("hrr", "Recuperación de FC al minuto", "lpm", 22, -1.2, "lt", 18, 12, 0), mt("borg", "Esfuerzo percibido Borg (Etapa 2)", "6 a 20", 12, 1.5, "gt", 14, 17, 0), fl("co2", "PtcCO₂ de cabina", "mmHg", 38, .8, "gt", 48, 55, 0)], "Cicloergómetro con aislamiento de vibraciones y analizador de gases respiración a respiración.", "Cardiopulmonar")
 ];
 
@@ -2390,6 +2415,16 @@ const LIM = {
   "pulmones.pi": [null, 10],
   "corazon.lvef": [null, 70],
   "corazon.lvm": [null, 102],
+  "medula.pess": [null, 60],
+  "medula.mep": [null, 60],
+  "medula.vcm": [null, 80],
+  "medula.hm": [null, 1.5],
+  "medula.mrc": [0, 5],
+  "estres.pss": [1, 10],
+  "estres.cort": [null, 80],
+  "estres.lfhf": [null, 12],
+  "estres.eda": [null, 40],
+  "estres.resp": [null, 40],
   "cerebro.fsc": [null, 100],
   "cerebro.fscg": [null, 130],
   "cerebro.fscb": [null, 60],
@@ -2606,6 +2641,7 @@ const PANEL = [
   ["cognicion", "cog", "mente"],
   ["reaccion", "rt", "mente"],
   ["animo", "mood", "mente"],
+  ["estres", "pss", "mente"],
   ["esfuerzo", "vo2", "mente"],
   ["esfuerzo", "co2", "mente"]
 ];
@@ -2637,188 +2673,223 @@ const Ci = (cx, cy, r, c = "f") =>
 
 const Pa = (d, c = "f") => `<path class="${c}" d="${d}"/>`;
 
-/* Pila de vértebras con apófisis transversas */
-const stack = (y, n, w0, w1, h, g, tp) =>
-  Array.from({ length: n }, (_, i) => {
-    const w = w0 + ((w1 - w0) * i) / Math.max(1, n - 1);
-    const yy = y + i * (h + g);
-    const rect = Rc(100 - w / 2, yy, w, h, 2);
-    const processes = tp
-      ? `<path class="s" style="stroke-width:1.5" d="M${100 - w / 2 - tp} ${
-          yy + h / 2
-        }H${100 - w / 2}M${100 + w / 2} ${yy + h / 2}H${100 + w / 2 + tp}"/>`
-      : "";
+/* ---------- Primitivas anatómicas ---------- */
+const f1 = n => Math.round(n * 10) / 10;
 
-    return rect + processes;
+/* Vértebra de frente: cuerpo con cintura, apófisis transversas y (opcional) pedículos */
+const vb = (y, w, h, tp = 0, tw = 1.5) => {
+  const a = 100 - w / 2, b = 100 + w / 2;
+  return `<path class="f" d="M${a} ${y}Q100 ${f1(y + 1)} ${b} ${y}L${f1(b - .7)} ${f1(y + h)}Q100 ${f1(y + h - 1)} ${f1(a + .7)} ${f1(y + h)}z"/>` +
+    (tp ? `<path class="s" style="stroke-width:${tw}" d="M${a - tp} ${f1(y + h / 2)}H${a}M${b} ${f1(y + h / 2)}H${b + tp}"/>` : "");
+};
+
+/* Pila de vértebras: ancho creciente de w0 a w1 */
+const stack = (y, n, w0, w1, h, g, tp, tw) =>
+  Array.from({ length: n }, (_, i) =>
+    vb(f1(y + i * (h + g)), f1(w0 + ((w1 - w0) * i) / Math.max(1, n - 1)), h, tp, tw)
+  ).join("");
+
+/* Lumbares: cuerpos grandes con apófisis transversas y mamilares */
+const lumbar = () =>
+  Array.from({ length: 5 }, (_, i) => {
+    const y = 176 + i * 9.6, w = 15 + i * 1.1;
+    return vb(y, w, 7.6, 0) +
+      sym(`<path class="f" d="M${100 - w / 2} ${y + 2}L${100 - w / 2 - 6.5} ${y + 3}Q${100 - w / 2 - 8} ${y + 4.4} ${100 - w / 2 - 6.5} ${y + 5.2}L${100 - w / 2} ${y + 5.6}z"/>`);
   }).join("");
 
-/* Caja torácica: 10 costillas verdaderas/falsas + 2 flotantes */
+/* Caja torácica: 10 costillas + 2 flotantes, esternón con manubrio, cuerpo y xifoides */
 const ribs = () => {
-  const trueAndFalseRibs = Array.from({ length: 10 }, (_, i) => {
+  const arcs = Array.from({ length: 10 }, (_, i) => {
     const y0 = 94 + i * 7.4;
     const w = 11 + 18 * Math.sin((Math.PI * (i + 0.7)) / 11);
     const x = 100 - w;
     const y1 = y0 + 14 - (i >= 7 ? (i - 6) * 3 : 0);
-
     return sym(
-      `<path class="s" style="stroke-width:1.9" d="M96 ${y0}C${
-        100 - w * 0.6
-      } ${y0 - 7} ${x} ${y0 - 1} ${x} ${y0 + 10}C${x} ${y0 + 20} ${
-        100 - w * 0.35
-      } ${y1 + 5} 98.5 ${y1}"/>`
+      `<path class="s" style="stroke-width:${i < 7 ? 1.9 : 1.5}" d="M96 ${y0}C${100 - w * 0.6} ${y0 - 7} ${x} ${y0 - 1} ${x} ${y0 + 10}C${x} ${y0 + 20} ${100 - w * 0.35} ${y1 + 5} 98.5 ${y1}"/>`
     );
   }).join("");
+  const floating = sym(`<path class="s" style="stroke-width:1.4" d="M96 168C86 168 78 175 75 184M96 176C88 178 82 187 80 193"/>`);
+  return arcs + floating;
+};
+const sternum = () =>
+  Pa("M91.5 87Q100 84.6 108.5 87L107.6 99H92.4z") +
+  Pa("M93.5 100.4H106.5L105.2 137H94.8z") +
+  Pa("M97.4 138.2H102.6L100 147.5z") +
+  Pa("M96.8 99.7H103.2M95 118H105M95 128H105", "d") +
+  Pa("M96 86.4Q100 87.4 104 86.4", "d");
 
-  const floatingRibs = sym(
-    `<path class="s" style="stroke-width:1.7" d="M96 168C86 168 78 175 75 184M96 176C88 178 82 187 80 193"/>`
-  );
-
-  return trueAndFalseRibs + floatingRibs;
+/* Mano: carpo (2 filas), metacarpianos y falanges con articulaciones */
+const hand = (x) => {
+  const car = [[-5, 233], [-1.5, 232.5], [2, 233], [5, 234.5], [-3.6, 237.4], [0, 237.4], [3.6, 238]]
+    .map((p) => Ci(f1(x + p[0]), p[1], 2.1)).join("");
+  const dig = [
+    [-6, 240, -12, 250, -15, 257, -17, 263],   /* pulgar */
+    [-3, 240, -6, 253, -8, 260, -9, 267],
+    [1, 240, 0, 255, 0, 263, 0, 270],
+    [5, 240, 6, 253, 8, 260, 9, 266],
+    [8, 239, 12, 250, 14, 257, 15, 262]
+  ].map((d) => {
+    const s = x + d[0], mx = x + d[2], px = x + d[4], tx = x + d[6];
+    return Ln(f1(s), d[1], f1(mx), d[3], 2.3) + Ln(f1(mx), d[3], f1(px), d[5], 1.9) + Ln(f1(px), d[5], f1(tx), d[7], 1.6) +
+      Ci(f1(mx), d[3], 1.5) + Ci(f1(px), d[5], 1.2);
+  }).join("");
+  return car + dig;
 };
 
-/* Dedos de la mano */
-const hand = (x) =>
-  [
-    [x - 7, 243, x - 13, 268],
-    [x - 3, 245, x - 6, 271],
-    [x + 1, 246, x + 1, 272],
-    [x + 5, 245, x + 8, 270],
-    [x + 7, 240, x + 14, 256],
-  ]
-    .map((l) => Ln(l[0], l[1], l[2], l[3], 2.4))
-    .join("");
+/* Pie: tarso (talus y calcáneo), metatarsianos y falanges */
+const footBones = () =>
+  El(81, 443, 6.6, 4.4) + El(78.5, 450, 6.8, 4.6) + El(86, 449, 4.2, 3.6) +
+  [[72, 454, 70.6, 459.6], [76, 455, 75.4, 461], [80.5, 455.4, 80.5, 461.6], [85, 455, 85.8, 460.8], [89, 454, 91.4, 459]]
+    .map((l) => Ln(l[0], l[1], l[2], l[3], 2.5) + Ci(l[2], l[3], 1.3)).join("") +
+  [[70.6, 459.6, 69.6, 463], [75.4, 461, 74.8, 464.6], [80.5, 461.6, 80.5, 465], [85.8, 460.8, 86.4, 464], [91.4, 459, 92.6, 462]]
+    .map((l) => Ln(l[0], l[1], l[2], l[3], 1.8)).join("");
 
-/* Diccionario de capas y zonas anatómicas */
+/* Intestino delgado: asas en serpentina dentro del marco cólico */
+const loops = () => {
+  let d = "M84 202";
+  [202, 209, 216, 223].forEach((y, i) => {
+    const dir = i % 2 ? -1 : 1, x0 = dir > 0 ? 84 : 116, x1 = dir > 0 ? 116 : 84;
+    d += `L${x0} ${y}`;
+    for (let k = 1; k <= 4; k++) d += `Q${f1(x0 + (x1 - x0) * (k - .5) / 4)} ${y + (k % 2 ? -3.2 : 3.2)} ${f1(x0 + (x1 - x0) * k / 4)} ${y}`;
+    if (i < 3) d += `Q${x1 + dir * 2.5} ${y + 3.5} ${x1} ${y + 7}`;
+  });
+  return `<path class="s" style="stroke-width:3.2" d="${d}"/>`;
+};
+
+/* ---------- Diccionario de capas y zonas anatómicas ---------- */
 const ANAT = {
   huesos: {
     craneo:
-      Pa("M80 32C79 15 89 6 100 6s21 9 20 26c0 9-3 15-7 19l-1 5H88l-1-5c-4-4-7-10-7-19z") +
-      Pa("M88 54L90 62Q100 68 110 62L112 54z") +
-      El(91, 35, 5.5, 6, "k") +
-      El(109, 35, 5.5, 6, "k") +
-      Pa("M100 41l-3.5 9h7z", "k") +
-      Pa("M100 12v9M93 60h14", "d"),
+      Pa("M80 34C78 15 89 6 100 6s22 9 20 28c-1 6-3 10-5 13H85c-2-3-4-7-5-13z") +
+      Pa("M85 45C84 52 88 58 94 60L100 61L106 60C112 58 116 52 115 45z") +
+      Pa("M83 44C82 54 86 62 93 65Q100 68.5 107 65C114 62 118 54 117 44L113.5 46C113.5 54 110 60 106 62.4Q100 64.6 94 62.4C90 60 86.5 54 86.5 46z") +
+      El(91, 36, 5.2, 4.4, "k") + El(109, 36, 5.2, 4.4, "k") +
+      Pa("M100 40.5l-3 8.5h6z", "k") +
+      Pa("M100 7V22M84 22C92 17 108 17 116 22", "d") +
+      Pa("M82 40C84 46 88 48.5 92 48.5M118 40C116 46 112 48.5 108 48.5", "d") +
+      Pa("M92.5 54.5H107.5M94.5 52.8v3.4M97.5 52.8v3.4M100 52.8v3.4M102.5 52.8v3.4M105.5 52.8v3.4", "d"),
 
-    cervical: stack(62, 7, 9, 12, 3, 1.3, 3),
+    cervical:
+      Pa("M91.5 65.2Q100 63.4 108.5 65.2L109.3 68.4Q100 70.4 90.7 68.4z") + Ln(84, 66.6, 91, 66.8, 1.6) + Ln(109, 66.8, 116, 66.6, 1.6) +
+      Pa("M92 69.8Q100 70.6 108 69.8L107.4 73.6Q100 74.6 92.6 73.6z") + Pa("M98 67.2L100 63.8L102 67.2z") +
+      stack(74.6, 5, 10, 12.4, 3.5, 1.1, 4.2, 1.3),
 
-    toracica: stack(90, 12, 11, 15, 5.6, 1.4, 5),
+    toracica: stack(96, 12, 12.4, 17, 5.1, 1.4, 5.4, 1.5),
 
-    lumbar: stack(176, 5, 15, 18, 7.5, 2, 6),
+    lumbar: lumbar(),
 
-    costillas:
-      ribs() +
-      Pa("M93 87H107L108 99H106V138L100 148L94 138V99H92Z"),
+    costillas: ribs() + sternum(),
 
     humero: sym(
-      Ln(97, 88, 72, 85, 3.2) +
-        Ln(72, 85, 60, 84, 3.2) +
-        Pa("M85 96L67 92Q62 100 66 112L73 134Q81 124 85 110z") +
-        Ci(59, 93, 6.5) +
-        Ln(58, 97, 47, 160, 5.6) +
-        El(47, 163, 7.2, 4.6, "f", -12)
+      Pa("M98 88.4C94 85.6 90 87 86 88.6C80 90.2 74 85 66 84.8L66.4 87C74 87.8 80 93 86 91C90 90 94 88.4 98 90.6z") +
+        Pa("M86 98L74 93C70 98 68 108 69 120L74 137C80 131 85 119 86 105z") + Pa("M71 99C74 107 75 118 74 130", "d") +
+        El(66, 96, 3, 5.2, "k") + Pa("M68 87C63 85 58 85.5 55 87", "d") +
+        Ci(59, 94, 6.4) + El(54.4, 91.4, 2.6, 2.4) +
+        Pa("M55 99.5L63.4 101.6L53 158L44 156z") + El(54.6, 124, 1.8, 3, "k") +
+        El(45.4, 163.2, 7.4, 4.6, "f", -12) + Ci(41.2, 162.4, 2.6) + Ci(50.2, 164.4, 2.6)
     ),
 
     antebrazo: sym(
-      Ln(52, 166, 43, 228, 3.6) +
-        Ln(45, 166, 36, 226, 3.4) +
-        El(39, 236, 7, 6) +
+      Pa("M52.6 165L56.8 166.6L48 224L43.6 223.4z") + El(54.2, 164.4, 3.1, 3.6) +
+        Pa("M45.2 168L49 168L39.2 224.4L33 222z") + El(45.8, 168.6, 3, 2.6) +
+        El(36.6, 226.4, 4.6, 2.6) + El(45.2, 225.2, 2.5, 3.6) +
         hand(40)
     ),
 
     pelvis:
       sym(
-        Pa(
-          "M98 200C86 195 68 197 61 211C57 224 62 238 69 246L71 262L83 266L91 259L97 254L97 244L93 233L93 221L98 214z"
-        ) +
-          Ci(74, 243, 4.3, "k") +
-          El(83, 254, 4.4, 6.5, "k")
+        Pa("M96.6 203C88 198 72 197 63 206C58 214 58 226 63 236L72 245L78 238C84 232 90 228 93.4 224L96 214z") +
+          Pa("M72 245L70.4 259L76 266L86 262.4L91 253L88.6 245L82 247L78 238z") +
+          El(78.4, 254.4, 3.6, 5.2, "k") + Ci(73, 243.4, 4.6, "k") + Ci(63.6, 208, 1.7, "k") +
+          Pa("M64 207C74 200 88 201 95 207", "d") + Pa("M93.6 224L96 212", "d")
       ) +
-      Pa("M90 222H110L105 250L100 262L95 250z") +
-      Pa("M97 259h6l-3 9z") +
-      Pa("M100 226V256", "d"),
+      Pa("M91 214H109L105.4 244C103.6 252 101.6 258 100 263C98.4 258 96.4 252 94.6 244z") +
+      sym(El(96.4, 224, 1.1, 1.1, "k") + El(97, 232.5, 1, 1, "k") + El(97.7, 240, 1, 1, "k")) +
+      Pa("M98 263h4l-2 9z") + Pa("M100 214V260", "d") + Pa("M96.4 254.2h7.2", "d"),
 
     femur: sym(
-      Ci(72, 241, 7) +
-        Ln(72, 243, 65, 254, 6) +
-        El(65, 254, 4.5, 6) +
-        Ln(67, 258, 79, 340, 7.5) +
-        El(79, 347, 10.5, 6.5) +
-        El(81, 356, 5, 6.5)
+      Ci(72, 241.4, 7) +
+        Pa("M71 246L67 252L61.2 249C60.8 255 62.4 260 66 262L72.4 256z") + El(63.6, 252.4, 4.2, 5.6) +
+        Pa("M62.6 261C64 258 70 258 70.6 262L82.4 340L74.6 343z") +
+        Pa("M66.6 345C66 351 72 358 80.4 358C82 352 82 348 80.6 344z") + Pa("M80.6 344C82 348 82 352 80.4 358C90 358 92 350 90 344z") +
+        Pa("M79 350L81 358", "d") +
+        El(79.6, 354.4, 4.6, 5.4, "k")
     ),
 
     tibia: sym(
-      El(80, 361, 11, 3.8) +
-        Ln(81, 364, 81, 430, 6) +
-        Ln(72, 366, 74, 434, 3.4) +
-        El(81, 437, 6, 5) +
-        El(73, 437, 3.6, 5)
+      Pa("M70 360.6C70 357.6 90 357.6 92 360.6C92 364 88 366 81.6 366C74 366 70 364 70 360.6z") +
+        Pa("M77.4 366H85.6L83.8 433L79 433z") + El(81.4, 372.4, 2.3, 2.6, "k") +
+        Pa("M70.6 364C72.4 363.6 74.6 364.4 74.6 366.6C75 391 74.4 414 74.6 433L71.8 433C71.8 414 71 391 70.6 364z") +
+        El(70.6, 364.6, 2.6, 3.4) +
+        Pa("M78.6 433H85.8L87.6 438C87.6 441 84 442 82 441.4C79.2 441.4 77.6 440 78.6 433z") +
+        Pa("M71.4 432L74.8 432L75.4 441C73 441.8 70.6 440 71 436z")
     ),
 
-    pie: sym(
-      El(82, 443, 7.5, 5.5) +
-        [[76, 449, 72, 459], [79, 450, 77, 461], [82, 450, 82, 462], [85, 450, 87, 461], [88, 449, 92, 458]]
-          .map((l) => Ln(l[0], l[1], l[2], l[3], 2.4))
-          .join("")
-    ),
+    pie: sym(footBones())
   },
 
   musculos: {
-    ecm: sym(Pa("M87 52L91 51L99 82L97 86L93 84z") + Pa("M91 56L96 80", "d")),
+    ecm: sym(
+      Pa("M88.4 51.4L91.6 50.6C95 62 98.2 73.4 99.4 84L96.6 87.4C94 76 90.4 63 88.4 51.4z") +
+        Pa("M91.8 57C92.8 66 91.8 76 88.6 86.4L84.8 86.8C87.4 77 89.6 67 90.2 58z") +
+        Pa("M90.6 57C92.8 66 95 75 96.6 84", "d") + Pa("M90 62C90 70 88.2 78 86.4 85", "d")
+    ),
 
     trapecio: sym(
-      Pa("M94 60C91 68 92 77 96 86L100 86C98 77 98 69 98 62z") +
-        Pa("M95 68C86 74 74 79 62 84L66 92C76 90 88 84 97 80z")
+      Pa("M94 58C90.4 68 91.6 78 96.4 88L100 88.4V61z") +
+        Pa("M95.4 68C85 73.6 74 78.6 62 83.6L65.4 93.4C75 91 87 86.6 97 82z") +
+        Pa("M94.4 66C93 74 94 82 97.4 88M92 74C85 78 76 83 68 88M89 70C82 74 74 79 66 84", "d")
     ),
 
     hombros: sym(
-      Pa("M97 94C88 90 76 93 68 101C67 111 73 124 84 129C91 129 96 126 97 120z") +
-        Pa("M64 84C53 82 47 90 47 102C47 111 51 118 57 120C61 110 64 98 69 92z") +
-        Pa(
-          "M96 98L74 104M96 106L72 110M96 114L76 120M60 86C54 94 52 104 54 114",
-          "d"
-        )
+      Pa("M97 93C88 90 78 93 70 100C69 108 72 118 78 124C84 128 91 128 97 124z") +
+        Pa("M96 96.4L74 102M96.6 104L72 110.4M96.6 111.6L73.6 118M96.6 119L78 124", "d") +
+        Pa("M66 86C57 83 50 88 48 98C47 108 52 118 58 121L66 119C64 108 64 98 70 92z") +
+        Pa("M62 86.4C56 94 54 104 56 116M66 90C60 98 59 108 62 118", "d")
     ),
 
     brazos: sym(
-      Pa("M56 104C48 118 44 142 47 160C52 163 57 162 59 159C63 140 65 118 64 104z") +
-        Pa("M56 108C53 124 52 142 53 158", "d")
+      Pa("M58 104C50 118 46 142 48 158C53 162 58 161 60 158C64 140 65 120 64 104z") +
+        Pa("M56 108C53 124 52 142 53 156M60.4 110C59.6 126 58 142 56.4 158M62.4 104C63 120 62 138 59.6 158", "d") +
+        Pa("M49.4 156.4C51 160 56 160.6 58.6 158.2L58 162.4C54 164 50 163.6 48.2 161z")
     ),
 
     antebrazom: sym(
       Pa("M42 164C38 186 34 208 33 226L43 228C47 208 54 186 57 166z") +
-        El(39, 243, 6, 11) +
-        Pa("M48 168C45 188 42 208 40 224", "d")
+        Pa("M44 166C41.6 186 38.4 208 36.6 226M50 168C48 188 45 208 43 227", "d") +
+        Pa("M34.6 230L36.4 242C34 247 32 244 33.4 238z") +
+        Pa("M33.8 232C33 238 33.8 246 37.4 250C40.6 250 42.8 247 42.8 241L42.2 231z") +
+        Pa("M37 230V250M39.6 230V251M42 230V248", "d")
     ),
 
     core: sym(
-      Pa("M90 142C77 148 72 172 74 198L88 205z") +
-        Pa("M70 114C64 138 66 170 74 190L73 150z") +
-        Pa(
-          "M80 150C77 164 77 180 81 196M84 146C82 162 82 178 86 198",
-          "d"
-        ) +
-        [146, 163, 180, 197].map((y) => Rc(92, y, 7.5, 14, 3)).join("")
+      Pa("M99.4 144H90C87.4 160 87.4 182 90 203H99.4z") +
+        Pa("M89 157H99.4M88.4 169.4H99.4M88.4 181.6H99.4M89.6 193H99.4", "d") +
+        Pa("M88 142C76 146 70 164 71 188C72 196 76 202 82 206L88.6 206C86.4 184 86.2 160 88 142z") +
+        Pa("M86 150L76 160M86 160L74 172M86 170L73 184M86 180L75 195", "d") +
+        Pa("M71 112C65 122 65 138 69 148L73 150C71 138 71 124 75 114z") +
+        Pa("M67 120L72.4 121M66.6 128L72 128.6M67.4 136L72.4 136M69 144L73 144", "d")
     ),
 
     cadera: sym(
       Pa("M64 208C57 226 57 246 63 262L84 266L90 240L86 212z") +
-        Pa("M86 216C80 232 78 246 82 260", "d")
+        Pa("M86 216C80 232 78 246 82 260", "d") + Pa("M70 214C66 230 66 248 70 262M76 212C72 230 72 248 76 264", "d")
     ),
 
     muslo: sym(
-      Pa("M63 262C58 292 62 326 69 350L93 350C96 326 97 292 95 264z") +
-        Pa(
-          "M72 266C70 296 72 326 76 346M84 266C84 296 86 326 86 346",
-          "d"
-        )
+      Pa("M63 266C58 296 61 328 68 350L77.4 350C74 326 72 296 74.4 266z") +
+        Pa("M75.6 262C74.4 290 76 320 79 346L85 346C86 320 85 290 84 262z") +
+        Pa("M86 270C90 296 92 322 91 347L85.6 349C85.6 330 85 300 86 270z") +
+        Pa("M93.2 266C95.4 292 95 322 93 342L91 340C93 320 92.6 292 90.4 266z") +
+        Pa("M65 280C64 304 67 328 71 346M80 270C80.6 298 82 322 82.6 344M89.6 288C91 308 91 326 90 344", "d") +
+        Pa("M90 262C86 290 82 320 76 346", "d")
     ),
 
     pantorrilla: sym(
-      Pa("M70 362C65 384 68 412 77 436L89 436C95 412 96 384 93 362z") +
-        Pa(
-          "M78 368C76 388 80 410 83 432M88 368C88 388 88 410 87 430",
-          "d"
-        )
+      Pa("M68 364C63 384 66 410 74 434L78 432C75 408 74 384 76 364z") +
+        Pa("M79.4 364C77.6 384 78.6 410 81.4 434L86.4 434C86.4 410 86 384 85 364z") +
+        Pa("M90 364C95 386 95 410 89 434L85.6 433C88.4 410 88.4 384 86 364z") +
+        Pa("M70 372C68 392 71 412 75 430M82 370C81.4 392 82.6 412 83.8 430M91 372C92.6 392 92 412 88.6 430", "d")
     ),
 
     bia: sym(
@@ -2829,89 +2900,184 @@ const ANAT = {
   },
 
   organos: {
+    medula:
+      (() => {
+        /* contorno de la médula: bulbo, engrosamiento cervical, torácica, engrosamiento lumbar y cono medular */
+        const W = [[54, 5], [62, 5.4], [70, 6.8], [80, 7.6], [92, 6.8], [102, 4.8], [140, 4.4], [152, 5.2], [164, 7], [176, 6.2], [184, 3.8], [190, .8]];
+        const L = W.map(p => [f1(100 - p[1] / 2), p[0]]), R = W.map(p => [f1(100 + p[1] / 2), p[0]]).reverse();
+        const q = pts => pts.map((p, i) => (i ? "L" : "M") + p[0] + " " + p[1]).join("");
+        const roots = Array.from({ length: 24 }, (_, i) => {
+          const y = 62 + i * 5;
+          return `M98.4 ${y}L${f1(94.8 - i * .06)} ${y + 2}M101.6 ${y}L${f1(105.2 + i * .06)} ${y + 2}`;
+        }).join("");
+        const cauda = [-7, -5, -3.2, -1.4, 1.4, 3.2, 5, 7].map((o, i) => `M100 190C${100 + o * .3} 208 ${100 + o} 228 ${100 + o * .8} ${250 - (i % 3) * 3}`).join("");
+        return Pa(q(L) + "L" + q(R).slice(1) + "z") +
+          `<path class="s" style="stroke-width:.9" d="${cauda}"/>` +
+          `<path class="s" style="stroke-width:.7" d="M100 190L100 266"/>` +
+          Pa(roots, "d") +
+          Pa("M96.4 74C88 76 80 82 74 92M96 84C88 88 82 96 78 106M103.6 74C112 76 120 82 126 92M104 84C112 88 118 96 122 106", "d") +
+          Pa("M99 54V186", "d");
+      })(),
+
     higado:
-      Pa("M68 150C80 141 100 142 110 147C108 163 98 173 84 173C73 171 67 162 68 150z") +
-      El(92, 167, 3.6, 2.4, "k") +
-      Pa("M76 152C84 156 94 158 104 155", "d"),
+      Pa("M66 150C78 141 100 141 112 146C114 158 104 170 90 173L82 172C72 170 66 162 66 150z") +
+      El(85, 173, 3, 4.2, "k") + Pa("M96 145.6C96 156 94.6 164 92 171", "d") + Pa("M72 152C82 150 94 150 106 149M70 160C80 160 88 158 96 156", "d"),
 
     estomago:
-      Pa("M111 150C127 146 133 160 127 172C121 180 109 176 109 164z") +
-      Pa("M116 154C124 156 127 164 123 170", "d"),
+      Pa("M111 149C123 144 134 153 132 167C130 179 118 185 110 179C106 175 110 170 116 169C120 168 121 160 116 157C113 155 111 152 111 149z") +
+      Pa("M117 152C124 152 128 160 126 168M118 160C122 162 123 168 121 172", "d") + Pa("M110 179C104 182 100 181 96 185", "d"),
 
     intestino:
-      `<path class="s" style="stroke-width:7" d="M76 228V200C76 192 80 188 88 188H112C120 188 124 192 124 200V228"/>` +
-      `<path class="s" style="stroke-width:5" d="M88 202H112C118 202 118 209 112 209H88C82 209 82 216 88 216H112C118 216 118 223 112 223H88"/>` +
-      Pa("M88 202H112M88 216H112", "d"),
+      `<path class="s" style="stroke-width:5" d="M76 228V200C76 192 80 188 88 188H112C120 188 124 192 124 200V228"/>` +
+      `<path class="s" style="stroke-width:5" d="M76 228C76 236 90 236 100 232C108 230 116 232 124 228"/>` +
+      `<path class="s" style="stroke-width:1.1;stroke-dasharray:1.6 3;opacity:.9" d="M76 228V200C76 192 80 188 88 188H112C120 188 124 192 124 200V228"/>` +
+      loops() + Pa("M76 230C72 234 71 238 74 239", "d"),
 
     rinones: sym(
-      Pa("M88 174C82 172 79 184 83 194C87 200 93 196 93 188C93 182 91 176 88 174z") +
-        El(87, 170, 3.6, 2.2) +
-        `<path class="s" style="stroke-width:1.6" d="M90 198C91 212 94 224 97 236"/>`
+      Pa("M90 172C82 170 78 180 79 190C80 200 88 204 93 198C90 194 89 190 90 186C91 180 92 176 90 172z") +
+        El(87, 168.4, 4.2, 2.4, "f", -18) +
+        Pa("M83 178C82 186 84 194 88 198M88 186C86 188 85 191 86 194", "d") +
+        `<path class="s" style="stroke-width:1.6" d="M90 196C91 212 94 224 97 236"/>`
     ),
 
-    vejiga: Pa("M92 238C92 230 108 230 108 238C108 248 92 248 92 238z"),
+    vejiga: Pa("M91 238C91 229 109 229 109 238C109 248 91 249 91 238z") + Pa("M94 235H106", "d") + Pa("M99 248.4L100 256L101 248.4", "d"),
 
     pulmones:
-      Rc(98, 60, 4, 34, 2) +
-      `<path class="s" style="stroke-width:2" d="M100 94L90 104M100 94L110 104"/>` +
-      sym(
-        Pa("M96 92C88 88 75 92 71 104C67 122 67 142 73 154C81 159 93 154 96 144z") +
-          Pa("M96 104L84 112M96 116L82 128M96 128L84 142", "d")
-      ),
+      Rc(98, 60, 4, 30, 2) +
+      Pa("M98.4 65h3.2M98.4 69.4h3.2M98.4 73.8h3.2M98.4 78.2h3.2M98.4 82.6h3.2M98.4 87h3.2", "d") +
+      `<path class="s" style="stroke-width:2" d="M100 90L90 102M100 90L110 100"/>` +
+      Pa("M96 92C88 88 75 92 71 104C67 122 67 142 73 154C81 159 93 154 96 144z") +
+      Pa("M96 114L72 111M96 128L70 124", "d") + Pa("M94 100L84 112M94 118L80 130", "d") +
+      Pa("M104 92C113 88 125 92 129 104C133 122 133 142 127 154C119 159 109 156 105 148L105 144C110 138 112 128 108 120C106 116 104 114 104 108z") +
+      Pa("M129 118L110 124", "d") + Pa("M108 102L118 112M110 124L122 134", "d"),
 
     vasos: sym(
-      `<path class="s" style="stroke-width:4.2" d="M94.5 60C94.5 72 93.5 84 92 96"/>` +
-        `<path class="s" style="stroke-width:2.8" d="M99 60C98.5 72 98 84 97 94"/>`
+      `<path class="s" style="stroke-width:4.2" d="M92.6 98C93 84 94 72 94.4 58"/>` +
+        `<path class="s" style="stroke-width:2.6" d="M97.4 98C97.8 84 98.2 72 98.6 60"/>` +
+        `<path class="s" style="stroke-width:1.8" d="M98.6 60L96.4 53M98.6 60L101 53"/>` +
+        `<path class="s" style="stroke-width:2" d="M92.6 98C86 96 78 93 70 92"/>`
     ),
 
     corazon:
-      Pa("M104 112C96 102 86 110 92 122C96 130 102 138 106 142C112 134 124 126 122 116C119 104 108 104 104 112z") +
-      `<path class="s" d="M100 110C100 98 110 96 114 104"/>` +
-      Pa(
-        "M100 118C104 122 108 128 108 136M110 112C114 114 118 118 118 122",
-        "d"
-      ),
+      Pa("M95 121C95 113 103 108 110 112C118 114 122 122 118 128C113 134 108 140 105 143C101 138 95 130 95 121z") +
+      Pa("M92 114C90 108 94 104 99 106L100.4 117z") + Pa("M112 108C116 104 122 108 120.4 114.4L113.6 114z") +
+      `<path class="s" style="stroke-width:2.6" d="M103 110C103 100 108 96 114 99C118.4 102 119 108 118 113"/>` +
+      `<path class="s" style="stroke-width:1.8" d="M97 104C95.6 98 95.6 94 96.4 90"/>` +
+      `<path class="s" style="stroke-width:2" d="M108 108C110 103 114 103 116.4 105.4"/>` +
+      Pa("M104 114C106 124 106.4 134 105 142.6M97.4 119C103 123 109 124.6 115 121", "d"),
 
     cerebro:
-      Pa("M100 9C90 5 80 10 82 19C78 24 80 30 86 31H114C120 30 122 24 118 19C120 10 110 5 100 9z") +
-      Pa(
-        "M100 9V31M88 15C92 19 96 17 98 21M112 15C108 19 104 17 102 21M85 25C91 23 95 27 98 25M115 25C109 23 105 27 102 25",
-        "d"
+      sym(
+        Pa("M99.4 8C88 6 80 14 81 26C82 34 90 39 99.4 38.4z") +
+          Pa("M99 14C94 14 92 18 88 17M99 21C94 20 90 24 85 22M99 28C94 27 91 31 86 30M99 34C95 34 92 36 89 36.6M92 10C91 14 94 17 94 21", "d") +
+          Pa("M81.6 28C80.8 36 84.6 40.6 91 41.4", "d")
       ) +
-      sym(Ci(89, 40, 4.6) + Ci(89, 40, 1.9, "k") + Pa("M91 36L97 31", "d")),
+      Pa("M86.6 38.4C90 44.6 95 47.4 100 47.4C105 47.4 110 44.6 113.4 38.4C107 41 93 41 86.6 38.4z") +
+      Pa("M90 43.4C96 45 104 45 110 43.4", "d") +
+      Pa("M96 40H104V54L102.4 58.6H97.6L96 54z") + Pa("M100 8V38.6", "d"),
   },
 };
 
-/* Vista lateral del cuello (cara a la izquierda): permite ver los músculos profundos que la vista frontal oculta.
-   Cada músculo es un <g class="z"> con data-z = id de zona, igual que en la figura principal. */
-const NECK_Y = i => 58 + i * 10.8,
-      NECK_X = i => 96 - 7 * Math.sin(Math.PI * i / 6);
-
-const NECK = {
-  multifidos: Pa("M99 60C103 72 104 98 100 124L106 124C110 98 109 72 105 58z") + Pa("M102 64C105 80 105 100 103 120", "d"),
-  esplenio: Pa("M108 50C114 66 118 96 119 124L126 124C126 94 121 62 114 48z") + Pa("M112 60C117 80 120 100 121 120", "d"),
-  largocuello: Pa("M86 58C80 68 77 78 77 90C77 102 82 114 88 124L92 124C87 114 83 102 83 90C83 78 85 68 91 58z") + Pa("M84 62C80 74 80 100 86 118", "d"),
-  trapecio: Pa("M114 44C130 62 140 90 152 116L144 126C132 104 122 84 108 60z") + Pa("M118 56C130 74 138 94 146 114", "d"),
-  ecm: Pa("M100 46L107 50C98 74 84 104 76 130L66 130C76 104 90 74 100 46z") + Pa("M101 52C92 76 80 104 72 126", "d")
+/* Vista lateral del cuello (cara a la izquierda). Cada músculo es un <g class="z"> con data-z = id de zona. */
+const lerp = (a, b, t) => a + (b - a) * t;
+const bez = (P, t) => {
+  const u = 1 - t;
+  return [0, 1].map(k => u * u * u * P[0][k] + 3 * u * u * t * P[1][k] + 3 * u * t * t * P[2][k] + t * t * t * P[3][k]);
+};
+const smoothD = (pts, close) => {
+  let d = `M${f1(pts[0][0])} ${f1(pts[0][1])}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2];
+    d += `Q${f1(pts[i][0])} ${f1(pts[i][1])} ${f1(m[0])} ${f1(m[1])}`;
+  }
+  const l = pts[pts.length - 1];
+  return d + `L${f1(l[0])} ${f1(l[1])}` + (close ? "z" : "");
+};
+/* Músculo en banda: P = curva guía (4 puntos), w = función de ancho(t), fib = fracciones del ancho para dibujar fibras */
+const strap = (P, w, fib) => {
+  const N = 16, Lp = [], Rp = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, a = bez(P, Math.max(0, t - .02)), b = bez(P, Math.min(1, t + .02)), c = bez(P, t);
+    let nx = -(b[1] - a[1]), ny = b[0] - a[0];
+    const n = Math.hypot(nx, ny) || 1;
+    nx /= n; ny /= n;
+    Lp.push([c[0] + nx * w(t) / 2, c[1] + ny * w(t) / 2]);
+    Rp.push([c[0] - nx * w(t) / 2, c[1] - ny * w(t) / 2]);
+  }
+  const body = Pa(smoothD(Lp.concat(Rp.slice().reverse()), true));
+  const lines = (fib || []).map(fr => Pa(smoothD(Lp.map((p, i) => [lerp(p[0], Rp[i][0], fr), lerp(p[1], Rp[i][1], fr)]).slice(1, -1)), "d")).join("");
+  return body + lines;
 };
 
-const NECK_ORDER = ["multifidos", "esplenio", "largocuello", "trapecio", "ecm"];
+/* Columna cervical lateral: eje (curva lordótica) y posición de cada vértebra */
+const NECK_Y = i => 76 + i * 10.4,
+      NECK_X = i => 112 - 9 * Math.sin(Math.PI * i / 6.6) - i * .5;
+
+const neckMuscles = () => {
+  const m = {};
+  /* Esternocleidomastoideo: apófisis mastoides -> manubrio y clavícula (dos cabezas) */
+  m.ecm = strap([[128, 70], [112, 96], [97, 124], [87, 152]], t => 5 + 6.2 * Math.sin(Math.PI * Math.min(1, t * 1.04)) ** .7 + (t > .86 ? (t - .86) * 22 : 0), [.3, .5, .72]) +
+    Pa("M89 140L85.6 153M94 141L97 153", "d");
+  /* Trapecio (fibras superiores): línea nucal y ligamento nucal -> tercio lateral de la clavícula y acromion */
+  m.trapecio = strap([[142, 70], [151, 100], [158, 128], [178, 154]], t => 11 + 7 * Math.sin(Math.PI * t) + (t > .8 ? 4 : 0), [.25, .5, .75]);
+  /* Esplenio de la cabeza y del cuello: ligamento nucal y T1-T3 -> mastoides y C1-C3 */
+  m.esplenio = strap([[118, 146], [121, 118], [126, 94], [133, 72]], t => 7 + 4.4 * Math.sin(Math.PI * t), [.3, .5, .7]);
+  /* Largo del cuello y de la cabeza: cara anterior de las vértebras, de T3 a la base del cráneo */
+  const lc = Array.from({ length: 15 }, (_, k) => { const i = -0.5 + k * .56; return [NECK_X(i) - 10.4, NECK_Y(i) + 3]; });
+  const lcR = lc.map(p => [p[0] + 5.8, p[1]]);
+  m.largocuello = Pa(smoothD(lc.concat(lcR.slice().reverse()), true)) + Pa(smoothD(lc.map(p => [p[0] + 2.9, p[1]]).slice(1, -1)), "d");
+  /* Multífidos y semiespinoso: fascículos oblicuos sobre las apófisis espinosas */
+  m.multifidos = Array.from({ length: 6 }, (_, k) => {
+    const i = k + .5, tx = NECK_X(i - 1.6) + 9.4, ty = NECK_Y(i - 1.6) + 2, bx = NECK_X(i + 1.1) + 14, by = NECK_Y(i + 1.1) + 6;
+    return Pa(`M${f1(tx)} ${f1(ty)}L${f1(tx + 6)} ${f1(ty + .4)}L${f1(bx + 3.4)} ${f1(by)}L${f1(bx - 3.6)} ${f1(by + 2.4)}z`);
+  }).join("") + Pa(smoothD(Array.from({ length: 9 }, (_, k) => [NECK_X(k * .78) + 14.6, NECK_Y(k * .78) + 5])), "d");
+  return m;
+};
+const NECK = neckMuscles();
+const NECK_ORDER = ["largocuello", "multifidos", "esplenio", "trapecio", "ecm"];
 
 function neckFigure(cls) {
+  const SP = [0, 0, 11, 8, 9, 11, 17];       /* longitud de la apófisis espinosa: C2 y C7 son las más largas */
   const bones = Array.from({ length: 7 }, (_, i) => {
-    const x = NECK_X(i), y = NECK_Y(i);
-    return Rc(x - 4.5, y, 9, 8, 2) + Ln(x + 4.5, y + 4, x + 13, y + 6, 1.6);
+    const x = NECK_X(i), y = NECK_Y(i), h = i === 0 ? 5.6 : 8, w = i === 0 ? 13 : 10.4 + i * .3;
+    const body = `M${f1(x - w / 2)} ${f1(y)}Q${f1(x)} ${f1(y + 1)} ${f1(x + w / 2)} ${f1(y)}L${f1(x + w / 2 - .7)} ${f1(y + h)}Q${f1(x)} ${f1(y + h - 1)} ${f1(x - w / 2 + .7)} ${f1(y + h)}z`;
+    const arch = i === 0
+      ? `M${f1(x + w / 2)} ${f1(y + 1)}Q${f1(x + w / 2 + 9)} ${f1(y + 1.4)} ${f1(x + w / 2 + 11)} ${f1(y + 3.4)}L${f1(x + w / 2)} ${f1(y + h)}z`
+      : `M${f1(x + w / 2 - .5)} ${f1(y + 1.6)}L${f1(x + 9.6)} ${f1(y + 2)}L${f1(x + 10.4 + SP[i])} ${f1(y + 4.4 + (i > 4 ? 1.4 : 0))}L${f1(x + 9.6)} ${f1(y + h - 1.2)}L${f1(x + w / 2 - .5)} ${f1(y + h - 1.4)}z`;
+    return Pa(body, "f") + Pa(arch, "f") + (i ? Ln(f1(x - w / 2), f1(y + h - 2), f1(x - w / 2 - 5), f1(y + h + .8), 1.5) : "") +
+      Pa(`M${f1(x - w / 2 + 1)} ${f1(y + h + .4)}Q${f1(x)} ${f1(y + h + 2.4)} ${f1(x + w / 2 - 1)} ${f1(y + h + .4)}`, "s");
   }).join("");
-
-  return `<svg class="body neck" viewBox="0 0 170 150" role="group" aria-label="Vista lateral del cuello: músculos cervicales">
-<g class="gh">${El(92, 28, 32, 24) + Pa("M62 36C58 48 62 58 72 62L84 60", "s") + bones}</g>
+  const T1 = Pa(`M${f1(NECK_X(7) - 6)} ${f1(NECK_Y(7))}H${f1(NECK_X(7) + 6)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 9)}H${f1(NECK_X(7) - 5)}z`, "f") +
+    Pa(`M${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 2)}L${f1(NECK_X(7) + 30)} ${f1(NECK_Y(7) + 8)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 7)}z`, "f");
+  const head =
+    Pa("M82 38L79 44L72 56L77 59L76 63L77 66L76 69L78 77L84 80C94 82 104 80 108 74L116 76L132 74L144 70C152 62 158 50 156 36C154 20 142 8 126 6C112 4 98 8 90 16C83 22 80 30 82 38z") +
+    Pa("M82 38C84 36 88 36 90 38M110 74C112 66 112 60 110 56", "s") +
+    El(91, 41, 5.2, 3.8, "f") + Pa("M92 50C102 52 112 52 118 50", "s") + Pa("M77 66H86", "s") +
+    Pa("M100 67C112 67 124 69 138 70", "s") +
+    El(122, 58, 4.4, 8, "f", -8) + Pa("M121 54C123 56 123 61 121 63", "s") + Ci(129, 69, 3.4, "f");
+  const skin =
+    Pa("M84 80C80 98 80 124 82 152", "s") + Pa("M146 72C151 84 151 104 153 122C155 138 163 150 184 158", "s");
+  const deep =  /* músculos sin zona propia, solo de referencia */
+    strap([[112, 84], [104, 110], [99, 134], [94, 154]], t => 5.4 + 2 * Math.sin(Math.PI * t)) +
+    strap([[118, 80], [132, 104], [148, 128], [170, 148]], t => 5 + 2 * Math.sin(Math.PI * t));
+  const context =
+    `<path class="s" style="stroke-width:3.6;opacity:.55" d="M90 98C88 112 88 130 91 152"/>` + /* tráquea */
+    Array.from({ length: 9 }, (_, i) => `<path class="s" style="stroke-width:.8" d="M86 ${100 + i * 5.6}H94.6"/>`).join("") +
+    Pa("M82 96C80 91 85 87 91 89L93 98C89 100 85 100 82 96z", "f") + /* cartílago tiroides */
+    Pa("M88 80L102 78L100 85L90 87z", "f") + /* hueso hioides */
+    Pa("M94 156C106 161 120 160 134 156C148 158 164 162 184 166", "s") + /* clavícula */
+    Pa("M80 150L96 148L98 180L84 182z", "f") + /* manubrio */
+    Pa("M132 146L190 160M140 154L186 172", "s") /* espina y borde de la escápula */;
+  return `<svg class="body neck" viewBox="30 -14 170 204" role="group" aria-label="Vista lateral del cuello: músculos cervicales">
+<g class="gh">${skin}${head}${deep}${bones}${T1}${context}</g>
 ${NECK_ORDER.map(id => `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role="button">${NECK[id]}</g>`).join("")}
-<text class="nl1" x="8" y="12">Vista lateral</text><text class="nl2" x="162" y="12" text-anchor="end">Frente</text>
+<text class="nl1" x="34" y="-4">Vista lateral</text><text class="nl2" x="34" y="6">Anterior</text><text class="nl2" x="196" y="6" text-anchor="end">Posterior</text>
 </svg>`;
 }
 
 /* Orden de apilamiento Z para capas superpuestas */
 const ORDER = {
+  huesos: ["costillas", "humero", "antebrazo", "pelvis", "femur", "tibia", "pie", "craneo", "cervical", "toracica", "lumbar"],
   organos: [
     "vasos",
     "pulmones",
@@ -2921,6 +3087,7 @@ const ORDER = {
     "intestino",
     "vejiga",
     "corazon",
+    "medula",
     "cerebro",
   ],
 };
@@ -3232,6 +3399,7 @@ const Engine = {
     if (g("sueno.sq") && g("cognicion.cog")) m.push("Deterioro cognitivo por déficit de sueño: siesta estratégica de 25 min y luz azul enriquecida antes de reevaluar.");
     if (g("reaccion.rt")) m.push("Fatiga neuroconductual: reevaluar o descansar 20 min antes de autorizar tareas de precisión; EVA sin habilitar si el puntaje es 4 o menos.");
     if (g("cognicion.lat") && (g("cognicion.lap") || g("esfuerzo.co2"))) m.push("Posible hipercapnia de cabina: revisar los depuradores de CO₂ antes de atribuirlo a fatiga del tripulante.");
+    if (g("estres.pss") || g("estres.cort") || g("estres.lfhf") || g("estres.eda")) m.push(g("sueno.sq") || g("sueno.tst") ? "Estrés elevado con sueño alterado: priorizar el descanso, respiración lenta de 5 minutos y llamada con Tierra; el sueño corto sostiene el estrés." : "Estrés elevado: pausa de respiración diafragmática de 5 minutos, ejercicio aeróbico suave, contacto con la familia o con Tierra y aviso a la médica de vuelo si persiste más de 48 horas.");
     if (g("cerebro.pic") || g("cerebro.ppc")) m.push("Presión intracraneal o de perfusión cerebral alterada: reposo con la cabeza elevada, evitar maniobras de esfuerzo (Valsalva) y avisar al médico de vuelo.");
     if (g("cerebro.gcs")) m.push("Glasgow menor a 15: reevaluar el nivel de conciencia, revisar oxígeno y CO₂ de la cabina y avisar de inmediato al médico de vuelo.");
     return m;
@@ -3354,7 +3522,7 @@ ${e.rows.length ? `<div class="pl">${e.rows.map((r, i) => `<button class="pr ${i
 function cards(zs, sel, btn) {
   return zs.map(z => {
     const x = Engine.ev(z), f = x.rows[0];
-    return `<div class="card ${z.id === sel ? "sel" : ""}" data-z="${z.id}" role="button" tabindex="0"><small>${z.n}</small>${f ? `<div class="v mono">${fmt(f.p, f.v)} <em>${f.p.u}</em></div>` : `<div class="v mono">—</div>`}${bd(x.st)} <span class="src ${x.real ? "r" : ""}">${x.real ? "Dato real" : "Modelo"}</span><small class="u-d-block u-m-6-0">${z.txt.split(". ")[0].slice(0, 110)}</small>${btn && x.rows.length ? `<button class="btn sm" data-open="${z.id}">${z.id === "cognicion" || z.id === "reaccion" ? "Iniciar test" : "Iniciar registro"}</button>` : ""}</div>`;
+    return `<div class="card ${z.id === sel ? "sel" : ""}" data-z="${z.id}" role="button" tabindex="0"><small>${z.n}</small>${f ? `<div class="v mono">${fmt(f.p, f.v)} <em>${f.p.u}</em></div>` : `<div class="v mono">—</div>`}${bd(x.st)} <span class="src ${x.real ? "r" : ""}">${x.real ? "Dato real" : "Modelo"}</span><small class="u-d-block u-m-6-0">${z.txt.split(". ")[0].slice(0, 110)}</small>${btn && x.rows.length ? `<button class="btn sm" data-open="${z.id}">${z.id === "cognicion" || z.id === "reaccion" || z.id === "estres" ? "Iniciar test" : "Iniciar registro"}</button>` : ""}</div>`;
   }).join("");
 }
 
@@ -3482,10 +3650,6 @@ function renderChrome() {
   $("day").value = S.day;
   for (const i of ["env", "env2"]) $(i).value = S.env;
   $("envnote").textContent = ENVS[S.env].note + " Latencia de comunicación: " + ENVS[S.env].lat + ".";
-  $("adh").value = k.adh;
-  $("adho").textContent = k.adh + " %";
-  $("vas").value = k.vas;
-  $("vaso").textContent = k.vas;
   $("crew").innerHTML = CREW.map(x => `<button class="crew ${x.id === S.crew ? "on" : ""}" data-c="${x.id}"><div class="av" style="background:${x.col};color:var(--on-ac)">${x.name.split(" ")[1][0]}</div><div><b>${x.name}</b><span>${x.role}</span></div></button>`).join("");
   $("hero").innerHTML = `<div>${bd(w)}<h2>${cr.name}</h2><p>${cr.role} · ${cr.bio}</p></div><div class="kp">${n.map((v, i) => `<div><small>${SN[i]}</small><b class="mono t${i}">${v}</b></div>`).join("")}</div>
 <details class="u-w-100pct"><summary>Alertas activas (${al.length})</summary>${al.length ? al.map(a => `<p>${bd(a.r.s)} ${a.z.n} · ${a.r.p.n}: <b class="mono">${fmt(a.r.p, a.r.v)} ${a.r.p.u}</b></p>`).join("") : "<p>Sin alertas: todos los parámetros están dentro de lo esperado.</p>"}${cx.map(t => `<p class="t1">${t}</p>`).join("")}</details>`;
@@ -3504,17 +3668,17 @@ function toast(t) {
   </script>
   <script>
 /* js/ui/plan.js — Pestaña "Plan de ejercicio": rutinas priorizadas por el estado de cada zona (modelo del html Control de Salud Orbital),
-   entrenamiento cervical con casco lastrado y plan de estabilización para el regreso (parámetros del PDF NASA). */
+   entrenamiento cervical con arnés y poleas y plan de estabilización para el regreso (parámetros del PDF NASA). */
 "use strict";
 
 /* ---------- Rutinas: zones = zonas cuyo estado fija la prioridad; adh = puntos de cumplimiento que suma al completarla ---------- */
 const ROUT = [
   { id: "ared", t: "Resistencia en ARED: tren inferior", min: 45, adh: 10, zones: ["pelvis", "femur", "tibia", "pie", "muslo", "cadera", "pantorrilla"], why: "Carga el hueso y el músculo para frenar la pérdida de densidad y de masa.", steps: ["Sentadillas con barra: 3 series de 10", "Peso muerto: 3 series de 8", "Elevación de talones: 3 series de 15", "Registrar la carga (kgf) y las repeticiones logradas"] },
   { id: "lumbar", t: "Movilidad lumbar y contramedidas para la columna vertebral", min: 20, adh: 5, zones: ["lumbar", "core"], why: "Alivia los discos que se expandieron y protege la columna.", steps: ["Colocar el traje de compresión axial durante 1 a 2 horas", "Llevar las rodillas al pecho: 3 repeticiones de 30 segundos", "Rotación suave de tronco sentado: 10 por lado", "Puntuar el dolor lumbar de 0 a 10"] },
-  { id: "casco", t: "Entrenamiento con casco lastrado de resistencia multidireccional", min: 15, adh: 5, zones: ["cervical", "ecm", "trapecio", "esplenio", "largocuello", "multifidos"], why: "Incluye los movimientos de flexión cervical, extensión cervical, inclinación derecha e izquierda y rotaciones, todos con resistencia ajustable para permitir el fortalecimiento de la musculatura cervical.", steps: ["Flexión cervical con resistencia ajustable", "Extensión cervical con resistencia ajustable", "Inclinación derecha e izquierda con resistencia ajustable", "Rotaciones derecha e izquierda con resistencia ajustable", "Registrar la resistencia usada en cada movimiento"] },
+  { id: "casco", t: "Entrenamiento cervical con arnés de cabeza y poleas de resistencia multidireccional", min: 15, adh: 5, zones: ["cervical", "ecm", "trapecio", "esplenio", "largocuello", "multifidos"], why: "Equipo: un arnés para la cabeza conectado a un sistema de poleas con resistencia (pesas o bandas elásticas), que permite hacer flexión, extensión e inclinación y rotación lateral bajo tensión. Objetivo: fortalecer los músculos cervicales (esternocleidomastoideo, escalenos y trapecios) para evitar lesiones cervicales, prevenir la fatiga extrema durante la carrera y mantener la cabeza erguida y la visión estable.", steps: ["Colocar el arnés en la cabeza, ajustarlo y conectarlo a la polea con la resistencia elegida (pesas o bandas)", "Flexión cervical bajo tensión, lenta y controlada", "Extensión cervical bajo tensión, lenta y controlada", "Inclinación lateral derecha e izquierda bajo tensión", "Rotación lateral derecha e izquierda bajo tensión", "Registrar la resistencia usada en cada movimiento"] },
   { id: "eva", t: "Movilidad post-EVA: manos y hombros", min: 10, adh: 5, zones: ["hombros", "brazos", "antebrazo", "humero"], why: "Recupera movilidad tras el uso del traje espacial.", steps: ["Círculos de hombros: 2 series de 10", "Estiramiento de flexores de muñeca: 30 segundos por lado", "Apertura y cierre de manos: 3 series de 15", "Medir la fuerza de agarre con el dinamómetro"] },
   { id: "cardio", t: "Aeróbico con arnés e hidratación", min: 35, adh: 5, zones: ["corazon", "vasos", "pulmones"], why: "Mantiene el corazón y la circulación activos frente al corrimiento de líquidos.", steps: ["Beber 500 mL antes de empezar", "30 minutos de trote en cinta con arnés a ritmo moderado", "Enfriar 5 minutos y registrar la frecuencia cardíaca"] },
-  { id: "resp", t: "Respiración diafragmática y descompresión mental", min: 10, adh: 0, zones: ["pulmones", "cerebro"], why: "Mejora la ventilación y ayuda a sobrellevar el aislamiento.", steps: ["Sentarse con la espalda apoyada y una mano en el abdomen", "Inhalar 4 segundos y exhalar 6 segundos, 5 minutos", "Cerrar con 3 minutos de atención en los sonidos del entorno"] },
+  { id: "resp", t: "Respiración diafragmática y descompresión mental", min: 10, adh: 0, zones: ["pulmones", "cerebro", "estres"], why: "Baja el estrés y mejora la ventilación y ayuda a sobrellevar el aislamiento.", steps: ["Sentarse con la espalda apoyada y una mano en el abdomen", "Inhalar 4 segundos y exhalar 6 segundos, 5 minutos", "Cerrar con 3 minutos de atención en los sonidos del entorno"] },
   { id: "vest", t: "Equilibrio y entrenamiento vestibular", min: 15, adh: 0, zones: ["cerebro", "corazon"], why: "Prepara el sistema del equilibrio para volver a la gravedad.", steps: ["Movimientos lentos de cabeza con la vista fija: 2 series de 10", "Marcha en tándem con apoyo: 2 pasadas", "Pasar de acostado a de pie en 3 tiempos"] },
   { id: "hid", t: "Hidratación y prevención renal", min: 5, adh: 0, zones: ["rinones"], why: "Diluye el calcio en orina y reduce el riesgo de cálculos.", steps: ["Planificar entre 2,5 y 3 L de agua en el día", "Revisar el sodio de las comidas", "Registrar la diuresis"] },
   { id: "regreso", t: "Plan estabilización y acondicionamiento para el regreso", min: 25, adh: 5, zones: ["corazon", "vasos"], why: "Para contrarrestar la hipovolemia plasmática, la falla vasomotora y barorrefleja, utiliza los parámetros del PDF de la NASA: índice de Valsalva, curva de presión arterial y evaluación de compensación de fuerza G.", steps: ["Fase 1, pre-reentrada (72 a 24 h): maniobra anti-G M-1/L-1 con biofeedback y carga resistiva del tren inferior", "Fase 2, reentrada (1,5 G a 4 G): contracción isométrica de miembros inferiores con metrónomo M-1/L-1", "Fase 3, posaterrizaje (2 h): bombeo de tobillos, sedestación asistida y bipedestación progresiva"] }
@@ -3841,8 +4005,6 @@ const openDrawer = () => Nav.open(),
 $("hb").onclick = openDrawer;
 $("scrim").onclick = closeDrawer;
 $("day").oninput = e => State({ day: +e.target.value });
-$("adh").oninput = e => { cfg().adh = +e.target.value; render(); };
-$("vas").oninput = e => { cfg().vas = +e.target.value; render(); };
 
 for (const i of ["env", "env2"]) {
   $(i).innerHTML = Object.entries(ENVS).map(([k, v]) => `<option value="${k}">${v.n}</option>`).join("");
@@ -3886,7 +4048,7 @@ function save(v, t, msg) {
 
 const alertBox = (c, t) => `<div class="alert t${c}">${t}</div>`;
 function openTest(id) {
-  ({ sueno: tSleep, cognicion: tColors, reaccion: tPVT, animo: tMood, esfuerzo: tCpet })[id]();
+  ({ sueno: tSleep, cognicion: tColors, reaccion: tPVT, animo: tMood, estres: tStress, esfuerzo: tCpet })[id]();
 }
 
   </script>
@@ -4156,6 +4318,49 @@ function tMood() {
 
   </script>
   <script>
+/* js/tests/stress.js — Prueba: estrés percibido (4 preguntas tipo PSS-4, adaptadas). Puntaje de 1 a 10 (más alto es mejor). */
+"use strict";
+
+const STRESS_Q = [
+  ["En las últimas 24 horas, ¿con qué frecuencia te sentiste nervioso o estresado?", 0],
+  ["¿Con qué frecuencia sentiste que no podías controlar las cosas importantes de tu trabajo?", 0],
+  ["¿Con qué frecuencia te sentiste seguro de poder manejar tus problemas?", 1],
+  ["¿Con qué frecuencia sentiste que las cosas iban como querías?", 1]
+];
+const STRESS_OPT = ["Nunca", "Casi nunca", "A veces", "Con frecuencia", "Siempre"];
+
+/* Puntaje de 1 a 10 (10 = máxima calma): 1 a 5 crítico (rojo), 6 a 7 precaución (amarillo), 8 a 10 bueno (verde) */
+const stressLevel = v => v <= 5 ? [2, "Crítico"] : v <= 7 ? [1, "Precaución"] : [0, "Bueno"];
+
+function tStress() {
+  const ans = [];
+  openDlg(head("Test de estrés", "Cuatro preguntas, menos de 30 segundos. Responde pensando en las últimas 24 horas.") +
+    STRESS_Q.map((q, i) => `<div class="u-m-6-0"><b class="u-fs-13">${i + 1}. ${q[0]}</b><div class="sw" data-q="${i}">${STRESS_OPT.map((o, k) => `<button type="button" data-v="${k}">${o}</button>`).join("")}</div></div>`).join("") +
+    `<div id="res"></div>` + foot('<button class="btn" id="go">Guardar</button>'));
+
+  $("dbody").querySelectorAll("[data-q]").forEach(box => box.onclick = e => {
+    const b = e.target.closest("[data-v]");
+    if (!b) return;
+    ans[+box.dataset.q] = +b.dataset.v;
+    box.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("on", x === b));
+  });
+
+  $("go").onclick = () => {
+    if (STRESS_Q.some((_, i) => ans[i] == null)) return toast("Responde las 4 preguntas");
+    const raw = STRESS_Q.reduce((a, q, i) => a + (q[1] ? 4 - ans[i] : ans[i]), 0),   /* 0 a 16 de estrés; las preguntas 3 y 4 puntúan al revés */
+          v = Math.max(1, Math.min(10, Math.round(10 - raw * 9 / 16))),                /* 10 = sin estrés, 1 = estrés máximo */
+          lv = stressLevel(v),
+          tip = lv[0] === 0 ? "Sin señales de estrés relevante. Mantén tus rutinas de sueño y ejercicio."
+            : lv[0] === 1 ? "Estrés moderado. Haz 5 minutos de respiración lenta (inspira 4 s, espira 6 s), una pausa de movimiento y un contacto breve con tus compañeros."
+              : "Estrés alto. Detén tareas críticas si puedes, respira lento 5 a 10 minutos, descansa y avisa a la médica de vuelo; programa una llamada de apoyo con Tierra.";
+    save({ "estres.pss": v }, { stress: { raw, ans } });
+    $("go").disabled = true;
+    $("res").innerHTML = alertBox(lv[0], `Puntaje de estrés <b>${v}/10</b> · ${lv[1]}<br>${tip}`);
+  };
+}
+
+  </script>
+  <script>
 /* js/tests/cpet.js — Prueba: esfuerzo (CEVIS). */
 "use strict";
 
@@ -4402,6 +4607,142 @@ function openUpload() {
 
   </script>
   <script>
+/* js/features/tts.js — Motor de voz compartido (INTI, saludo y alertas).
+   - Elige la voz más natural del dispositivo para cada idioma (o la que la persona elija).
+   - Espera a que el navegador cargue sus voces.
+   - Divide los textos largos en frases (Chrome corta las locuciones largas) y las dice en cola.
+   - Pronuncia unidades y decimales como se dicen (mmHg, ms, %, 93,0 -> 93.0 en inglés).
+   - Si el navegador exige un toque antes de hablar, queda en espera y habla en el primer toque. */
+"use strict";
+
+const TTS = (() => {
+  const ok = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined",
+        PREF = {
+          es: ["natural", "online", "neural", "paulina", "sabina", "helena", "monica", "mónica", "dalia", "elvira", "salome", "lucia", "lucía", "marisol", "elena", "laura", "google español", "female"],
+          en: ["natural", "online", "neural", "aria", "jenny", "ava", "samantha", "serena", "karen", "moira", "allison", "zira", "google us english", "female"]
+        },
+        MALE = /(jorge|diego|juan|carlos|pablo|raul|raúl|david|mark|james|george|alex|daniel|guy|ryan|male)/,
+        LKEY = "ks-tts-voice-";
+
+  let queue = [], cur = null, speaking = false, waiting = null, token = 0;
+
+  const lang = () => (typeof KSLang !== "undefined" && KSLang.get() === "en") ? "en" : "es";
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  const emit = () => { try { document.dispatchEvent(new CustomEvent("ks-tts", { detail: { speaking } })); } catch (e) {} };
+
+  /* Voces disponibles para el idioma, la mejor primero */
+  function score(v, l) {
+    const n = v.name.toLowerCase();
+    let sc = 0;
+    PREF[l].forEach((k, i) => { if (n.includes(k)) sc += (k === "natural" || k === "neural" || k === "online") ? 30 : 20 - Math.min(i, 15); });
+    if (/(es-ar|es-mx|es-us|es-es|en-us|en-gb)/.test(v.lang.toLowerCase())) sc += 2;
+    if (MALE.test(n) && !n.includes("female")) sc -= 12;
+    if (/espeak|compact/.test(n)) sc -= 20;
+    return sc;
+  }
+  function voices(l = lang()) {
+    if (!ok) return [];
+    return speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(l)).sort((a, b) => score(b, l) - score(a, l));
+  }
+  function pick(l = lang()) {
+    const vs = voices(l), chosen = store.get(LKEY + l);
+    return (chosen && vs.find(v => v.name === chosen)) || vs[0] || null;
+  }
+  function choose(name, l = lang()) { store.set(LKEY + l, name || ""); }
+
+  /* Texto para decir: unidades y números como se pronuncian */
+  const UNITS = {
+    es: [[/\bmmHg\b/g, "milímetros de mercurio"], [/\bms\b/g, "milisegundos"], [/\bm\/s\b/g, "metros por segundo"], [/\bml\/100 g\/min\b/g, "mililitros por cien gramos por minuto"], [/\bbpm\b/gi, "latidos por minuto"], [/\bmg\/dL\b/g, "miligramos por decilitro"], [/\bHz\b/g, "hercios"], [/\bkg\b/g, "kilos"], [/ ?%/g, " por ciento"], [/ ?°/g, " grados"], [/\bPIC\b/g, "presión intracraneal"], [/\bEVA\b/g, "E V A"], [/\bEEG\b/g, "E E G"], [/CO₂/g, "dióxido de carbono"], [/\bSpO₂\b/g, "saturación de oxígeno"]],
+    en: [[/\bmmHg\b/g, "millimeters of mercury"], [/\bms\b/g, "milliseconds"], [/\bm\/s\b/g, "meters per second"], [/\bbpm\b/gi, "beats per minute"], [/\bmg\/dL\b/g, "milligrams per deciliter"], [/\bHz\b/g, "hertz"], [/\bkg\b/g, "kilograms"], [/ ?%/g, " percent"], [/ ?°/g, " degrees"], [/\bEVA\b/g, "E V A"], [/\bEEG\b/g, "E E G"], [/CO₂/g, "carbon dioxide"], [/\bSpO₂\b/g, "oxygen saturation"]]
+  };
+  function clean(t, l) {
+    let x = String(t).replace(/<[^>]+>/g, " ").replace(/\n+/g, ". ").replace(/^- /gm, "").replace(/\s*[·|]\s*/g, ", ").replace(/[“”"]/g, "").replace(/\s{2,}/g, " ");
+    if (l === "en") x = x.replace(/(\d),(\d)/g, "$1.$2");
+    (UNITS[l] || []).forEach(r => { x = x.replace(r[0], r[1]); });
+    return x.replace(/\.\s*\./g, ".").replace(/:\s*\./g, ":").trim();
+  }
+  function chunks(t) {
+    /* frases completas (el punto de un decimal como 12.5 no corta) agrupadas hasta ~170 caracteres: menos pausas robóticas */
+    const out = [];
+    let acc = "";
+    const push = s => { s = s.trim(); if (s) out.push(s); };
+    String(t).split(/(?<=[.!?;])\s+/).forEach(sent => {
+      while (sent.length > 190) {
+        let i = sent.lastIndexOf(",", 190); if (i < 60) i = sent.lastIndexOf(" ", 190);
+        if (acc) { push(acc); acc = ""; }
+        push(sent.slice(0, i + 1)); sent = sent.slice(i + 1).trim();
+      }
+      if ((acc + " " + sent).length > 170) { push(acc); acc = sent; } else acc = acc ? acc + " " + sent : sent;
+    });
+    push(acc);
+    return out;
+  }
+
+  function stop() {
+    token++; queue = []; waiting = null;
+    if (ok) try { speechSynthesis.cancel(); } catch (e) {}
+    if (speaking) { speaking = false; emit(); }
+  }
+
+  function next(my, l, v, opts) {
+    if (my !== token) return;
+    if (!queue.length) { speaking = false; emit(); if (opts && opts.onend) opts.onend(); return; }
+    const u = new SpeechSynthesisUtterance(queue.shift());
+    u.lang = v ? v.lang : (l === "en" ? "en-US" : "es-AR");
+    if (v) u.voice = v;
+    u.rate = (opts && opts.rate) || .93;
+    u.pitch = 1.05;
+    u.volume = 1;
+    u.onstart = () => { if (my !== token) return; if (!speaking) { speaking = true; emit(); } if (opts && opts.onstart && !opts._s) { opts._s = 1; opts.onstart(); } };
+    u.onend = () => setTimeout(() => next(my, l, v, opts), 60);
+    u.onerror = e => {
+      if (my !== token) return;
+      if (e && e.error === "not-allowed") { waiting = () => speakNow(opts._txt, l, opts); return; }
+      if (e && (e.error === "canceled" || e.error === "interrupted")) return;
+      next(my, l, v, opts);
+    };
+    try { speechSynthesis.speak(u); } catch (e) {}
+  }
+
+  function speakNow(text, l, opts) {
+    stop();
+    const my = token;
+    opts = opts || {}; opts._txt = text; opts._s = 0;
+    queue = chunks(clean(text, l));
+    if (!queue.length) return;
+    const go = () => { if (my === token) next(my, l, pick(l), opts); };
+    if (speechSynthesis.getVoices().length) go();
+    else {                                      /* las voces cargan de forma asíncrona */
+      let done = false;
+      const f = () => { if (done) return; done = true; speechSynthesis.removeEventListener && speechSynthesis.removeEventListener("voiceschanged", f); go(); };
+      speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", f);
+      setTimeout(f, 900);
+    }
+  }
+
+  /* Dice un texto en español; si el idioma elegido es inglés lo traduce antes.
+     opts: { onstart, onend, rate, lang: "es"|"en" (fuerza el idioma del texto, sin traducir) } */
+  function speak(textEs, opts) {
+    if (!ok || !textEs) return;
+    opts = opts || {};
+    const l = lang();
+    if (opts.lang || l === "es" || typeof KSLang === "undefined" || !KSLang.tr) return speakNow(textEs, opts.lang || "es", opts);
+    const my = ++token;
+    KSLang.tr(textEs, (t, done) => { if (my === token) speakNow(t, done ? "en" : "es", opts); });
+  }
+
+  const unlock = () => { if (waiting) { const w = waiting; waiting = null; w(); } };
+  if (typeof addEventListener === "function") ["pointerdown", "keydown"].forEach(t => addEventListener(t, unlock, { passive: true }));
+  if (typeof document !== "undefined" && document.addEventListener) document.addEventListener("ks-lang", stop);
+
+  return { speak, stop, voices, pick, choose, get speaking() { return speaking; }, get supported() { return ok; }, lang };
+})();
+
+  </script>
+  <script>
 /* js/features/voice.js — Aviso hablado de las emergencias (síntesis de voz del navegador).
    Dice el mensaje al abrirse la alerta y lo repite cada pocos segundos hasta que se cierra.
    Si el navegador bloquea el audio hasta que la persona toque la pantalla, queda en espera y
@@ -4420,42 +4761,19 @@ const Voice = (() => {
 
   try { muted = localStorage.getItem(KEY) === "1"; } catch (e) {}
 
-  /* La página se traduce con Google Translate: KSLang dice el idioma que la persona eligió. */
-  const lang = () => (typeof KSLang !== "undefined" && KSLang.get() === "en") ? "en" : "es";
-
-  function voiceFor(l) {
-    const vs = speechSynthesis.getVoices();
-    return vs.find(v => v.lang.toLowerCase().startsWith(l === "en" ? "en" : "es-") && v.localService) ||
-           vs.find(v => v.lang.toLowerCase().startsWith(l)) || null;
-  }
-
-  function say() {
+  /* El motor TTS elige la mejor voz y el idioma (ES o EN) de la página. */
+  function say(repeat) {
     if (!ok || muted || !current) return;
-    const l = lang(),
-          u = new SpeechSynthesisUtterance(current[l]);
-    u.lang = l === "en" ? "en-US" : "es-AR";
-    const v = voiceFor(l);
-    if (v) u.voice = v;
-    u.rate = .92;
-    u.pitch = 1;
-    u.volume = 1;
-    u.onerror = e => { if (e.error === "not-allowed") waiting = true; };
-    u.onstart = () => { waiting = false; };
-    try {
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
-    } catch (e) {}
+    if (repeat && TTS.speaking) return;          /* no interrumpir una locución en curso */
+    const en = TTS.lang() === "en" && current.en;
+    TTS.speak(en ? current.en : current.es, { lang: en ? "en" : "es" });
   }
-
-  /* Primer toque o tecla: si el navegador había bloqueado el audio, habla ahora. */
-  const unlock = () => { if (waiting && current) { waiting = false; say(); } };
-  ["pointerdown", "keydown"].forEach(t => addEventListener(t, unlock, { passive: true }));
 
   function start(msg) {
     stop();
     current = msg;
     say();
-    timer = setInterval(say, EVERY);
+    timer = setInterval(() => say(true), EVERY);
   }
 
   function stop() {
@@ -4463,13 +4781,13 @@ const Voice = (() => {
     timer = null;
     current = null;
     waiting = false;
-    if (ok) try { speechSynthesis.cancel(); } catch (e) {}
+    TTS.stop();
   }
 
   function setMuted(m) {
     muted = !!m;
     try { localStorage.setItem(KEY, muted ? "1" : "0"); } catch (e) {}
-    if (muted) { if (ok) try { speechSynthesis.cancel(); } catch (e) {} }
+    if (muted) TTS.stop();
     else say();
   }
 
@@ -4767,7 +5085,7 @@ const GLOS = {
   disc: ["Altura del disco entre las vértebras L4 y L5 medida por imagen.", "Al no haber compresión por el peso del cuerpo, el disco se hincha. Un disco muy expandido aumenta el riesgo de hernia cuando vuelve la gravedad.", "Compresión axial, ejercicios de estabilización del core y seguimiento por imagen.", "disco|l4|l5|hernia"],
   lord: ["Ángulo de la curva natural de la zona lumbar.", "Sin gravedad la columna pierde parte de su curvatura y tiende a aplanarse.", "Fortalece el core y cuida la postura; avisa si hay dolor o cambios bruscos.", "lordosis lumbar|curvatura lumbar"],
   cif: ["Ángulo de la curva de la espalda alta (zona torácica).", "La postura flotante y la menor carga cambian esta curva.", "Movilidad torácica y fortalecimiento de los erectores espinales.", "cifosis|joroba|espalda alta"],
-  lcerv: ["Ángulo de la curva del cuello.", "Sin el peso de la cabeza el cuello pierde su curvatura normal.", "Fortalecimiento cervical (casco lastrado del plan) y control de la postura.", "lordosis cervical|curva del cuello"],
+  lcerv: ["Ángulo de la curva del cuello.", "Sin el peso de la cabeza el cuello pierde su curvatura normal.", "Fortalecimiento cervical (arnés con poleas del plan) y control de la postura.", "lordosis cervical|curva del cuello"],
   vas: ["Tu dolor lumbar en una escala de 0 (nada) a 10 (el peor posible).", "Es frecuente en órbita por la expansión de los discos y el cambio de postura.", "Anótalo a diario. Haz el protocolo de movilidad lumbar y usa calor local. Si pasa de 7 o aparece hormigueo en las piernas, avisa a la médica de vuelo.", "dolor lumbar|dolor de espalda|lumbalgia|vas"],
   load: ["Cuánto de la carga mecánica diaria planeada cumpliste (100 % es la meta).", "En microgravedad la única carga sobre los huesos viene del ejercicio resistivo; si bajas el cumplimiento, el hueso lo nota.", "Completa las rutinas del plan. El cumplimiento de ejercicio se ajusta en el menú de tripulación.", "carga mecanica|carga diaria|cumplimiento"],
   si: ["Índice de rigidez del hueso del talón por ultrasonido; combina la velocidad del sonido y la atenuación.", "Baja cuando el hueso esponjoso pierde densidad.", "Mismas contramedidas que la densidad ósea: ejercicio resistivo, vitamina D y calcio.", "indice de rigidez|rigidez del talon|qus"],
@@ -4785,11 +5103,11 @@ const GLOS = {
   rigi: ["Rigidez de los isquiotibiales con miotonómetro.", "Pierden tono por la inactividad de las piernas.", "Peso muerto y flexión de rodilla en el ARED.", "rigidez de isquiotibiales"],
   rigg: ["Rigidez de los gemelos con miotonómetro.", "Se atrofian rápido en microgravedad.", "Elevación de talones.", "rigidez de gemelos"],
   rigs: ["Rigidez del sóleo con miotonómetro.", "El sóleo sostiene el cuerpo de pie y es de los primeros en atrofiarse.", "Elevación de talones con carga.", "rigidez del soleo"],
-  "ecm.fle": ["Fuerza con la que flexionas el cuello, medida con dinamómetro (kgf).", "Los músculos del cuello pierden fuerza sin el peso de la cabeza.", "Ejercicios con el casco lastrado del plan.", "fuerza de flexion cervical|flexion cervical|fuerza del cuello"],
+  "ecm.fle": ["Fuerza con la que flexionas el cuello, medida con dinamómetro (kgf).", "Los músculos del cuello pierden fuerza sin el peso de la cabeza.", "Ejercicios con el arnés de cabeza y poleas del plan.", "fuerza de flexion cervical|flexion cervical|fuerza del cuello"],
   "antebrazom.fle": ["Espesor de los músculos flexores del antebrazo.", "Cambian poco, pero el uso de guantes del traje los fatiga.", "Ejercicios de agarre y estiramientos.", "flexores|antebrazo"],
   ext: ["Fuerza de extensión del cuello, con dinamómetro (kgf).", "Pierde fuerza por la falta de carga cervical.", "Extensiones cervicales con resistencia ajustable.", "extension cervical"],
   ccft: ["Test de flexión craneocervical: la presión (mmHg) que puedes sostener con los músculos profundos del cuello.", "Baja cuando se debilitan los flexores profundos.", "Ejercicios de control cervical profundo.", "flexion craneocervical|ccft"],
-  area: ["Área transversal de los multífidos cervicales por ecografía.", "Se atrofian cuando el cuello trabaja poco.", "Estabilización cervical y casco lastrado.", "multifidos|area transversal"],
+  area: ["Área transversal de los multífidos cervicales por ecografía.", "Se atrofian cuando el cuello trabaja poco.", "Estabilización cervical y arnés con poleas.", "multifidos|area transversal"],
   delt: ["Espesor del deltoides.", "Se mantiene mejor porque se usa en ejercicio y tareas manuales.", "Press y elevaciones.", "deltoides|hombro"],
   pec: ["Espesor del pectoral mayor.", "Pierde algo de masa por la menor demanda de empuje.", "Ejercicios de empuje.", "pectoral"],
   bic: ["Espesor del bíceps.", "Cambia poco porque se usa para desplazarse.", "Flexiones de codo.", "biceps"],
@@ -4864,6 +5182,16 @@ const GLOS = {
   gcs: ["Escala de coma de Glasgow: mide el nivel de conciencia con la respuesta ocular, verbal y motora. Va de 3 a 15; 15 es lo normal.", "Baja con golpes en la cabeza, hipoxia, hipercapnia o intoxicación.", "Menos de 15 es una alerta: avisa de inmediato al médico de vuelo.", "glasgow|coma de glasgow|gcs|conciencia"],
   ashw: ["Tono muscular medido con la escala de Ashworth modificada (0 a 4). 0 es normal; más alto significa espasticidad o rigidez.", "Alteraciones del control motor central, de la médula o de las vías corticoespinales lo aumentan.", "Si sube a 1 o más, se evalúa con el médico de vuelo y el kinesiólogo.", "ashworth|tono muscular|espasticidad"],
   refl: ["Reflejos osteotendinosos en una escala de 0 a 4. El 2 es lo normal; menos de 1 es hiporreflexia y 3 o más es hiperreflexia.", "Reflejan cómo funcionan las vías motoras centrales y la médula espinal.", "Si salen de lo normal, avisa al médico de vuelo.", "reflejos|hiperreflexia|hiporreflexia"],
+  pess: ["Latencia del potencial evocado somatosensorial (onda N20): el tiempo que tarda una señal en viajar desde el nervio hasta la corteza cerebral, pasando por la médula. Lo normal ronda los 19 a 21 ms.", "Se alarga si hay compresión o sufrimiento de la médula o de las vías sensitivas.", "Si se alarga, avisa al médico de vuelo y evita cargas axiales fuertes en la columna.", "potencial evocado somatosensorial|pess|n20"],
+  mep: ["Latencia del potencial motor evocado: el tiempo que tarda la orden motora en ir de la corteza al músculo por la médula. Lo normal ronda los 20 a 22 ms hasta la mano.", "Se alarga si las vías motoras de la médula están dañadas o comprimidas.", "Si se alarga, avisa al médico de vuelo.", "potencial motor evocado|mep|estimulacion magnetica"],
+  vcm: ["Velocidad de conducción motora de los nervios, en metros por segundo. Lo normal en brazos y piernas es de unos 50 a 65 m/s.", "Baja si hay compresión nerviosa, frío o inflamación.", "Si baja, avisa al médico de vuelo y revisa la postura y la ergonomía.", "velocidad de conduccion|conduccion nerviosa|electroneurografia"],
+  hm: ["Relación entre el reflejo H y la respuesta M: mide cuán excitables son las motoneuronas de la médula.", "Sube cuando hay espasticidad o hiperexcitabilidad medular.", "Si sube, se evalúa con el médico de vuelo y el kinesiólogo.", "reflejo h|relacion h/m|hoffmann"],
+  mrc: ["Fuerza muscular medida con la escala MRC de 0 a 5. 5 es fuerza normal; 4 es movimiento contra resistencia disminuida; 3 es solo vence la gravedad.", "Baja con la atrofia por microgravedad o con una lesión medular o nerviosa.", "Si baja de 5, refuerza el ejercicio resistivo y avisa al médico de vuelo.", "fuerza muscular|mrc|medical research council"],
+  pss: ["Puntaje de estrés de 1 a 10 que sale del test de estrés. Más alto es mejor: 8 a 10 es bueno, 6 a 7 es precaución y 1 a 5 es crítico.", "Baja con el aislamiento, la carga de trabajo, el sueño insuficiente y la incertidumbre de la misión.", "Respiración lenta de 5 minutos, rutina fija, contacto con la familia o con Tierra y aviso a la médica de vuelo si persiste.", "puntaje de estres|estres percibido|nivel de estres|pss"],
+  cort: ["Cortisol salival de la mañana, en nmol/L: la hormona del estrés. Lo normal ronda 3 a 20 nmol/L.", "Sube con el estrés sostenido y la falta de sueño; si se mantiene alto, afecta huesos, músculos y defensas.", "Descanso, rutina y manejo del estrés; si sigue alto, se evalúa con la médica de vuelo.", "cortisol|hormona del estres"],
+  lfhf: ["Relación LF/HF de la variabilidad cardíaca: compara la activación del sistema nervioso simpático (alerta) con la del parasimpático (calma).", "Sube cuando predomina la tensión y baja cuando hay recuperación.", "Respiración lenta y descanso. Si sigue alta, se revisa el estrés y el sueño.", "lf/hf|equilibrio autonomico|balance autonomico"],
+  eda: ["Conductancia de la piel (actividad electrodérmica): cuánto conduce la piel, que aumenta con el sudor emocional.", "Sube con el estrés, la ansiedad y el esfuerzo.", "Respiración lenta y pausas; revisa también la temperatura de la cabina.", "conductancia de la piel|electrodermica|sudor emocional|eda"],
+  resp: ["Frecuencia respiratoria en reposo: cuántas veces respiras por minuto. Lo normal ronda 12 a 16.", "Sube con el estrés, la ansiedad y el CO₂ alto de la cabina.", "Respiración diafragmática lenta; revisa el CO₂ de la cabina si se mantiene alta.", "frecuencia respiratoria|respiraciones por minuto"],
   co2: ["Dióxido de carbono medido en la piel (PtcCO₂), en mmHg.", "Sube si el aire de la cabina acumula CO₂ o si respiras poco.", "Revisa los depuradores de CO₂; con más de 70 mmHg es emergencia vital.", "co2|dioxido de carbono|ptcco2|hipercapnia"]
 };
 
@@ -5228,6 +5556,7 @@ function buildChat() {
   w.innerHTML = `<button type="button" id="bfab" class="bfab" aria-expanded="false" aria-controls="bchat"><span class="bfab-i" aria-hidden="true"></span>Asistente INTI</button>
 <section id="bchat" class="bchat g" role="dialog" aria-label="Asistente INTI" hidden>
   <header class="bc-h"><div><b>INTI</b><small id="bwho"></small></div><div class="bc-hb"><label class="bc-v"><input type="checkbox" id="bvoice" checked> Voz</label><button type="button" class="ib" id="bclose" aria-label="Cerrar asistente"><span class="icon-close" aria-hidden="true"></span></button></div></header>
+  <div class="bc-vc"><label for="bvsel">Voz de INTI</label><select id="bvsel" aria-label="Elegir la voz"></select><button type="button" class="btn o sm" id="bstop" hidden>Detener</button></div>
   <div class="bc-log" id="blog" aria-live="polite"></div>
   <div class="bc-q">${INTI_QUICK.map(q => `<button type="button" class="chip" data-bq="${esc(q[1])}">${q[0]}</button>`).join("")}</div>
   <form class="bc-f" id="bform" autocomplete="off"><input type="text" id="bin" placeholder="Escribe tu duda o indicación" aria-label="Mensaje para INTI"><button type="submit" class="btn">Enviar</button><button type="button" class="btn o" id="bmic" hidden>Hablar</button></form>
@@ -5244,7 +5573,20 @@ function buildChat() {
   $("bfab").onclick = () => open($("bchat").hidden);
   $("bclose").onclick = () => open(false);
   $("bvoice").checked = S.voice;
-  $("bvoice").onchange = e => { S.voice = e.target.checked; if (!S.voice) try { speechSynthesis.cancel(); } catch (x) {} };
+  const fillVoices = () => {
+    const sel = $("bvsel"), vs = TTS.voices(), cur = TTS.pick();
+    sel.innerHTML = `<option value="">Automática (la más natural)</option>` + vs.map(v => `<option translate="no" value="${esc(v.name)}">${esc(v.name.replace(/^Microsoft |^Google /, ""))}</option>`).join("");
+    const saved = (() => { try { return localStorage.getItem("ks-tts-voice-" + TTS.lang()) || ""; } catch (e) { return ""; } })();
+    sel.value = vs.some(v => v.name === saved) ? saved : "";
+    sel.disabled = !vs.length;
+  };
+  fillVoices();
+  if (TTS.supported && speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", fillVoices);
+  document.addEventListener("ks-lang", fillVoices);
+  $("bvsel").onchange = e => { TTS.choose(e.target.value); const l = (S.chat[S.crew] || []).slice(-1)[0]; if (l && !l.u) bettaSay(l.t); };
+  $("bstop").onclick = () => TTS.stop();
+  document.addEventListener("ks-tts", e => { $("bstop").hidden = !e.detail.speaking; });
+  $("bvoice").onchange = e => { S.voice = e.target.checked; if (!S.voice) TTS.stop(); };
   $("bform").onsubmit = e => { e.preventDefault(); const i = $("bin"); ask(i.value); i.value = ""; };
   addEventListener("keydown", e => { if (e.key === "Escape" && !$("bchat").hidden) open(false); });
 
@@ -5272,43 +5614,11 @@ function renderChat() {
 }
 
 /* Habla en el idioma elegido: en inglés se traduce el texto antes de decirlo. */
-/* Elige la voz más natural disponible: prioriza las "neuronales" y las femeninas cálidas conocidas. */
-const VOICE_PREF = {
-  es: ["natural", "online", "neural", "google español", "paulina", "monica", "mónica", "sabina", "helena", "laura", "elena", "lucia", "lucía", "marisol", "dalia", "salome", "elvira", "female"],
-  en: ["natural", "online", "neural", "google us english", "samantha", "aria", "jenny", "zira", "karen", "serena", "moira", "ava", "allison", "female"]
-};
-function bestVoice(l) {
-  const vs = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(l)), pf = VOICE_PREF[l];
-  const score = v => {
-    const n = v.name.toLowerCase();
-    let sc = 0;
-    pf.forEach((k, i) => { if (n.includes(k)) sc += (k === "natural" || k === "neural" || k === "online") ? 30 : 20 - Math.min(i, 15); });
-    if (/(es-ar|es-mx|es-us|en-us)/.test(v.lang.toLowerCase())) sc += 2;
-    if (/(jorge|diego|juan|carlos|pablo|david|mark|james|george|alex|daniel|male)/.test(n) && !n.includes("female")) sc -= 12;
-    if (/espeak|compact/.test(n)) sc -= 20;
-    return sc;
-  };
-  return vs.sort((a, b) => score(b) - score(a))[0] || null;
-}
-function speakIn(txt, l) {
-  const u = new SpeechSynthesisUtterance(txt);
-  u.lang = l === "en" ? "en-US" : "es-AR";
-  const v = bestVoice(l);
-  if (v) { u.voice = v; u.lang = v.lang; }
-  u.rate = .9;      /* ritmo pausado */
-  u.pitch = 1.08;   /* un poco más cálido */
-  u.volume = .95;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-  return u;
-}
+/* La voz de INTI usa el motor TTS compartido (mejor voz del dispositivo, traducción al inglés y frases en cola). */
 function bettaSay(x, cb) {
   try {
-    if (!S.voice || !window.speechSynthesis) return;
-    const clean = x.replace(/\n+/g, ". ").replace(/^- /gm, "").replace(/\s*·\s*/g, ", ").replace(/\s{2,}/g, " "),
-          en = typeof KSLang !== "undefined" && KSLang.get() === "en";
-    if (en && KSLang.tr) KSLang.tr(clean, (t, ok) => { try { const u = speakIn(t, ok ? "en" : "es"); if (cb) cb(u); } catch (e) {} });
-    else { const u = speakIn(clean, "es"); if (cb) cb(u); }
+    if (!S.voice || !TTS.supported) return;
+    TTS.speak(x, { onstart: cb ? () => cb({}) : null });
   } catch (e) {}
 }
 
@@ -5351,26 +5661,13 @@ function introText() {
 
 (() => {
   if (typeof document === "undefined" || typeof setTimeout !== "function" || !$("bchat")) return;
-  let txt = "", started = false, done = false;
-  const speak = () => {
-    if (done) return;
-    started = false;
-    bettaSay(txt, u => {
-      u.onstart = () => { started = true; done = true; };
-      u.onerror = () => { started = false; };
-    });
-  };
-  const unlock = () => { if (!done) speak(); removeEventListener("pointerdown", unlock); removeEventListener("keydown", unlock); };
   const go = () => setTimeout(() => {
     try {
-      txt = introText();
-      const l = S.chat[S.crew] = S.chat[S.crew] || [];
+      const txt = introText(), l = S.chat[S.crew] = S.chat[S.crew] || [];
       l.unshift({ t: txt });
       if (typeof bettaOpen === "function") bettaOpen(true);
       renderChat();
-      speak();
-      addEventListener("pointerdown", unlock, { passive: true });
-      addEventListener("keydown", unlock, { passive: true });
+      bettaSay(txt);
     } catch (e) {}
   }, 500);
   if (typeof KSSplash === "undefined" || KSSplash.done) go(); else document.addEventListener("ks-splash-done", go, { once: true });
@@ -5469,8 +5766,7 @@ document.addEventListener("keydown", e => {
   let W = 0, H = 0, stars = [], shoot = [], raf = 0, last = 0, nextShoot = 2500;
 
   function color() {
-    const light = document.documentElement.getAttribute("data-theme") === "light";
-    return light ? ["#3d5aa0", "#5a74b8", "#7a5fd0"] : ["#ffffff", "#cfe0ff", "#ffe9c4"];
+    return ["#ffffff", "#cfe0ff", "#ffe9c4"];   /* el fondo espacial es siempre el del modo oscuro */
   }
 
   function resize() {
@@ -5631,6 +5927,7 @@ const MENU = [
       { n: "Cuello: yugular y carótida", z: "vasos" },
       { n: "Pulmonar", z: "pulmones", p: "fvc" },
       { n: "Sistema nervioso central", z: "cerebro", p: "fsc" },
+      { n: "Médula espinal", z: "medula", p: "pess" },
       { n: "Renal", z: "rinones", p: "cal" },
       { n: "Metabólico", z: "higado", p: "glu" }
     ]
@@ -5642,6 +5939,7 @@ const MENU = [
     k: [
       { n: "Sueño", z: "sueno" },
       { n: "Memoria de 10 colores", z: "cognicion" },
+      { n: "Estrés", z: "estres" },
       { n: "PVT de reacción", z: "reaccion" },
       { n: "Ánimo", z: "animo" },
       { n: "Prueba de esfuerzo (CEVIS)", z: "esfuerzo" }
@@ -5673,7 +5971,7 @@ const MENU = [
     tab: "plan",
     k: [
       { n: "Receta del día", a: "pl-hoy" },
-      { n: "Casco lastrado cervical", a: "pl-casco" },
+      { n: "Arnés cervical con poleas", a: "pl-casco" },
       { n: "Estabilización para el regreso", a: "pl-regreso" },
       { n: "Todas las rutinas", a: "pl-rut" }
     ]
@@ -6075,38 +6373,95 @@ Nav.start();
     document.documentElement.setAttribute("lang", l);
   }
 
-  /* ---- petición de traducción (límite de 6 a la vez) ---- */
-  function pump() {
-    while (active < 6 && queue.length) {
-      (function (txt) {
-        active++;
-        fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=" + encodeURIComponent(txt))
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (j) {
-            cache[txt] = (j[0] || []).map(function (s) { return s[0]; }).join("");
+  /* ---- petición de traducción ----
+     Varios textos viajan en una sola petición (separados por saltos de línea) y se reparten al volver;
+     si la respuesta no trae las mismas líneas, cada texto se pide por separado. Hasta 3 peticiones a la vez
+     y 2 reintentos con espera creciente si falla la red. */
+  var MAXB = 3, BCH = 1400, BN = 24, tries = {}, stat = null, statT = 0;
+
+  function pendingCount() { return Object.keys(pending).length; }
+  function showStat() {
+    clearTimeout(statT);
+    statT = setTimeout(function () {
+      var n = pendingCount();
+      if (!stat) {
+        stat = document.createElement("div");
+        stat.className = "trstat notranslate";
+        stat.setAttribute("translate", "no");
+        stat.setAttribute("role", "status");
+        document.body.appendChild(stat);
+      }
+      stat.textContent = n && lang === "en" ? "Translating… (" + n + ")" : "";
+      stat.classList.toggle("on", !!(n && lang === "en"));
+    }, 120);
+  }
+  function trim() {
+    var ks = Object.keys(cache);
+    if (ks.length > 6000) { ks.slice(0, 3000).forEach(function (k) { delete cache[k]; }); }
+  }
+  function resolve(txt) {
+    var fns = pending[txt] || []; delete pending[txt];
+    fns.forEach(function (f) { f(); });
+  }
+  function fail(batch, soft) {
+    batch.forEach(function (txt) {
+      tries[txt] = (tries[txt] || 0) + 1;
+      if (tries[txt] <= 2) { setTimeout(function () { queue.push(txt); pump(); }, 700 * tries[txt]); }
+      else { failed = true; resolve(txt); }
+    });
+  }
+  function ask(batch, single, done) {
+    var q = single ? batch[0] : batch.join("\n");
+    fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=" + encodeURIComponent(q))
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) {
+        var full = (j[0] || []).map(function (s) { return s[0] || ""; }).join("");
+        if (single) { cache[batch[0]] = full; save(); resolve(batch[0]); }
+        else {
+          var parts = full.replace(/\n+$/, "").split("\n");
+          if (parts.length === batch.length) {
+            batch.forEach(function (t, i) { cache[t] = parts[i].trim() || t; resolve(t); });
             save();
-          })
-          .catch(function () { failed = true; })
-          .then(function () {
-            active--;
-            var fns = pending[txt] || []; delete pending[txt];
-            fns.forEach(function (f) { f(); });
-            pump();
-            if (!active && !queue.length && failed && lang === "en") note();
-          });
-      })(queue.shift());
+          } else { batch.forEach(function (t) { single1.push(t); }); }   /* no coincide: pedir de a uno */
+        }
+      })
+      .catch(function () { fail(batch, single); })
+      .then(function () { done(); });
+  }
+  var single1 = [];
+  function pump() {
+    while (active < MAXB && (queue.length || single1.length)) {
+      var batch = [], single = false, len = 0;
+      if (single1.length) { batch = [single1.shift()]; single = true; }
+      else {
+        while (queue.length && batch.length < BN && len + queue[0].length < BCH) {
+          var t = queue.shift();
+          if (/\n/.test(t)) { if (!batch.length) { batch = [t]; single = true; } else queue.unshift(t); break; }
+          batch.push(t); len += t.length;
+        }
+        if (!batch.length) batch = [queue.shift()], single = true;
+      }
+      active++;
+      ask(batch, single, function () {
+        active--; trim(); showStat();
+        pump();
+        if (!active && !queue.length && !single1.length && failed && lang === "en") note();
+      });
     }
+    showStat();
   }
   function need(txt, done) {
     if (pending[txt]) { pending[txt].push(done); return; }
     pending[txt] = [done];
     queue.push(txt);
-    pump();
+    clearTimeout(need.t);
+    need.t = setTimeout(pump, 30);               /* junta lo que llegue en 30 ms en una sola petición */
+    showStat();
   }
   function note() {
     failed = false;
     var t = document.getElementById("toast");
-    if (t) { t.textContent = "No se pudo traducir: revisa tu conexión a internet."; t.classList.add("on"); setTimeout(function () { t.classList.remove("on"); }, 4000); }
+    if (t) { t.textContent = "No se pudo traducir parte del texto: revisa tu conexión a internet."; t.classList.add("on"); setTimeout(function () { t.classList.remove("on"); }, 4000); }
   }
 
   /* ---- aplicar a nodos ---- */
@@ -6168,7 +6523,16 @@ Nav.start();
     paint(l);
     if (l === "en") { walk(document.body); observe(); }
     else { if (mo) mo.disconnect(); mo = null; busy = true; restore(document.body); busy = false; }
+    titleSwap(l);
     document.dispatchEvent(new CustomEvent("ks-lang", { detail: l }));
+    showStat();
+  }
+  var T0 = document.title;
+  function titleSwap(l) {
+    if (l === "en") {
+      if (cache[T0]) document.title = cache[T0];
+      else need(T0, function () { if (lang === "en" && cache[T0]) document.title = cache[T0]; });
+    } else document.title = T0;
   }
 
   box.addEventListener("click", function (e) {
@@ -6179,10 +6543,12 @@ Nav.start();
 
   /* Traduce un texto largo línea por línea (para la voz de INTI). cb(texto, ok) */
   function tr(text, cb) {
-    var lines = String(text).split(/(?<=[.:;])\s+|\n/).filter(function (x) { return x.trim(); }), left = lines.length, out = [];
+    var lines = String(text).split(/(?<=[.:;])\s+|\n/).filter(function (x) { return x.trim(); }), left = lines.length, out = [], over = false, fired = false;
     if (!left) return cb("", false);
+    var fire = function (ok) { if (fired) return; fired = true; clearTimeout(tm); cb(lines.map(function (q, i) { return out[i] || cache[q.trim()] || q; }).join(" "), ok); },
+        tm = setTimeout(function () { over = true; fire(false); }, 3500);   /* sin red: habla en español en vez de quedarse callada */
     lines.forEach(function (ln, i) {
-      var t = ln.trim(), fin = function () { out[i] = cache[t] || t; if (!--left) cb(out.join(" "), lines.every(function (q) { return cache[q.trim()]; })); };
+      var t = ln.trim(), fin = function () { out[i] = cache[t] || t; if (!--left && !over) fire(lines.every(function (q) { return cache[q.trim()]; })); };
       if (cache[t]) fin(); else need(t, fin);
     });
   }

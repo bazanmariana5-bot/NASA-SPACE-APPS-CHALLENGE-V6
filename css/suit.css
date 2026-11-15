@@ -65,11 +65,11 @@
 }
 
 /* ---------- Asistente INTI (chat flotante) ---------- */
-.bfab { position: fixed; z-index: 60; left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgba(var(--ac-rgb), .6); background: var(--ac); color: var(--on-ac); font-weight: 700; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: transform .22s var(--ease-pop, ease), box-shadow .22s; }
+.bfab { position: fixed; z-index: 60; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgba(var(--ac-rgb), .6); background: var(--ac); color: var(--on-ac); font-weight: 700; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: transform .22s var(--ease-pop, ease), box-shadow .22s; }
 .bfab:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 36px rgba(var(--ac-rgb), .5); }
 .bfab.on { display: none; }
 .bfab-i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px rgba(255, 255, 255, .28); }
-.bchat { position: fixed; z-index: 70; left: 18px; bottom: 18px; width: min(400px, calc(100vw - 24px)); height: min(560px, calc(100vh - 100px)); display: flex; flex-direction: column; padding: 0; overflow: hidden; background: var(--drawer); box-shadow: 0 24px 70px rgba(0, 0, 0, .5); }
+.bchat { position: fixed; z-index: 70; right: 18px; bottom: 18px; width: min(400px, calc(100vw - 24px)); height: min(560px, calc(100vh - 100px)); display: flex; flex-direction: column; padding: 0; overflow: hidden; background: var(--drawer); box-shadow: 0 24px 70px rgba(0, 0, 0, .5); }
 .bchat[hidden] { display: none; }
 .bc-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); margin: 0; }
 .bc-h small { color: var(--mu); }
@@ -85,7 +85,7 @@
 .bc-f { display: flex; gap: 6px; padding: 10px 12px 12px; }
 .bc-f input { flex: 1; min-width: 0; }
 .bc-f .btn { padding: 8px 12px; }
-@media (max-width: 560px) { .bchat { left: 8px; right: 8px; bottom: 8px; width: auto; height: min(78vh, 560px); } .bfab { left: 10px; bottom: 10px; } }
+@media (max-width: 560px) { .bchat { left: 8px; right: 8px; bottom: 8px; width: auto; height: min(78vh, 560px); } .bfab { right: 10px; bottom: 10px; } }
 html.vital-open .bfab { display: none; }
 
 /* Pestañas y tripulantes legibles sobre el fondo */
@@ -97,3 +97,13 @@ html.vital-open .bfab { display: none; }
 .ncf label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
 .ncf input { width: 100%; }
 body > header h1 { flex: 1 1 280px; min-width: 240px; }
+
+.bc-vc { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--mu); }
+.bc-vc select { flex: 1; min-width: 0; padding: 4px 8px; font-size: 12px; }
+.bc-vc .btn { padding: 4px 10px; }
+
+.trstat { position: fixed; left: 50%; bottom: 16px; transform: translate(-50%, 10px); z-index: 90; padding: 7px 14px; border-radius: 999px; font-size: 12px; background: rgba(8, 14, 32, .88); color: #dbe7ff; border: 1px solid rgba(127, 178, 255, .35); opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+.trstat.on { opacity: 1; transform: translate(-50%, 0); }
+.sw button.on { outline: 2px solid var(--ac); outline-offset: 1px; }
+.sw[data-q] { margin: 6px 0 10px; gap: 6px; }
+.sw[data-q] button { aspect-ratio: auto; min-height: 44px; padding: 6px 4px; font-size: 12px; border-radius: 10px; }

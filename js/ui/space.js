@@ -11,8 +11,7 @@
   let W = 0, H = 0, stars = [], shoot = [], raf = 0, last = 0, nextShoot = 2500;
 
   function color() {
-    const light = document.documentElement.getAttribute("data-theme") === "light";
-    return light ? ["#3d5aa0", "#5a74b8", "#7a5fd0"] : ["#ffffff", "#cfe0ff", "#ffe9c4"];
+    return ["#ffffff", "#cfe0ff", "#ffe9c4"];   /* el fondo espacial es siempre el del modo oscuro */
   }
 
   function resize() {

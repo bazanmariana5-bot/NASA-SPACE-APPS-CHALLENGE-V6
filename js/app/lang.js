@@ -29,38 +29,95 @@
     document.documentElement.setAttribute("lang", l);
   }
 
-  /* ---- petición de traducción (límite de 6 a la vez) ---- */
-  function pump() {
-    while (active < 6 && queue.length) {
-      (function (txt) {
-        active++;
-        fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=" + encodeURIComponent(txt))
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (j) {
-            cache[txt] = (j[0] || []).map(function (s) { return s[0]; }).join("");
+  /* ---- petición de traducción ----
+     Varios textos viajan en una sola petición (separados por saltos de línea) y se reparten al volver;
+     si la respuesta no trae las mismas líneas, cada texto se pide por separado. Hasta 3 peticiones a la vez
+     y 2 reintentos con espera creciente si falla la red. */
+  var MAXB = 3, BCH = 1400, BN = 24, tries = {}, stat = null, statT = 0;
+
+  function pendingCount() { return Object.keys(pending).length; }
+  function showStat() {
+    clearTimeout(statT);
+    statT = setTimeout(function () {
+      var n = pendingCount();
+      if (!stat) {
+        stat = document.createElement("div");
+        stat.className = "trstat notranslate";
+        stat.setAttribute("translate", "no");
+        stat.setAttribute("role", "status");
+        document.body.appendChild(stat);
+      }
+      stat.textContent = n && lang === "en" ? "Translating… (" + n + ")" : "";
+      stat.classList.toggle("on", !!(n && lang === "en"));
+    }, 120);
+  }
+  function trim() {
+    var ks = Object.keys(cache);
+    if (ks.length > 6000) { ks.slice(0, 3000).forEach(function (k) { delete cache[k]; }); }
+  }
+  function resolve(txt) {
+    var fns = pending[txt] || []; delete pending[txt];
+    fns.forEach(function (f) { f(); });
+  }
+  function fail(batch, soft) {
+    batch.forEach(function (txt) {
+      tries[txt] = (tries[txt] || 0) + 1;
+      if (tries[txt] <= 2) { setTimeout(function () { queue.push(txt); pump(); }, 700 * tries[txt]); }
+      else { failed = true; resolve(txt); }
+    });
+  }
+  function ask(batch, single, done) {
+    var q = single ? batch[0] : batch.join("\n");
+    fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=" + encodeURIComponent(q))
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) {
+        var full = (j[0] || []).map(function (s) { return s[0] || ""; }).join("");
+        if (single) { cache[batch[0]] = full; save(); resolve(batch[0]); }
+        else {
+          var parts = full.replace(/\n+$/, "").split("\n");
+          if (parts.length === batch.length) {
+            batch.forEach(function (t, i) { cache[t] = parts[i].trim() || t; resolve(t); });
             save();
-          })
-          .catch(function () { failed = true; })
-          .then(function () {
-            active--;
-            var fns = pending[txt] || []; delete pending[txt];
-            fns.forEach(function (f) { f(); });
-            pump();
-            if (!active && !queue.length && failed && lang === "en") note();
-          });
-      })(queue.shift());
+          } else { batch.forEach(function (t) { single1.push(t); }); }   /* no coincide: pedir de a uno */
+        }
+      })
+      .catch(function () { fail(batch, single); })
+      .then(function () { done(); });
+  }
+  var single1 = [];
+  function pump() {
+    while (active < MAXB && (queue.length || single1.length)) {
+      var batch = [], single = false, len = 0;
+      if (single1.length) { batch = [single1.shift()]; single = true; }
+      else {
+        while (queue.length && batch.length < BN && len + queue[0].length < BCH) {
+          var t = queue.shift();
+          if (/\n/.test(t)) { if (!batch.length) { batch = [t]; single = true; } else queue.unshift(t); break; }
+          batch.push(t); len += t.length;
+        }
+        if (!batch.length) batch = [queue.shift()], single = true;
+      }
+      active++;
+      ask(batch, single, function () {
+        active--; trim(); showStat();
+        pump();
+        if (!active && !queue.length && !single1.length && failed && lang === "en") note();
+      });
     }
+    showStat();
   }
   function need(txt, done) {
     if (pending[txt]) { pending[txt].push(done); return; }
     pending[txt] = [done];
     queue.push(txt);
-    pump();
+    clearTimeout(need.t);
+    need.t = setTimeout(pump, 30);               /* junta lo que llegue en 30 ms en una sola petición */
+    showStat();
   }
   function note() {
     failed = false;
     var t = document.getElementById("toast");
-    if (t) { t.textContent = "No se pudo traducir: revisa tu conexión a internet."; t.classList.add("on"); setTimeout(function () { t.classList.remove("on"); }, 4000); }
+    if (t) { t.textContent = "No se pudo traducir parte del texto: revisa tu conexión a internet."; t.classList.add("on"); setTimeout(function () { t.classList.remove("on"); }, 4000); }
   }
 
   /* ---- aplicar a nodos ---- */
@@ -122,7 +179,16 @@
     paint(l);
     if (l === "en") { walk(document.body); observe(); }
     else { if (mo) mo.disconnect(); mo = null; busy = true; restore(document.body); busy = false; }
+    titleSwap(l);
     document.dispatchEvent(new CustomEvent("ks-lang", { detail: l }));
+    showStat();
+  }
+  var T0 = document.title;
+  function titleSwap(l) {
+    if (l === "en") {
+      if (cache[T0]) document.title = cache[T0];
+      else need(T0, function () { if (lang === "en" && cache[T0]) document.title = cache[T0]; });
+    } else document.title = T0;
   }
 
   box.addEventListener("click", function (e) {
@@ -133,10 +199,12 @@
 
   /* Traduce un texto largo línea por línea (para la voz de INTI). cb(texto, ok) */
   function tr(text, cb) {
-    var lines = String(text).split(/(?<=[.:;])\s+|\n/).filter(function (x) { return x.trim(); }), left = lines.length, out = [];
+    var lines = String(text).split(/(?<=[.:;])\s+|\n/).filter(function (x) { return x.trim(); }), left = lines.length, out = [], over = false, fired = false;
     if (!left) return cb("", false);
+    var fire = function (ok) { if (fired) return; fired = true; clearTimeout(tm); cb(lines.map(function (q, i) { return out[i] || cache[q.trim()] || q; }).join(" "), ok); },
+        tm = setTimeout(function () { over = true; fire(false); }, 3500);   /* sin red: habla en español en vez de quedarse callada */
     lines.forEach(function (ln, i) {
-      var t = ln.trim(), fin = function () { out[i] = cache[t] || t; if (!--left) cb(out.join(" "), lines.every(function (q) { return cache[q.trim()]; })); };
+      var t = ln.trim(), fin = function () { out[i] = cache[t] || t; if (!--left && !over) fire(lines.every(function (q) { return cache[q.trim()]; })); };
       if (cache[t]) fin(); else need(t, fin);
     });
   }

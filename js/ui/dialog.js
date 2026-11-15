@@ -30,5 +30,5 @@ function save(v, t, msg) {
 
 const alertBox = (c, t) => `<div class="alert t${c}">${t}</div>`;
 function openTest(id) {
-  ({ sueno: tSleep, cognicion: tColors, reaccion: tPVT, animo: tMood, esfuerzo: tCpet })[id]();
+  ({ sueno: tSleep, cognicion: tColors, reaccion: tPVT, animo: tMood, estres: tStress, esfuerzo: tCpet })[id]();
 }

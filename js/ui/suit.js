@@ -354,6 +354,7 @@ function buildChat() {
   w.innerHTML = `<button type="button" id="bfab" class="bfab" aria-expanded="false" aria-controls="bchat"><span class="bfab-i" aria-hidden="true"></span>Asistente INTI</button>
 <section id="bchat" class="bchat g" role="dialog" aria-label="Asistente INTI" hidden>
   <header class="bc-h"><div><b>INTI</b><small id="bwho"></small></div><div class="bc-hb"><label class="bc-v"><input type="checkbox" id="bvoice" checked> Voz</label><button type="button" class="ib" id="bclose" aria-label="Cerrar asistente"><span class="icon-close" aria-hidden="true"></span></button></div></header>
+  <div class="bc-vc"><label for="bvsel">Voz de INTI</label><select id="bvsel" aria-label="Elegir la voz"></select><button type="button" class="btn o sm" id="bstop" hidden>Detener</button></div>
   <div class="bc-log" id="blog" aria-live="polite"></div>
   <div class="bc-q">${INTI_QUICK.map(q => `<button type="button" class="chip" data-bq="${esc(q[1])}">${q[0]}</button>`).join("")}</div>
   <form class="bc-f" id="bform" autocomplete="off"><input type="text" id="bin" placeholder="Escribe tu duda o indicación" aria-label="Mensaje para INTI"><button type="submit" class="btn">Enviar</button><button type="button" class="btn o" id="bmic" hidden>Hablar</button></form>
@@ -370,7 +371,20 @@ function buildChat() {
   $("bfab").onclick = () => open($("bchat").hidden);
   $("bclose").onclick = () => open(false);
   $("bvoice").checked = S.voice;
-  $("bvoice").onchange = e => { S.voice = e.target.checked; if (!S.voice) try { speechSynthesis.cancel(); } catch (x) {} };
+  const fillVoices = () => {
+    const sel = $("bvsel"), vs = TTS.voices(), cur = TTS.pick();
+    sel.innerHTML = `<option value="">Automática (la más natural)</option>` + vs.map(v => `<option translate="no" value="${esc(v.name)}">${esc(v.name.replace(/^Microsoft |^Google /, ""))}</option>`).join("");
+    const saved = (() => { try { return localStorage.getItem("ks-tts-voice-" + TTS.lang()) || ""; } catch (e) { return ""; } })();
+    sel.value = vs.some(v => v.name === saved) ? saved : "";
+    sel.disabled = !vs.length;
+  };
+  fillVoices();
+  if (TTS.supported && speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", fillVoices);
+  document.addEventListener("ks-lang", fillVoices);
+  $("bvsel").onchange = e => { TTS.choose(e.target.value); const l = (S.chat[S.crew] || []).slice(-1)[0]; if (l && !l.u) bettaSay(l.t); };
+  $("bstop").onclick = () => TTS.stop();
+  document.addEventListener("ks-tts", e => { $("bstop").hidden = !e.detail.speaking; });
+  $("bvoice").onchange = e => { S.voice = e.target.checked; if (!S.voice) TTS.stop(); };
   $("bform").onsubmit = e => { e.preventDefault(); const i = $("bin"); ask(i.value); i.value = ""; };
   addEventListener("keydown", e => { if (e.key === "Escape" && !$("bchat").hidden) open(false); });
 
@@ -398,43 +412,11 @@ function renderChat() {
 }
 
 /* Habla en el idioma elegido: en inglés se traduce el texto antes de decirlo. */
-/* Elige la voz más natural disponible: prioriza las "neuronales" y las femeninas cálidas conocidas. */
-const VOICE_PREF = {
-  es: ["natural", "online", "neural", "google español", "paulina", "monica", "mónica", "sabina", "helena", "laura", "elena", "lucia", "lucía", "marisol", "dalia", "salome", "elvira", "female"],
-  en: ["natural", "online", "neural", "google us english", "samantha", "aria", "jenny", "zira", "karen", "serena", "moira", "ava", "allison", "female"]
-};
-function bestVoice(l) {
-  const vs = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(l)), pf = VOICE_PREF[l];
-  const score = v => {
-    const n = v.name.toLowerCase();
-    let sc = 0;
-    pf.forEach((k, i) => { if (n.includes(k)) sc += (k === "natural" || k === "neural" || k === "online") ? 30 : 20 - Math.min(i, 15); });
-    if (/(es-ar|es-mx|es-us|en-us)/.test(v.lang.toLowerCase())) sc += 2;
-    if (/(jorge|diego|juan|carlos|pablo|david|mark|james|george|alex|daniel|male)/.test(n) && !n.includes("female")) sc -= 12;
-    if (/espeak|compact/.test(n)) sc -= 20;
-    return sc;
-  };
-  return vs.sort((a, b) => score(b) - score(a))[0] || null;
-}
-function speakIn(txt, l) {
-  const u = new SpeechSynthesisUtterance(txt);
-  u.lang = l === "en" ? "en-US" : "es-AR";
-  const v = bestVoice(l);
-  if (v) { u.voice = v; u.lang = v.lang; }
-  u.rate = .9;      /* ritmo pausado */
-  u.pitch = 1.08;   /* un poco más cálido */
-  u.volume = .95;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-  return u;
-}
+/* La voz de INTI usa el motor TTS compartido (mejor voz del dispositivo, traducción al inglés y frases en cola). */
 function bettaSay(x, cb) {
   try {
-    if (!S.voice || !window.speechSynthesis) return;
-    const clean = x.replace(/\n+/g, ". ").replace(/^- /gm, "").replace(/\s*·\s*/g, ", ").replace(/\s{2,}/g, " "),
-          en = typeof KSLang !== "undefined" && KSLang.get() === "en";
-    if (en && KSLang.tr) KSLang.tr(clean, (t, ok) => { try { const u = speakIn(t, ok ? "en" : "es"); if (cb) cb(u); } catch (e) {} });
-    else { const u = speakIn(clean, "es"); if (cb) cb(u); }
+    if (!S.voice || !TTS.supported) return;
+    TTS.speak(x, { onstart: cb ? () => cb({}) : null });
   } catch (e) {}
 }
 
@@ -477,26 +459,13 @@ function introText() {
 
 (() => {
   if (typeof document === "undefined" || typeof setTimeout !== "function" || !$("bchat")) return;
-  let txt = "", started = false, done = false;
-  const speak = () => {
-    if (done) return;
-    started = false;
-    bettaSay(txt, u => {
-      u.onstart = () => { started = true; done = true; };
-      u.onerror = () => { started = false; };
-    });
-  };
-  const unlock = () => { if (!done) speak(); removeEventListener("pointerdown", unlock); removeEventListener("keydown", unlock); };
   const go = () => setTimeout(() => {
     try {
-      txt = introText();
-      const l = S.chat[S.crew] = S.chat[S.crew] || [];
+      const txt = introText(), l = S.chat[S.crew] = S.chat[S.crew] || [];
       l.unshift({ t: txt });
       if (typeof bettaOpen === "function") bettaOpen(true);
       renderChat();
-      speak();
-      addEventListener("pointerdown", unlock, { passive: true });
-      addEventListener("keydown", unlock, { passive: true });
+      bettaSay(txt);
     } catch (e) {}
   }, 500);
   if (typeof KSSplash === "undefined" || KSSplash.done) go(); else document.addEventListener("ks-splash-done", go, { once: true });

@@ -67,6 +67,7 @@ const MENU = [
       { n: "Cuello: yugular y carótida", z: "vasos" },
       { n: "Pulmonar", z: "pulmones", p: "fvc" },
       { n: "Sistema nervioso central", z: "cerebro", p: "fsc" },
+      { n: "Médula espinal", z: "medula", p: "pess" },
       { n: "Renal", z: "rinones", p: "cal" },
       { n: "Metabólico", z: "higado", p: "glu" }
     ]
@@ -78,6 +79,7 @@ const MENU = [
     k: [
       { n: "Sueño", z: "sueno" },
       { n: "Memoria de 10 colores", z: "cognicion" },
+      { n: "Estrés", z: "estres" },
       { n: "PVT de reacción", z: "reaccion" },
       { n: "Ánimo", z: "animo" },
       { n: "Prueba de esfuerzo (CEVIS)", z: "esfuerzo" }
@@ -109,7 +111,7 @@ const MENU = [
     tab: "plan",
     k: [
       { n: "Receta del día", a: "pl-hoy" },
-      { n: "Casco lastrado cervical", a: "pl-casco" },
+      { n: "Arnés cervical con poleas", a: "pl-casco" },
       { n: "Estabilización para el regreso", a: "pl-regreso" },
       { n: "Todas las rutinas", a: "pl-rut" }
     ]

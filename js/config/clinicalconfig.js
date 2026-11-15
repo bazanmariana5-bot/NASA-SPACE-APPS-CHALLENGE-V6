@@ -21,7 +21,7 @@ const TABS = [
   { id: "huesos", n: "Huesos", cm: "Protocolo ARED: sentadilla y peso muerto, bisfosfonatos y vitamina D. El cumplimiento de ejercicio se ajusta en el menú de tripulación." },
   { id: "musculos", n: "Músculos", cm: "Cicloergómetro y resistencia isoinercial (ARED) 45 min diarios." },
   { id: "organos", n: "Órganos", cm: "Control de fluidos, sodio moderado y pantalones de presión negativa (LBNP)." },
-  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, memoria de 10 colores, reacción y ánimo; obligatorio antes de una EVA o acoplamiento." },
+  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, memoria de 10 colores, reacción, ánimo y estrés; obligatorio antes de una EVA o acoplamiento." },
   { id: "registro", n: "Registro", cm: "" },
   { id: "riesgos", n: "Riesgos NASA", cm: "" },
   { id: "plan", n: "Plan de ejercicio", cm: "" },
@@ -103,6 +103,13 @@ const ZONES = [
     P("ashw", "Tono muscular (Ashworth modificada, 0 a 4)", "puntos", .2, c => .2 + .5 * c.m * c.fk, "gt", 1, 2, 1, { mn: 0, mx: 4 }),
     P("refl", "Reflejos osteotendinosos (0 a 4)", "puntos", 2, c => 2 + .5 * c.m * c.fk, "gt", 3, 4, 1, { mn: 1, mx: 4 })
   ], "Neuromonitorización: perfusión, metabolismo, EEG y examen neurológico. Valores de referencia clínicos; el modelo simula su deriva en microgravedad.", "Sistema nervioso central"),
+  Z("organos", "medula", "Médula espinal", "La médula espinal va desde el bulbo raquídeo hasta la altura de L1-L2 dentro del canal vertebral y lleva las órdenes motoras y la sensibilidad entre el cerebro y el cuerpo. En microgravedad cambia la carga sobre la columna y el sistema nervioso se adapta, por eso se vigilan la conducción de las señales (potenciales evocados somatosensorial y motor, velocidad de conducción), la excitabilidad refleja (reflejo H) y la fuerza muscular.", [
+    fl("pess", "Latencia somatosensorial (PESS N20)", "ms", 19.5, 6, "gt", 22, 25),
+    fl("mep", "Latencia del potencial motor evocado (MEP)", "ms", 21, 6, "gt", 24, 27),
+    fl("vcm", "Velocidad de conducción motora", "m/s", 58, -6, "lt", 50, 42),
+    fl("hm", "Relación H/M del reflejo H", "ratio", .45, 25, "gt", .7, .9, 2),
+    fl("mrc", "Fuerza muscular (escala MRC, 0 a 5)", "puntos", 5, -4, "lt", 4.5, 3.5, 1)
+  ], "Neurofisiología: potenciales evocados, electroneurografía, reflejo H y escala MRC.", "Sistema nervioso central"),
   Z("organos", "vasos", "Cuello: yugular y carótida", "La sangre se acumula en el cuello y la vena yugular puede estancarse, con riesgo de coágulos. Las arterias además se vuelven más rígidas.", [P("ijv", "Estasis de la vena yugular", "grado 1 a 4", 1, c => 1 + .012 * c.d * c.fk, "gt", 2, 3), fl("stif", "Rigidez carotídea", "m/s", 6, 2, "gt", 6.36, 6.72, 2)], "Ecografía vascular Doppler.", "Cardiovascular"),
   Z("organos", "pulmones", "Pulmones", "Sin gravedad las vísceras abdominales suben y el diafragma se eleva: baja la capacidad residual. También se vigila el polvo en cabina y tras caminatas espaciales.", [fl("fvc", "Capacidad vital forzada", "L", 4.8, -1.4, "lt", 4.56, 4.32, 2), fl("fev1", "Volumen espiratorio en 1 s", "L", 3.9, -1.1, "lt", 3.7, 3.51, 2), fl("frc", "Capacidad residual funcional", "L", 2.6, -2.8, "lt", 2.21, 2.08, 2), fl("spo2", "Saturación de oxígeno", "%", 98, -.1, "lt", 95, 94), fl("pi", "Índice de perfusión", "%", 4, -4, "lt", 1, .5)], "Espirometría y oximetría de pulso.", "Respiratorio"),
   Z("organos", "corazon", "Corazón", "Sin gravedad el corazón trabaja menos y se achica un poco. También cambia la regulación de la presión al ponerse de pie, lo que causa mareos al volver a la gravedad.", [fl("lvef", "Fracción de eyección (FEVI)", "%", 62, -.8, "lt", 55, 50), mt("lvm", "Índice de masa del ventrículo izquierdo", "g/m²", 80, -2.5, "lt", 74, 72), fl("sv", "Volumen sistólico", "mL", 78, -2.6, "lt", 70, 66.3), fl("hr", "Frecuencia cardíaca en reposo", "lpm", 66, 1.2, "gt", 85, 95, 0), fl("hrv", "Variabilidad de la frecuencia (RMSSD)", "ms", 52, -4, "lt", 45, 39, 0), fl("ort", "Índice de tolerancia ortostática", "0 a 100", 90, -4.5, "lt", 75, 60, 0), fl("sbp", "Presión sistólica", "mmHg", 118, .6, "gt", 130, 140, 0), fl("dbp", "Presión diastólica", "mmHg", 76, .5, "gt", 85, 90, 0)], "Ecocardiografía, Holter, tensiómetro y prueba de presión negativa (LBNP).", "Cardiovascular"),
@@ -115,6 +122,13 @@ const ZONES = [
   Z("mente", "cognicion", "Memoria de trabajo (test de 10 colores)", "Se muestran 10 colores en orden aleatorio que nunca se repite y la persona los coloca en el mismo orden: 1 punto por acierto. Exige corteza prefrontal e hipocampo y es el primero en fallar por SANS, hipercapnia de cabina, falta de sueño o radiación. Escala de 1 a 10: 1 a 3 deficiente o crítico (rojo), 4 a 6 precaución (amarillo), 7 bueno, 8 y 9 muy bueno, 10 excelente (verde).", [fl("cog", "Puntaje de memoria", "1 a 10", 9, -0.2, "lt", 6, 3, 0), fl("acc", "Aciertos de posición", "de 10", 9, -0.2, "lt", 6, 3), fl("span", "Racha sin error", "pasos", 8.5, -2, "lt", 6, 5), fl("lat", "Latencia de inicio", "ms", 650, 1, "gt", 1000, 1200, 0), fl("itv", "Intervalo entre toques", "ms", 480, 1.5, "gt", 560, 624, 0), ev0("lap", "Lapsos atencionales", "eventos", c => Math.max(0, (c.d - 120) / 60), 1, 2)], "Test de memoria cromática inspirado en WinSCAT y bloques de Corsi.", "Neurocognitivo"),
   Z("mente", "reaccion", "Velocidad de reacción", "Tres intentos tras el cambio de rojo a verde. Escala del tiempo: de 0 a 1 s muy bueno (verde), de 1 a 3 s precaución (amarillo), más de 3 s crítico (rojo). El puntaje de 1 a 10 habilita caminatas espaciales con 6 o más y las bloquea con 4 o menos. Las salidas en falso restan 1 punto y un intento de más de 500 ms resta 2.", [fl("rt", "Tiempo medio de reacción", "ms", 220, 1.5, "gt", 1000, 3000, 0), fl("fast", "Mejor intento", "ms", 190, 1.5, "gt", 1000, 3000, 0), fl("rs", "Puntaje de reacción (1 a 10)", "puntos", 8.5, -1, "lt", 6, 4), ev0("fs", "Salidas en falso", "eventos", c => Math.max(0, (c.d - 150) / 70), 1, 2), ev0("rl", "Intentos mayores a 500 ms", "eventos", c => Math.max(0, (c.d - 180) / 60), 1, 2)], "Adaptación de la tarea de vigilancia psicomotora (PVT) de la NASA.", "Neurocognitivo"),
   Z("mente", "animo", "Ánimo del día", "Escala del 1 al 10 con etiquetas rápidas y bitácora de dos líneas. Con 3 o menos, o una caída de 4 puntos, se avisa de forma confidencial al equipo médico; 5 o 6 durante 7 días seguidos sugiere una videollamada con la familia.", [fl("mood", "Puntaje de ánimo (1 a 10)", "puntos", 7.5, -.8, "lt", 5, 3)], "Autorreporte nocturno de menos de 30 s.", "Emocional"),
+  Z("mente", "estres", "Estrés (monitoreo fisiológico y autoevaluación)", "Combina el puntaje que sale de un test breve de estrés con marcadores del cuerpo: cortisol salival de la mañana, equilibrio del sistema nervioso autónomo (relación LF/HF de la variabilidad cardíaca), conductancia de la piel (sudor emocional) y ritmo respiratorio. Puntaje de estrés de 1 a 10 (más alto es mejor, 10 es máxima calma): 1 a 5 crítico (rojo), 6 a 7 precaución (amarillo) y 8 a 10 bueno (verde).", [
+    fl("pss", "Puntaje de estrés (1 a 10)", "puntos", 9, -10, "lt", 7, 5, 0),
+    fl("cort", "Cortisol salival matutino", "nmol/L", 10, 30, "gt", 18, 24, 1),
+    fl("lfhf", "Equilibrio autonómico (LF/HF)", "ratio", 1.5, 40, "gt", 2.5, 3.5, 2),
+    fl("eda", "Conductancia de la piel (EDA)", "µS", 4, 35, "gt", 8, 12, 1),
+    fl("resp", "Frecuencia respiratoria en reposo", "resp/min", 14, 20, "gt", 20, 24, 0)
+  ], "Escala de estrés percibido (PSS-4 adaptada), cortisol salival, HRV, actividad electrodérmica y respiración.", "Neurocognitivo"),
   Z("mente", "esfuerzo", "Prueba de esfuerzo (CEVIS)", "Ergoespirometría en cicloergómetro: modo submáximo en órbita cada 15 a 21 días (se detiene al 85 % de FC máx. o RER 1,05) y máximo antes y después del vuelo. Se detiene sola con SpO₂ menor a 90 %, PtcCO₂ mayor a 55 mmHg, presión sistólica mayor a 220 mmHg o arritmia.", [mt("vo2", "VO₂máx estimado", "mL/kg/min", 50, -.6, "lt", 45, 42.5, 0), mt("awe", "Eficiencia aeróbica del trabajo", "mL O₂/min/W", 10.2, .8, "gt", 11.5, 12.5), mt("pw", "Potencia en umbral ventilatorio", "W/kg", 2.6, -1, "lt", 2.4, 2.29), mt("hrr", "Recuperación de FC al minuto", "lpm", 22, -1.2, "lt", 18, 12, 0), mt("borg", "Esfuerzo percibido Borg (Etapa 2)", "6 a 20", 12, 1.5, "gt", 14, 17, 0), fl("co2", "PtcCO₂ de cabina", "mmHg", 38, .8, "gt", 48, 55, 0)], "Cicloergómetro con aislamiento de vibraciones y analizador de gases respiración a respiración.", "Cardiopulmonar")
 ];
 
@@ -143,6 +157,16 @@ const LIM = {
   "pulmones.pi": [null, 10],
   "corazon.lvef": [null, 70],
   "corazon.lvm": [null, 102],
+  "medula.pess": [null, 60],
+  "medula.mep": [null, 60],
+  "medula.vcm": [null, 80],
+  "medula.hm": [null, 1.5],
+  "medula.mrc": [0, 5],
+  "estres.pss": [1, 10],
+  "estres.cort": [null, 80],
+  "estres.lfhf": [null, 12],
+  "estres.eda": [null, 40],
+  "estres.resp": [null, 40],
   "cerebro.fsc": [null, 100],
   "cerebro.fscg": [null, 130],
   "cerebro.fscb": [null, 60],
@@ -359,6 +383,7 @@ const PANEL = [
   ["cognicion", "cog", "mente"],
   ["reaccion", "rt", "mente"],
   ["animo", "mood", "mente"],
+  ["estres", "pss", "mente"],
   ["esfuerzo", "vo2", "mente"],
   ["esfuerzo", "co2", "mente"]
 ];

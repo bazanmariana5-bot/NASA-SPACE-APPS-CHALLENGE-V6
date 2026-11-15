@@ -16,42 +16,19 @@ const Voice = (() => {
 
   try { muted = localStorage.getItem(KEY) === "1"; } catch (e) {}
 
-  /* La página se traduce con Google Translate: KSLang dice el idioma que la persona eligió. */
-  const lang = () => (typeof KSLang !== "undefined" && KSLang.get() === "en") ? "en" : "es";
-
-  function voiceFor(l) {
-    const vs = speechSynthesis.getVoices();
-    return vs.find(v => v.lang.toLowerCase().startsWith(l === "en" ? "en" : "es-") && v.localService) ||
-           vs.find(v => v.lang.toLowerCase().startsWith(l)) || null;
-  }
-
-  function say() {
+  /* El motor TTS elige la mejor voz y el idioma (ES o EN) de la página. */
+  function say(repeat) {
     if (!ok || muted || !current) return;
-    const l = lang(),
-          u = new SpeechSynthesisUtterance(current[l]);
-    u.lang = l === "en" ? "en-US" : "es-AR";
-    const v = voiceFor(l);
-    if (v) u.voice = v;
-    u.rate = .92;
-    u.pitch = 1;
-    u.volume = 1;
-    u.onerror = e => { if (e.error === "not-allowed") waiting = true; };
-    u.onstart = () => { waiting = false; };
-    try {
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
-    } catch (e) {}
+    if (repeat && TTS.speaking) return;          /* no interrumpir una locución en curso */
+    const en = TTS.lang() === "en" && current.en;
+    TTS.speak(en ? current.en : current.es, { lang: en ? "en" : "es" });
   }
-
-  /* Primer toque o tecla: si el navegador había bloqueado el audio, habla ahora. */
-  const unlock = () => { if (waiting && current) { waiting = false; say(); } };
-  ["pointerdown", "keydown"].forEach(t => addEventListener(t, unlock, { passive: true }));
 
   function start(msg) {
     stop();
     current = msg;
     say();
-    timer = setInterval(say, EVERY);
+    timer = setInterval(() => say(true), EVERY);
   }
 
   function stop() {
@@ -59,13 +36,13 @@ const Voice = (() => {
     timer = null;
     current = null;
     waiting = false;
-    if (ok) try { speechSynthesis.cancel(); } catch (e) {}
+    TTS.stop();
   }
 
   function setMuted(m) {
     muted = !!m;
     try { localStorage.setItem(KEY, muted ? "1" : "0"); } catch (e) {}
-    if (muted) { if (ok) try { speechSynthesis.cancel(); } catch (e) {} }
+    if (muted) TTS.stop();
     else say();
   }
 

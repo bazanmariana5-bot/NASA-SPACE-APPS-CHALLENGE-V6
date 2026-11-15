@@ -112,8 +112,6 @@ const openDrawer = () => Nav.open(),
 $("hb").onclick = openDrawer;
 $("scrim").onclick = closeDrawer;
 $("day").oninput = e => State({ day: +e.target.value });
-$("adh").oninput = e => { cfg().adh = +e.target.value; render(); };
-$("vas").oninput = e => { cfg().vas = +e.target.value; render(); };
 
 for (const i of ["env", "env2"]) {
   $(i).innerHTML = Object.entries(ENVS).map(([k, v]) => `<option value="${k}">${v.n}</option>`).join("");

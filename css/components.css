@@ -1,0 +1,313 @@
+/* css/components.css — Tarjetas, barras, leyendas, formularios, diálogo y toast. */
+
+.card {
+  width: 240px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(10, 16, 32, .55);
+  text-align: left;
+  display: block;
+}
+
+.card.sel {
+  border-color: var(--ac);
+  box-shadow: 0 0 0 1px var(--ac);
+}
+
+.card small {
+  color: var(--mu);
+}
+
+.card .v {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.card .v em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--mu);
+  font-weight: 400;
+}
+
+.bar {
+  height: 6px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 9px;
+  background: currentColor;
+  transition: width .5s;
+}
+
+.src {
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: rgba(127, 178, 255, .15);
+  color: var(--ac);
+  font-style: normal;
+}
+
+.src.r {
+  background: var(--ac);
+  color: #06101f;
+  font-weight: 700;
+}
+
+details {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--ac);
+  font-size: 13px;
+}
+
+details p {
+  color: var(--mu);
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.lg {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--mu);
+  margin-top: 4px;
+}
+
+.pl {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.pr {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: 13px;
+}
+
+.pr.on {
+  border-color: var(--ac);
+  background: rgba(127, 178, 255, .1);
+}
+
+.pr > span:last-child {
+  grid-column: 1 / -1;
+}
+
+.pr em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--mu);
+}
+
+.two {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .two.fig {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+@media (max-width: 899px) {
+  .xs {
+    display: none;
+  }
+}
+
+dialog {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #0a1020;
+  color: var(--tx);
+  padding: 18px;
+  width: min(620px, 94vw);
+  max-height: 92vh;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, .7);
+}
+
+.fg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fg label {
+  font-size: 12px;
+  color: var(--mu);
+  display: grid;
+  gap: 4px;
+}
+
+.w {
+  grid-column: 1 / -1;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chip {
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: 13px;
+}
+
+.chip.on {
+  background: var(--ac);
+  color: #06101f;
+  border-color: var(--ac);
+}
+
+.sw {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.sw button {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  font-weight: 700;
+  color: #06101f;
+}
+
+.big {
+  min-height: 170px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  user-select: none;
+  touch-action: manipulation;
+  padding: 12px;
+}
+
+table.tb {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tb td,
+.tb th {
+  padding: 6px 8px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tb th {
+  color: var(--mu);
+  font-weight: 500;
+}
+
+.alert {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid currentColor;
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--ok);
+  color: #042;
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity .3s;
+  z-index: 70;
+  pointer-events: none;
+}
+
+#toast.on {
+  opacity: 1;
+}
+
+a {
+  color: var(--ac);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Íconos dibujados en CSS (sin caracteres especiales) ---------- */
+.icon-menu {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  box-shadow: 0 -6px 0 currentColor, 0 6px 0 currentColor;
+  vertical-align: middle;
+}
+
+.icon-close {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
+.icon-close::before,
+.icon-close::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -1px;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.icon-close::before { transform: rotate(45deg); }
+.icon-close::after { transform: rotate(-45deg); }

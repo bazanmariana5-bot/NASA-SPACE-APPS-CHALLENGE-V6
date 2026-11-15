@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kinesoft: Asistente Médico de Tripulación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/anatomy.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="css/registro.css">
+  <link rel="stylesheet" href="css/views.css">
+  <link rel="stylesheet" href="css/plan.css">
+  <link rel="stylesheet" href="css/alerts.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="sky"><i></i><i></i></div>
+  <div id="tip" class="mono"></div>
+  <div id="toast"></div>
+
+  <header class="g">
+    <button class="ib hb" id="hb" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="drawer"><span class="icon-menu" aria-hidden="true"></span></button>
+    <h1>Kinesoft: Asistente Médico de Tripulación</h1>
+    <label class="ctl xs">Entorno<select id="env"></select></label>
+    <label class="ctl">Día <b id="dd" class="mono val val-day"></b><input type="range" id="day" min="0" max="30" aria-label="Día de misión"></label>
+    <button class="btn o sm" id="dys">Días</button>
+    <button class="btn o sm" id="upl">Cargar archivo</button>
+    <button class="btn" id="log">+ Registro diario</button>
+  </header>
+
+  <div id="scrim"></div>
+
+  <aside id="drawer" class="g" inert aria-label="Menú de navegación">
+    <div class="dh">
+      <b class="mono">NAVEGACIÓN</b>
+      <button class="ib" id="dx" aria-label="Cerrar menú"><span class="icon-close" aria-hidden="true"></span></button>
+    </div>
+    <div class="mono sec">TRIPULACIÓN</div>
+    <div id="crew"></div>
+    <div class="mono sec">SECCIONES</div>
+    <nav id="nav" aria-label="Secciones de evaluación"></nav>
+    <div class="mono sec">SIMULACIÓN</div>
+    <label class="ctl stack mt12">Entorno de misión<select id="env2"></select></label>
+    <p id="envnote" class="note"></p>
+    <label class="ctl stack mt8">Cumplimiento de ejercicio <b id="adho" class="mono val"></b><input type="range" id="adh" class="full" min="0" max="100" step="5"></label>
+    <label class="ctl stack mt12">Dolor lumbar (0 a 10) <b id="vaso" class="mono val"></b><input type="range" id="vas" class="full" min="0" max="10" step="1"></label>
+  </aside>
+
+  <div class="app">
+    <main class="main main-grid">
+      <section class="g hero" id="hero"></section>
+      <div class="rw">
+        <button class="ib" data-r="tabs" data-d="-1" aria-label="Anterior">‹</button>
+        <div class="rail" id="tabs"></div>
+        <button class="ib" data-r="tabs" data-d="1" aria-label="Siguiente">›</button>
+      </div>
+      <div class="stage" id="stage"></div>
+    </main>
+  </div>
+
+  <dialog id="dlg">
+    <div id="dbody"></div>
+  </dialog>
+
+  <!-- Sistema de Alertas Dinámicas -->
+  <div id="alert-toast-yellow" role="alert" aria-live="polite"></div>
+
+  <div id="alert-toast-red" role="alert" aria-live="assertive"></div>
+
+  <div id="alert-toast-vital" role="alertdialog" aria-live="assertive"></div>
+
+  <script src="js/config/clinicalconfig.js"></script>
+  <script src="js/lib/anatomy.js"></script>
+  <script src="js/lib/importer.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/engine.js"></script>
+  <script src="js/ui/chart.js"></script>
+  <script src="js/ui/views.js"></script>
+  <script src="js/ui/registro.js"></script>
+  <script src="js/ui/plan.js"></script>
+  <script src="js/ui/events.js"></script>
+  <script src="js/ui/dialog.js"></script>
+  <script src="js/tests/sleep.js"></script>
+  <script src="js/tests/colors.js"></script>
+  <script src="js/tests/pvt.js"></script>
+  <script src="js/tests/mood.js"></script>
+  <script src="js/tests/cpet.js"></script>
+  <script src="js/features/days.js"></script>
+  <script src="js/features/upload.js"></script>
+  <script src="js/features/alerts.js"></script>
+  <script src="js/app/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+/* css/registro.css — Registro por zona. */
+
+/* ==========================================================================
+   REGISTRO POR ZONA
+   ========================================================================== */
+
+.rf {
+  display: block;
+  font-size: 11px;
+  color: var(--mu);
+  margin-top: 2px;
+}
+
+.rf .bd {
+  font-size: 10px;
+  padding: 0 7px;
+}
+
+.zc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.zc i {
+  font-style: normal;
+}
+
+.tb tr.cur td {
+  background: rgba(127, 178, 255, .1);
+}
+
+.tb .chip {
+  padding: 2px 10px;
+  font-size: 12px;
+}
+
+#regform .fg label {
+  align-content: start;
+}
+
+@media (max-width: 560px) {
+  .fg {
+    grid-template-columns: 1fr;
+  }
+  .cg {
+    grid-template-columns: 1fr;
+  }
+}
+
+.app > *,
+.main > *,
+.rw .rail {
+  min-width: 0;
+}
+
+.main {
+  min-width: 0;
+}
+
+.gc,
+.cc {
+  min-width: 0;
+}
+
+.two > * {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .two.fig {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+}
+
+.stage,
+.main {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.stage > * {
+  min-width: 0;
+}

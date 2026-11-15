@@ -1,0 +1,71 @@
+/* css/plan.css — Pestaña Plan de ejercicio y vista lateral del cuello. */
+
+.plg {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  align-items: start;
+}
+
+.card.plc {
+  width: auto;
+  min-width: 0;
+}
+
+.card.plw {
+  grid-column: 1 / -1;
+}
+
+.plc h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.plc ol,
+.plc ul {
+  margin: 8px 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--mu);
+}
+
+.plc li + li {
+  margin-top: 4px;
+}
+
+.plc .bd {
+  flex: none;
+}
+
+.vsf {
+  margin-top: 10px;
+}
+
+.vsf select,
+.vsf input {
+  width: 100%;
+}
+
+@media (max-width: 560px) {
+  .vsf {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Vista lateral del cuello (capa de músculos) */
+.neckz {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  margin-top: 8px;
+}
+
+svg.body.neck {
+  max-width: 270px;
+}
+
+svg.neck text {
+  font: 400 7px 'IBM Plex Mono', ui-monospace, monospace;
+  fill: var(--mu);
+}

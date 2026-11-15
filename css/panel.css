@@ -1,0 +1,140 @@
+/* css/panel.css — Panel: selector de tripulante y cuadrícula de gráficos. */
+
+/* ==========================================================================
+   PANEL: SELECTOR DE TRIPULANTE Y CUADRÍCULA DE GRÁFICOS
+   ========================================================================== */
+
+.ccw {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.cc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(10, 16, 32, .5);
+  position: relative;
+  overflow: hidden;
+}
+
+.cc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--cc);
+}
+
+.cc.on {
+  border-color: var(--cc);
+  background: rgba(127, 178, 255, .1);
+  box-shadow: 0 0 0 1px var(--cc);
+}
+
+.cc .av {
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+}
+
+.ci {
+  flex: 1;
+  min-width: 0;
+}
+
+.ci b {
+  display: block;
+  font-size: 14px;
+}
+
+.ci > span {
+  font-size: 12px;
+  color: var(--mu);
+}
+
+.mini {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.mini i {
+  font-style: normal;
+  font-size: 11px;
+}
+
+.cg {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.gc {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  transition: border-color .2s;
+}
+
+.gc:hover,
+.gc:focus-visible {
+  border-color: var(--ac);
+}
+
+.gc header small {
+  display: block;
+  color: var(--mu);
+  font-size: 12px;
+}
+
+.gc header b {
+  font-size: 15px;
+}
+
+.gv {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gv .mono {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.gv em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--mu);
+}
+
+.gv .bd {
+  margin-left: auto;
+}
+
+.gc footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--mu);
+  flex-wrap: wrap;
+}

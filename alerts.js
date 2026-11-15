@@ -46,21 +46,32 @@ function findEmergencies() {
       const rules = EMERG[z.id + "." + r.p.id];
       if (!rules) return;
       const hit = rules.find(([op, lim]) => op === "lt" ? r.v <= lim : r.v >= lim);
-      if (hit) out.push({ cr, z, r, txt: hit[2] });
+      if (hit) out.push({ cr, z, r, txt: hit[2], arrest: !!hit[3] });
     });
   }));
   return out;
 }
 
+/* Corazón que late rápido con signo de exclamación (paro cardiorrespiratorio). */
+const HEART_ALERT = `<div class="vital-heart" aria-hidden="true"><span class="vital-ring"></span><svg viewBox="0 0 24 24" focusable="false"><path class="vh-body" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/><rect x="10.9" y="6.2" width="2.2" height="7" rx="1.1" fill="#fff"/><circle cx="12" cy="16.2" r="1.4" fill="#fff"/></svg></div>`;
+
 function showVital(e) {
   const el = alertEls().vital;
   if (!el) return;
   activeAlertTarget = e;
+  el.classList.toggle("arrest", e.arrest);
+  const head = e.arrest ? "[ ! ] PARO CARDIORRESPIRATORIO CONFIRMADO" : "[ ! ] ALERTA CRÍTICA · EMERGENCIA VITAL",
+        body = e.arrest
+          ? `<div class="vital-cmd">¡DESPEJEN LA ZONA!</div><div class="vital-cmd2">Desfibrilador a punto de activarse</div><div class="alert-body">${esc(ARREST_MSG(e.cr.name))}</div>`
+          : `<div class="alert-body">${esc(EMERG_MSG(e.cr.name, e.txt))}</div>`;
   el.innerHTML = `
     <button type="button" class="alert-x" data-alert-close="vital" aria-label="Descartar emergencia"><span class="icon-close" aria-hidden="true"></span></button>
-    <div class="alert-head"><span>[ ! ] ALERTA CRÍTICA · EMERGENCIA VITAL</span><span class="alert-go">Ir →</span></div>
-    <div class="alert-body">${esc(EMERG_MSG(e.cr.name, e.txt))}</div>
-    <div class="alert-sub mono">${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}</div>
+    ${e.arrest ? HEART_ALERT : ""}
+    <div class="vital-txt">
+      <div class="alert-head"><span>${head}</span><span class="alert-go">Ir →</span></div>
+      ${body}
+      <div class="alert-sub mono">${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}</div>
+    </div>
   `;
   el.classList.add("on");
 }

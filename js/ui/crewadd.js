@@ -2,10 +2,12 @@
 "use strict";
 
 const CREW_BASE = 3,
-      CREW_COLS = ["#ff8a3d", "#2ee6a6", "#ff4fd8", "#27d8ee", "#b6f23a", "#9b6bff", "#ff6b6b", "#4dd0a0"];
+  CREW_COLS = ["#ff8a3d", "#2ee6a6", "#ff4fd8", "#27d8ee", "#b6f23a", "#9b6bff", "#ff6b6b", "#4dd0a0"];
 
 function saveExtraCrew() {
-  try { localStorage.setItem("ks-crew-extra", JSON.stringify(CREW.slice(CREW_BASE))); } catch (e) {}
+  try {
+    localStorage.setItem("ks-crew-extra", JSON.stringify(CREW.slice(CREW_BASE)));
+  } catch (e) {}
 }
 
 function crewForm(msg) {
@@ -30,20 +32,28 @@ function openCrewForm(msg) {
 
 function addCrew() {
   const name = $("ncn").value.trim().replace(/\s+/g, " "),
-        role = $("ncr").value.trim() || "Tripulante",
-        age = +$("nca").value, h = +$("nch").value, w = +$("ncw").value,
-        bad = m => `<div class="alert t2">${m}</div>`;
-  if (name.length < 3) return $("ncm").innerHTML = bad("Escribe el nombre del tripulante.");
-  if (CREW.some(c => c.name.toLowerCase() === name.toLowerCase())) return $("ncm").innerHTML = bad("Ya existe un tripulante con ese nombre.");
-  if (!(age >= 18 && age <= 80)) return $("ncm").innerHTML = bad("La edad debe estar entre 18 y 80 años.");
-  if (!(h >= 140 && h <= 210)) return $("ncm").innerHTML = bad("La estatura debe estar entre 140 y 210 cm.");
-  if (!(w >= 40 && w <= 150)) return $("ncm").innerHTML = bad("El peso debe estar entre 40 y 150 kg.");
+    role = $("ncr").value.trim() || "Tripulante",
+    age = +$("nca").value,
+    h = +$("nch").value,
+    w = +$("ncw").value,
+    bad = m => `<div class="alert t2">${m}</div>`;
+  if (name.length < 3) return ($("ncm").innerHTML = bad("Escribe el nombre del tripulante."));
+  if (CREW.some(c => c.name.toLowerCase() === name.toLowerCase()))
+    return ($("ncm").innerHTML = bad("Ya existe un tripulante con ese nombre."));
+  if (!(age >= 18 && age <= 80)) return ($("ncm").innerHTML = bad("La edad debe estar entre 18 y 80 años."));
+  if (!(h >= 140 && h <= 210)) return ($("ncm").innerHTML = bad("La estatura debe estar entre 140 y 210 cm."));
+  if (!(w >= 40 && w <= 150)) return ($("ncm").innerHTML = bad("El peso debe estar entre 40 y 150 kg."));
   const n = Math.max(...CREW.map(c => parseInt(c.id.slice(1), 10) || 0)) + 1,
-        c = {
-          id: "c" + n, name, role,
-          bio: `${role} · ${age} años · ${(h / 100).toFixed(2).replace(".", ",")} m · ${w} kg`,
-          age, h, sens: 1, col: CREW_COLS[(CREW.length - CREW_BASE) % CREW_COLS.length]
-        };
+    c = {
+      id: "c" + n,
+      name,
+      role,
+      bio: `${role} · ${age} años · ${(h / 100).toFixed(2).replace(".", ",")} m · ${w} kg`,
+      age,
+      h,
+      sens: 1,
+      col: CREW_COLS[(CREW.length - CREW_BASE) % CREW_COLS.length]
+    };
   CREW.push(c);
   S.cc[c.id] = { adh: 40, vas: 3 };
   saveExtraCrew();
@@ -59,7 +69,8 @@ function delCrew(id) {
   CREW.splice(i, 1);
   delete S.cc[id];
   saveExtraCrew();
-  if (S.crew === id) State({ crew: CREW[0].id }); else renderChrome();
+  if (S.crew === id) State({ crew: CREW[0].id });
+  else renderChrome();
   openCrewForm(`<div class="alert t0">Se quitó a ${esc(nm)}.</div>`);
 }
 

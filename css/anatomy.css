@@ -9,7 +9,7 @@ svg.body {
 .sil-a * {
   fill: none;
   stroke: var(--sil);
-  stroke-opacity: .6;
+  stroke-opacity: 0.6;
   stroke-width: 3;
   stroke-linejoin: round;
 }
@@ -21,7 +21,7 @@ svg.body {
 
 .sil-c * {
   fill: url(#bs);
-  fill-opacity: .26;
+  fill-opacity: 0.26;
   stroke: none;
 }
 
@@ -30,14 +30,14 @@ svg.body {
 }
 
 .gh .f {
-  fill: rgba(var(--fig-rgb), .07);
-  stroke: rgba(var(--fig-rgb), .2);
-  stroke-width: .6;
+  fill: rgba(var(--fig-rgb), 0.07);
+  stroke: rgba(var(--fig-rgb), 0.2);
+  stroke-width: 0.6;
 }
 
 .gh .s {
   fill: none;
-  stroke: rgba(var(--fig-rgb), .18);
+  stroke: rgba(var(--fig-rgb), 0.18);
 }
 
 .gh .d,
@@ -48,30 +48,36 @@ svg.body {
 
 .rings circle {
   fill: none;
-  stroke: rgba(var(--ac-rgb), .14);
+  stroke: rgba(var(--ac-rgb), 0.14);
   stroke-dasharray: 2 5;
 }
 
 .scan {
-  fill: rgba(var(--ac-rgb), .35);
+  fill: rgba(var(--ac-rgb), 0.35);
   animation: scan 5s linear infinite;
 }
 
 @keyframes scan {
-  from { transform: translateY(0); }
-  to { transform: translateY(470px); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(470px);
+  }
 }
 
 .z {
   cursor: pointer;
-  transition: color .4s, filter .4s;
+  transition:
+    color 0.4s,
+    filter 0.4s;
 }
 
 .z .f {
   fill: currentColor;
-  fill-opacity: .62;
-  stroke: rgba(var(--edge-rgb), .55);
-  stroke-width: .7;
+  fill-opacity: 0.62;
+  stroke: rgba(var(--edge-rgb), 0.55);
+  stroke-width: 0.7;
 }
 
 .z .s {
@@ -79,32 +85,44 @@ svg.body {
   stroke: currentColor;
   stroke-width: 2.4;
   stroke-linecap: round;
-  stroke-opacity: .9;
+  stroke-opacity: 0.9;
 }
 
 .z .d {
   fill: none;
-  stroke: rgba(var(--edge-rgb), .6);
-  stroke-width: .9;
+  stroke: rgba(var(--edge-rgb), 0.6);
+  stroke-width: 0.9;
   stroke-linecap: round;
   pointer-events: none;
 }
 
 .z .k {
   fill: var(--bg);
-  fill-opacity: .85;
+  fill-opacity: 0.85;
   pointer-events: none;
 }
 
-.z.s0 { color: var(--ok); filter: drop-shadow(0 0 3px rgba(46, 230, 166, .6)); }
-.z.s1 { color: var(--warn); filter: drop-shadow(0 0 3px rgba(255, 181, 71, .7)); }
-.z.s2 { color: var(--bad); filter: drop-shadow(0 0 4px rgba(255, 107, 107, .85)); }
-.z.s3 { color: var(--s3); filter: none; }
+.z.s0 {
+  color: var(--ok);
+  filter: drop-shadow(0 0 3px rgba(46, 230, 166, 0.6));
+}
+.z.s1 {
+  color: var(--warn);
+  filter: drop-shadow(0 0 3px rgba(255, 181, 71, 0.7));
+}
+.z.s2 {
+  color: var(--bad);
+  filter: drop-shadow(0 0 4px rgba(255, 107, 107, 0.85));
+}
+.z.s3 {
+  color: var(--s3);
+  filter: none;
+}
 
 .z.sel .f {
   stroke: var(--sel);
   stroke-width: 1.2;
-  fill-opacity: .88;
+  fill-opacity: 0.88;
 }
 
 .z.sel {
@@ -112,7 +130,7 @@ svg.body {
 }
 
 .z:hover {
-  opacity: .82;
+  opacity: 0.82;
 }
 
 #tip {

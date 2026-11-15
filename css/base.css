@@ -3,8 +3,8 @@
 :root {
   /* ---- Tema oscuro (predeterminado) ---- */
   --bg: #060912;
-  --glass: rgba(16, 24, 44, .62);
-  --line: rgba(140, 180, 255, .16);
+  --glass: rgba(16, 24, 44, 0.62);
+  --line: rgba(140, 180, 255, 0.16);
   --tx: #e8eefc;
   --mu: #8d9bb8;
   --ac: #7fb2ff;
@@ -13,34 +13,34 @@
   --bad: #ff6b6b;
   --s3: #6d788f;
 
-  --on-ac: #06101f;          /* texto sobre el color de acento */
-  --on-ok: #042;             /* texto sobre fondo --ok */
-  --ac-rgb: 127, 178, 255;   /* acento en RGB, para fondos translúcidos */
-  --fig-rgb: 190, 215, 255;  /* trazos de la figura anatómica */
-  --edge-rgb: 5, 8, 18;      /* contornos de zonas */
+  --on-ac: #06101f; /* texto sobre el color de acento */
+  --on-ok: #042; /* texto sobre fondo --ok */
+  --ac-rgb: 127, 178, 255; /* acento en RGB, para fondos translúcidos */
+  --fig-rgb: 190, 215, 255; /* trazos de la figura anatómica */
+  --edge-rgb: 5, 8, 18; /* contornos de zonas */
 
-  --surf: rgba(10, 16, 32, .78);   /* tarjetas */
-  --field: rgba(5, 8, 18, .7);     /* campos de formulario */
-  --solid: #0a1020;                /* diálogos */
-  --drawer: rgba(8, 12, 26, .95);  /* menú lateral y tooltip */
-  --scrim: rgba(0, 0, 0, .55);
-  --scrim-dlg: rgba(0, 0, 0, .7);
-  --hov: rgba(255, 255, 255, .08);
-  --bx: #10192e;                   /* caja de las pruebas */
+  --surf: rgba(10, 16, 32, 0.78); /* tarjetas */
+  --field: rgba(5, 8, 18, 0.7); /* campos de formulario */
+  --solid: #0a1020; /* diálogos */
+  --drawer: rgba(8, 12, 26, 0.95); /* menú lateral y tooltip */
+  --scrim: rgba(0, 0, 0, 0.55);
+  --scrim-dlg: rgba(0, 0, 0, 0.7);
+  --hov: rgba(255, 255, 255, 0.08);
+  --bx: #10192e; /* caja de las pruebas */
   --toast-bad: #1a0f1a;
 
-  --sky-1: rgba(90, 70, 200, .28);
-  --sky-2: rgba(20, 120, 170, .22);
+  --sky-1: rgba(90, 70, 200, 0.28);
+  --sky-2: rgba(20, 120, 170, 0.22);
   --star-1: #fff;
   --star-2: #cfe0ff;
   --star-op: 1;
 
   --sil: #9ec5ff;
   --sil-fill: #0a1128;
-  --sel: #fff;               /* resalte de selección y puntos reales */
-  --grid: #8cb4ff;           /* rejilla de los gráficos */
+  --sel: #fff; /* resalte de selección y puntos reales */
+  --grid: #8cb4ff; /* rejilla de los gráficos */
 
-  --cw1: #7fb2ff;            /* colores de tripulantes */
+  --cw1: #7fb2ff; /* colores de tripulantes */
   --cw2: #ff8ad8;
   --cw3: #ffd23f;
 
@@ -53,8 +53,8 @@
 /* ---- Tema claro ---- */
 :root[data-theme="light"] {
   --bg: #eef2fa;
-  --glass: rgba(255, 255, 255, .74);
-  --line: rgba(30, 60, 120, .18);
+  --glass: rgba(255, 255, 255, 0.74);
+  --line: rgba(30, 60, 120, 0.18);
   --tx: #0f1a33;
   --mu: #55627d;
   --ac: #2a5fd1;
@@ -69,21 +69,21 @@
   --fig-rgb: 40, 70, 130;
   --edge-rgb: 255, 255, 255;
 
-  --surf: rgba(255, 255, 255, .8);
-  --field: rgba(255, 255, 255, .9);
+  --surf: rgba(255, 255, 255, 0.8);
+  --field: rgba(255, 255, 255, 0.9);
   --solid: #fff;
-  --drawer: rgba(255, 255, 255, .97);
-  --scrim: rgba(15, 26, 51, .35);
-  --scrim-dlg: rgba(15, 26, 51, .5);
-  --hov: rgba(15, 26, 51, .07);
+  --drawer: rgba(255, 255, 255, 0.97);
+  --scrim: rgba(15, 26, 51, 0.35);
+  --scrim-dlg: rgba(15, 26, 51, 0.5);
+  --hov: rgba(15, 26, 51, 0.07);
   --bx: #dfe7f6;
   --toast-bad: #fff0f2;
 
-  --sky-1: rgba(90, 70, 200, .12);
-  --sky-2: rgba(20, 120, 170, .1);
+  --sky-1: rgba(90, 70, 200, 0.12);
+  --sky-2: rgba(20, 120, 170, 0.1);
   --star-1: #3d5aa0;
   --star-2: #5a74b8;
-  --star-op: .35;
+  --star-op: 0.35;
 
   --sil: #3d6bc4;
   --sil-fill: #d6e1f5;
@@ -111,10 +111,13 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--tx);
-  font: 400 15px/1.5 'Space Grotesk', system-ui, sans-serif;
+  font:
+    400 15px/1.5 "Space Grotesk",
+    system-ui,
+    sans-serif;
   min-height: 100vh;
 }
 
 .mono {
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
 }

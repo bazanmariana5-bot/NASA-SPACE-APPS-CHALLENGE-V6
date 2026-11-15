@@ -1,48 +1,116 @@
-/* js/core/store.js — Persistencia de registros (localStorage). */
+/* js/core/store.js — Persistencia de registros (localStorage) y carga de los datos iniciales. */
 "use strict";
 
-/* ---------- StorageManager ---------- */
 const Store = {
   K: "orbital_logs_v4",
+  SEED_FLAG: "orbital_seed_v1",
   ver: 0,
-  _r: null,
-  _o: {},
+  _raw: null,
+  _cache: {},
+
+  /* Todos los registros: { tripulante: { día: { v: {zona.param: valor}, t, n, zn } } }. */
   all() {
     try {
-      const r = localStorage.getItem(this.K) || "{}";
-      if (r !== this._r) { this._o = JSON.parse(r); this._r = r; }
-      return this._o;
-    } catch (e) { return {}; }
+      const raw = localStorage.getItem(this.K) || "{}";
+      if (raw !== this._raw) {
+        this._cache = JSON.parse(raw);
+        this._raw = raw;
+      }
+      return this._cache;
+    } catch (e) {
+      return {};
+    }
   },
-  days(c) { return this.all()[c] || {}; },
-  get(c, d) { return this.days(c)[d]; },
+
+  days(c) {
+    return this.all()[c] || {};
+  },
+
+  get(c, d) {
+    return this.days(c)[d];
+  },
+
+  /* Escribe el objeto completo y avisa a la interfaz (ver) de que hubo un cambio. */
+  _save(all) {
+    localStorage.setItem(this.K, JSON.stringify(all));
+    this.ver++;
+  },
+
+  /* Devuelve (creándolo si falta) el registro de un día. */
+  _slot(all, c, d) {
+    const byDay = (all[c] = all[c] || {});
+    return (byDay[d] = byDay[d] || { v: {}, t: {} });
+  },
+
   put(c, d, patch) {
     try {
-      const a = this.all(),
-            r = (a[c] = a[c] || {})[d] = a[c][d] || { v: {}, t: {} };
-      Object.assign(r.v, cleanV(patch.v));
-      Object.assign(r.t, patch.t || {});
-      if (patch.n != null) r.n = patch.n;
-      (localStorage.setItem(this.K, JSON.stringify(a)), Store.ver++);
-    } catch (e) {}
+      const all = this.all(),
+        rec = this._slot(all, c, d);
+      Object.assign(rec.v, cleanV(patch.v));
+      Object.assign(rec.t, patch.t || {});
+      if (patch.n != null) rec.n = patch.n;
+      this._save(all);
+    } catch (e) {
+      /* almacenamiento lleno o bloqueado: la app sigue funcionando sin guardar */
+    }
   },
+
   setZone(c, d, zid, v, n) {
     try {
-      const a = this.all(),
-            r = (a[c] = a[c] || {})[d] = a[c][d] || { v: {}, t: {} };
-      Object.keys(r.v).forEach(k => { if (k.indexOf(zid + ".") === 0) delete r.v[k]; });
-      Object.assign(r.v, cleanV(v));
-      r.zn = r.zn || {};
-      if (n) r.zn[zid] = n; else delete r.zn[zid];
-      if (!Object.keys(r.v).length && !Object.keys(r.t || {}).length && !Object.keys(r.zn).length && !r.n) delete a[c][d];
-      (localStorage.setItem(this.K, JSON.stringify(a)), Store.ver++);
-    } catch (e) {}
+      const all = this.all(),
+        rec = this._slot(all, c, d),
+        empty = o => !Object.keys(o || {}).length;
+      Object.keys(rec.v).forEach(k => {
+        if (k.indexOf(zid + ".") === 0) delete rec.v[k];
+      });
+      Object.assign(rec.v, cleanV(v));
+      rec.zn = rec.zn || {};
+      if (n) rec.zn[zid] = n;
+      else delete rec.zn[zid];
+      if (empty(rec.v) && empty(rec.t) && empty(rec.zn) && !rec.n) delete all[c][d];
+      this._save(all);
+    } catch (e) {
+      /* ver put() */
+    }
   },
+
   del(c, d) {
     try {
-      const a = this.all();
-      if (a[c]) delete a[c][d];
-      (localStorage.setItem(this.K, JSON.stringify(a)), Store.ver++);
-    } catch (e) {}
+      const all = this.all();
+      if (all[c]) delete all[c][d];
+      this._save(all);
+    } catch (e) {
+      /* ver put() */
+    }
+  },
+
+  /* Carga los datos iniciales (SEED, días 0 a 30). Sin `force` se hace una sola vez y
+     solo rellena lo que falta; con `force` restaura los valores originales de esos días
+     (los registros que la persona agregó en otros días no se tocan). */
+  seed(force = false) {
+    try {
+      if (typeof SEED === "undefined") return 0;
+      if (!force && localStorage.getItem(this.SEED_FLAG)) return 0;
+      const all = this.all();
+      let n = 0;
+      Object.entries(SEED).forEach(([c, params]) => {
+        Object.entries(params).forEach(([key, series]) => {
+          series.forEach((value, d) => {
+            const rec = this._slot(all, c, d);
+            if (force || rec.v[key] == null) {
+              rec.v[key] = value;
+              n++;
+            }
+          });
+        });
+      });
+      this._save(all);
+      localStorage.setItem(this.SEED_FLAG, "1");
+      return n;
+    } catch (e) {
+      return 0;
+    }
   }
 };
+
+Store.seed();

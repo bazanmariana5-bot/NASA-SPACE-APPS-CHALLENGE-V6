@@ -3,17 +3,19 @@
 
 (() => {
   const KEY = "ks-theme",
-        root = document.documentElement,
-        btn = document.getElementById("theme"),
-        mq = typeof matchMedia === "function" ? matchMedia("(prefers-color-scheme: light)") : null;
+    root = document.documentElement,
+    btn = document.getElementById("theme"),
+    mq = typeof matchMedia === "function" ? matchMedia("(prefers-color-scheme: light)") : null;
 
   const saved = () => {
     try {
       const t = localStorage.getItem(KEY);
       return t === "light" || t === "dark" ? t : null;
-    } catch (e) { return null; }
+    } catch (e) {
+      return null;
+    }
   };
-  const system = () => mq && mq.matches ? "light" : "dark";
+  const system = () => (mq && mq.matches ? "light" : "dark");
 
   function apply(t) {
     root.setAttribute("data-theme", t);
@@ -28,12 +30,18 @@
 
   apply(root.getAttribute("data-theme") === "light" ? "light" : "dark");
 
-  if (btn) btn.addEventListener("click", () => {
-    const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-    try { localStorage.setItem(KEY, next); } catch (e) {}
-    apply(next);
-  });
+  if (btn)
+    btn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      try {
+        localStorage.setItem(KEY, next);
+      } catch (e) {}
+      apply(next);
+    });
 
   /* Mientras la persona no haya elegido, se sigue el cambio de tema del sistema. */
-  if (mq && mq.addEventListener) mq.addEventListener("change", () => { if (!saved()) apply(system()); });
+  if (mq && mq.addEventListener)
+    mq.addEventListener("change", () => {
+      if (!saved()) apply(system());
+    });
 })();

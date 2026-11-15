@@ -143,9 +143,9 @@ const Nav = {
       const ks = g.k.map(l => ({ ...l, t: g.tab }));
       if (AUTO.includes(g.tab)) {
         const u = new Set(g.k.map(l => l.z));
-        ZONES
-          .filter(z => z.tab === g.tab && !u.has(z.id))
-          .forEach(z => ks.push({ n: z.n.split(" (")[0], z: z.id, t: g.tab }));
+        ZONES.filter(z => z.tab === g.tab && !u.has(z.id)).forEach(z =>
+          ks.push({ n: z.n.split(" (")[0], z: z.id, t: g.tab })
+        );
       }
       return { ...g, ks };
     });

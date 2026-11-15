@@ -22,7 +22,9 @@ html.lock {
 
 #drawer[inert] {
   visibility: hidden;
-  transition: transform .3s, visibility 0s .3s;
+  transition:
+    transform 0.3s,
+    visibility 0s 0.3s;
 }
 
 .dh {
@@ -35,14 +37,14 @@ html.lock {
 .dh b {
   color: var(--mu);
   font-size: 12px;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 .sec {
   color: var(--mu);
   font-size: 12px;
   margin: 14px 0 8px;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 #nav {
@@ -81,7 +83,7 @@ html.lock {
 .ngh em {
   font-style: normal;
   color: var(--mu);
-  transition: transform .2s;
+  transition: transform 0.2s;
 }
 
 .ng.open .ngh em {
@@ -116,11 +118,11 @@ html.lock {
 }
 
 .nl:hover {
-  background: rgba(var(--ac-rgb), .08);
+  background: rgba(var(--ac-rgb), 0.08);
 }
 
 .nl.on {
-  background: rgba(var(--ac-rgb), .18);
+  background: rgba(var(--ac-rgb), 0.18);
   box-shadow: inset 2px 0 var(--ac);
 }
 

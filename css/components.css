@@ -45,14 +45,14 @@
   height: 100%;
   border-radius: 9px;
   background: currentColor;
-  transition: width .5s;
+  transition: width 0.5s;
 }
 
 .src {
   font-size: 11px;
   padding: 1px 8px;
   border-radius: 6px;
-  background: rgba(var(--ac-rgb), .15);
+  background: rgba(var(--ac-rgb), 0.15);
   color: var(--ac);
   font-style: normal;
 }
@@ -110,7 +110,7 @@ details p {
 
 .pr.on {
   border-color: var(--ac);
-  background: rgba(var(--ac-rgb), .1);
+  background: rgba(var(--ac-rgb), 0.1);
 }
 
 .pr > span:last-child {
@@ -258,7 +258,7 @@ table.tb {
   border-radius: 99px;
   font-weight: 700;
   opacity: 0;
-  transition: opacity .3s;
+  transition: opacity 0.3s;
   z-index: 70;
   pointer-events: none;
 }
@@ -285,7 +285,9 @@ a {
   height: 2px;
   background: currentColor;
   border-radius: 2px;
-  box-shadow: 0 -6px 0 currentColor, 0 6px 0 currentColor;
+  box-shadow:
+    0 -6px 0 currentColor,
+    0 6px 0 currentColor;
   vertical-align: middle;
 }
 
@@ -309,5 +311,18 @@ a {
   border-radius: 2px;
 }
 
-.icon-close::before { transform: rotate(45deg); }
-.icon-close::after { transform: rotate(-45deg); }
+.icon-close::before {
+  transform: rotate(45deg);
+}
+.icon-close::after {
+  transform: rotate(-45deg);
+}
+
+/* Resumen de tarjeta: como máximo 3 líneas, sin cortar el texto a mitad de palabra en el código */
+.clamp3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

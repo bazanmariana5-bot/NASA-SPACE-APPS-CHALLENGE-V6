@@ -36,7 +36,7 @@
 
 .cc.on {
   border-color: var(--cc);
-  background: rgba(var(--ac-rgb), .1);
+  background: rgba(var(--ac-rgb), 0.1);
   box-shadow: 0 0 0 1px var(--cc);
 }
 
@@ -90,7 +90,7 @@
   display: grid;
   gap: 6px;
   align-content: start;
-  transition: border-color .2s;
+  transition: border-color 0.2s;
 }
 
 .gc:hover,

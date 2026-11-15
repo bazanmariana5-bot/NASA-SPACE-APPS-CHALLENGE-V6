@@ -1,0 +1,13 @@
+{
+  "name": "kinesoft-asistente-medico",
+  "version": "27.0.0",
+  "private": true,
+  "description": "Kinesoft: asistente médico de tripulación (NASA Space Apps Challenge)",
+  "scripts": {
+    "build": "python3 tools/build.py",
+    "test": "node tools/smoke-test.js",
+    "format": "prettier --write js css tools/*.js eslint.config.js",
+    "lint": "eslint js",
+    "check": "node tools/check.js"
+  }
+}

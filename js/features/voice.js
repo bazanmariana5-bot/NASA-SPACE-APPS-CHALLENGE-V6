@@ -6,20 +6,21 @@
 
 const Voice = (() => {
   const KEY = "ks-voice-muted",
-        EVERY = 11000,
-        ok = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined";
+    EVERY = 11000,
+    ok = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined";
 
   let muted = false,
-      timer = null,
-      current = null,   /* { es, en } mensaje activo */
-      waiting = false;  /* el navegador exigió un toque antes de hablar */
+    timer = null,
+    current = null; /* { es, en } mensaje activo */
 
-  try { muted = localStorage.getItem(KEY) === "1"; } catch (e) {}
+  try {
+    muted = localStorage.getItem(KEY) === "1";
+  } catch (e) {}
 
   /* El motor TTS elige la mejor voz y el idioma (ES o EN) de la página. */
   function say(repeat) {
     if (!ok || muted || !current) return;
-    if (repeat && TTS.speaking) return;          /* no interrumpir una locución en curso */
+    if (repeat && TTS.speaking) return; /* no interrumpir una locución en curso */
     const en = TTS.lang() === "en" && current.en;
     TTS.speak(en ? current.en : current.es, { lang: en ? "en" : "es" });
   }
@@ -35,18 +36,29 @@ const Voice = (() => {
     clearInterval(timer);
     timer = null;
     current = null;
-    waiting = false;
     TTS.stop();
   }
 
   function setMuted(m) {
     muted = !!m;
-    try { localStorage.setItem(KEY, muted ? "1" : "0"); } catch (e) {}
+    try {
+      localStorage.setItem(KEY, muted ? "1" : "0");
+    } catch (e) {}
     if (muted) TTS.stop();
     else say();
   }
 
   if (ok && speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", () => {});
 
-  return { start, stop, setMuted, get muted() { return muted; }, get supported() { return ok; } };
+  return {
+    start,
+    stop,
+    setMuted,
+    get muted() {
+      return muted;
+    },
+    get supported() {
+      return ok;
+    }
+  };
 })();

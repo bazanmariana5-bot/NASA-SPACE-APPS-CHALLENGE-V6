@@ -5,7 +5,7 @@
 "use strict";
 
 /* Helpers de primitivas SVG */
-const sym = (s) => `${s}<g transform="translate(200 0) scale(-1 1)">${s}</g>`;
+const sym = s => `${s}<g transform="translate(200 0) scale(-1 1)">${s}</g>`;
 
 const Rc = (x, y, w, h, r = 2, c = "f") =>
   `<rect class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/>`;
@@ -18,8 +18,7 @@ const El = (cx, cy, rx, ry, c = "f", rot = 0) =>
     rot ? ` transform="rotate(${rot} ${cx} ${cy})"` : ""
   }/>`;
 
-const Ci = (cx, cy, r, c = "f") =>
-  `<circle class="${c}" cx="${cx}" cy="${cy}" r="${r}"/>`;
+const Ci = (cx, cy, r, c = "f") => `<circle class="${c}" cx="${cx}" cy="${cy}" r="${r}"/>`;
 
 const Pa = (d, c = "f") => `<path class="${c}" d="${d}"/>`;
 
@@ -28,9 +27,14 @@ const f1 = n => Math.round(n * 10) / 10;
 
 /* Vértebra de frente: cuerpo con cintura, apófisis transversas y (opcional) pedículos */
 const vb = (y, w, h, tp = 0, tw = 1.5) => {
-  const a = 100 - w / 2, b = 100 + w / 2;
-  return `<path class="f" d="M${a} ${y}Q100 ${f1(y + 1)} ${b} ${y}L${f1(b - .7)} ${f1(y + h)}Q100 ${f1(y + h - 1)} ${f1(a + .7)} ${f1(y + h)}z"/>` +
-    (tp ? `<path class="s" style="stroke-width:${tw}" d="M${a - tp} ${f1(y + h / 2)}H${a}M${b} ${f1(y + h / 2)}H${b + tp}"/>` : "");
+  const a = 100 - w / 2,
+    b = 100 + w / 2;
+  return (
+    `<path class="f" d="M${a} ${y}Q100 ${f1(y + 1)} ${b} ${y}L${f1(b - 0.7)} ${f1(y + h)}Q100 ${f1(y + h - 1)} ${f1(a + 0.7)} ${f1(y + h)}z"/>` +
+    (tp
+      ? `<path class="s" style="stroke-width:${tw}" d="M${a - tp} ${f1(y + h / 2)}H${a}M${b} ${f1(y + h / 2)}H${b + tp}"/>`
+      : "")
+  );
 };
 
 /* Pila de vértebras: ancho creciente de w0 a w1 */
@@ -42,9 +46,14 @@ const stack = (y, n, w0, w1, h, g, tp, tw) =>
 /* Lumbares: cuerpos grandes con apófisis transversas y mamilares */
 const lumbar = () =>
   Array.from({ length: 5 }, (_, i) => {
-    const y = 176 + i * 9.6, w = 15 + i * 1.1;
-    return vb(y, w, 7.6, 0) +
-      sym(`<path class="f" d="M${100 - w / 2} ${y + 2}L${100 - w / 2 - 6.5} ${y + 3}Q${100 - w / 2 - 8} ${y + 4.4} ${100 - w / 2 - 6.5} ${y + 5.2}L${100 - w / 2} ${y + 5.6}z"/>`);
+    const y = 176 + i * 9.6,
+      w = 15 + i * 1.1;
+    return (
+      vb(y, w, 7.6, 0) +
+      sym(
+        `<path class="f" d="M${100 - w / 2} ${y + 2}L${100 - w / 2 - 6.5} ${y + 3}Q${100 - w / 2 - 8} ${y + 4.4} ${100 - w / 2 - 6.5} ${y + 5.2}L${100 - w / 2} ${y + 5.6}z"/>`
+      )
+    );
   }).join("");
 
 /* Caja torácica: 10 costillas + 2 flotantes, esternón con manubrio, cuerpo y xifoides */
@@ -58,7 +67,9 @@ const ribs = () => {
       `<path class="s" style="stroke-width:${i < 7 ? 1.9 : 1.5}" d="M96 ${y0}C${100 - w * 0.6} ${y0 - 7} ${x} ${y0 - 1} ${x} ${y0 + 10}C${x} ${y0 + 20} ${100 - w * 0.35} ${y1 + 5} 98.5 ${y1}"/>`
     );
   }).join("");
-  const floating = sym(`<path class="s" style="stroke-width:1.4" d="M96 168C86 168 78 175 75 184M96 176C88 178 82 187 80 193"/>`);
+  const floating = sym(
+    `<path class="s" style="stroke-width:1.4" d="M96 168C86 168 78 175 75 184M96 176C88 178 82 187 80 193"/>`
+  );
   return arcs + floating;
 };
 const sternum = () =>
@@ -69,38 +80,76 @@ const sternum = () =>
   Pa("M96 86.4Q100 87.4 104 86.4", "d");
 
 /* Mano: carpo (2 filas), metacarpianos y falanges con articulaciones */
-const hand = (x) => {
-  const car = [[-5, 233], [-1.5, 232.5], [2, 233], [5, 234.5], [-3.6, 237.4], [0, 237.4], [3.6, 238]]
-    .map((p) => Ci(f1(x + p[0]), p[1], 2.1)).join("");
+const hand = x => {
+  const car = [
+    [-5, 233],
+    [-1.5, 232.5],
+    [2, 233],
+    [5, 234.5],
+    [-3.6, 237.4],
+    [0, 237.4],
+    [3.6, 238]
+  ]
+    .map(p => Ci(f1(x + p[0]), p[1], 2.1))
+    .join("");
   const dig = [
-    [-6, 240, -12, 250, -15, 257, -17, 263],   /* pulgar */
+    [-6, 240, -12, 250, -15, 257, -17, 263] /* pulgar */,
     [-3, 240, -6, 253, -8, 260, -9, 267],
     [1, 240, 0, 255, 0, 263, 0, 270],
     [5, 240, 6, 253, 8, 260, 9, 266],
     [8, 239, 12, 250, 14, 257, 15, 262]
-  ].map((d) => {
-    const s = x + d[0], mx = x + d[2], px = x + d[4], tx = x + d[6];
-    return Ln(f1(s), d[1], f1(mx), d[3], 2.3) + Ln(f1(mx), d[3], f1(px), d[5], 1.9) + Ln(f1(px), d[5], f1(tx), d[7], 1.6) +
-      Ci(f1(mx), d[3], 1.5) + Ci(f1(px), d[5], 1.2);
-  }).join("");
+  ]
+    .map(d => {
+      const s = x + d[0],
+        mx = x + d[2],
+        px = x + d[4],
+        tx = x + d[6];
+      return (
+        Ln(f1(s), d[1], f1(mx), d[3], 2.3) +
+        Ln(f1(mx), d[3], f1(px), d[5], 1.9) +
+        Ln(f1(px), d[5], f1(tx), d[7], 1.6) +
+        Ci(f1(mx), d[3], 1.5) +
+        Ci(f1(px), d[5], 1.2)
+      );
+    })
+    .join("");
   return car + dig;
 };
 
 /* Pie: tarso (talus y calcáneo), metatarsianos y falanges */
 const footBones = () =>
-  El(81, 443, 6.6, 4.4) + El(78.5, 450, 6.8, 4.6) + El(86, 449, 4.2, 3.6) +
-  [[72, 454, 70.6, 459.6], [76, 455, 75.4, 461], [80.5, 455.4, 80.5, 461.6], [85, 455, 85.8, 460.8], [89, 454, 91.4, 459]]
-    .map((l) => Ln(l[0], l[1], l[2], l[3], 2.5) + Ci(l[2], l[3], 1.3)).join("") +
-  [[70.6, 459.6, 69.6, 463], [75.4, 461, 74.8, 464.6], [80.5, 461.6, 80.5, 465], [85.8, 460.8, 86.4, 464], [91.4, 459, 92.6, 462]]
-    .map((l) => Ln(l[0], l[1], l[2], l[3], 1.8)).join("");
+  El(81, 443, 6.6, 4.4) +
+  El(78.5, 450, 6.8, 4.6) +
+  El(86, 449, 4.2, 3.6) +
+  [
+    [72, 454, 70.6, 459.6],
+    [76, 455, 75.4, 461],
+    [80.5, 455.4, 80.5, 461.6],
+    [85, 455, 85.8, 460.8],
+    [89, 454, 91.4, 459]
+  ]
+    .map(l => Ln(l[0], l[1], l[2], l[3], 2.5) + Ci(l[2], l[3], 1.3))
+    .join("") +
+  [
+    [70.6, 459.6, 69.6, 463],
+    [75.4, 461, 74.8, 464.6],
+    [80.5, 461.6, 80.5, 465],
+    [85.8, 460.8, 86.4, 464],
+    [91.4, 459, 92.6, 462]
+  ]
+    .map(l => Ln(l[0], l[1], l[2], l[3], 1.8))
+    .join("");
 
 /* Intestino delgado: asas en serpentina dentro del marco cólico */
 const loops = () => {
   let d = "M84 202";
   [202, 209, 216, 223].forEach((y, i) => {
-    const dir = i % 2 ? -1 : 1, x0 = dir > 0 ? 84 : 116, x1 = dir > 0 ? 116 : 84;
+    const dir = i % 2 ? -1 : 1,
+      x0 = dir > 0 ? 84 : 116,
+      x1 = dir > 0 ? 116 : 84;
     d += `L${x0} ${y}`;
-    for (let k = 1; k <= 4; k++) d += `Q${f1(x0 + (x1 - x0) * (k - .5) / 4)} ${y + (k % 2 ? -3.2 : 3.2)} ${f1(x0 + (x1 - x0) * k / 4)} ${y}`;
+    for (let k = 1; k <= 4; k++)
+      d += `Q${f1(x0 + ((x1 - x0) * (k - 0.5)) / 4)} ${y + (k % 2 ? -3.2 : 3.2)} ${f1(x0 + ((x1 - x0) * k) / 4)} ${y}`;
     if (i < 3) d += `Q${x1 + dir * 2.5} ${y + 3.5} ${x1} ${y + 7}`;
   });
   return `<path class="s" style="stroke-width:3.2" d="${d}"/>`;
@@ -112,16 +161,22 @@ const ANAT = {
     craneo:
       Pa("M80 34C78 15 89 6 100 6s22 9 20 28c-1 6-3 10-5 13H85c-2-3-4-7-5-13z") +
       Pa("M85 45C84 52 88 58 94 60L100 61L106 60C112 58 116 52 115 45z") +
-      Pa("M83 44C82 54 86 62 93 65Q100 68.5 107 65C114 62 118 54 117 44L113.5 46C113.5 54 110 60 106 62.4Q100 64.6 94 62.4C90 60 86.5 54 86.5 46z") +
-      El(91, 36, 5.2, 4.4, "k") + El(109, 36, 5.2, 4.4, "k") +
+      Pa(
+        "M83 44C82 54 86 62 93 65Q100 68.5 107 65C114 62 118 54 117 44L113.5 46C113.5 54 110 60 106 62.4Q100 64.6 94 62.4C90 60 86.5 54 86.5 46z"
+      ) +
+      El(91, 36, 5.2, 4.4, "k") +
+      El(109, 36, 5.2, 4.4, "k") +
       Pa("M100 40.5l-3 8.5h6z", "k") +
       Pa("M100 7V22M84 22C92 17 108 17 116 22", "d") +
       Pa("M82 40C84 46 88 48.5 92 48.5M118 40C116 46 112 48.5 108 48.5", "d") +
       Pa("M92.5 54.5H107.5M94.5 52.8v3.4M97.5 52.8v3.4M100 52.8v3.4M102.5 52.8v3.4M105.5 52.8v3.4", "d"),
 
     cervical:
-      Pa("M91.5 65.2Q100 63.4 108.5 65.2L109.3 68.4Q100 70.4 90.7 68.4z") + Ln(84, 66.6, 91, 66.8, 1.6) + Ln(109, 66.8, 116, 66.6, 1.6) +
-      Pa("M92 69.8Q100 70.6 108 69.8L107.4 73.6Q100 74.6 92.6 73.6z") + Pa("M98 67.2L100 63.8L102 67.2z") +
+      Pa("M91.5 65.2Q100 63.4 108.5 65.2L109.3 68.4Q100 70.4 90.7 68.4z") +
+      Ln(84, 66.6, 91, 66.8, 1.6) +
+      Ln(109, 66.8, 116, 66.6, 1.6) +
+      Pa("M92 69.8Q100 70.6 108 69.8L107.4 73.6Q100 74.6 92.6 73.6z") +
+      Pa("M98 67.2L100 63.8L102 67.2z") +
       stack(74.6, 5, 10, 12.4, 3.5, 1.1, 4.2, 1.3),
 
     toracica: stack(96, 12, 12.4, 17, 5.1, 1.4, 5.4, 1.5),
@@ -132,17 +187,26 @@ const ANAT = {
 
     humero: sym(
       Pa("M98 88.4C94 85.6 90 87 86 88.6C80 90.2 74 85 66 84.8L66.4 87C74 87.8 80 93 86 91C90 90 94 88.4 98 90.6z") +
-        Pa("M86 98L74 93C70 98 68 108 69 120L74 137C80 131 85 119 86 105z") + Pa("M71 99C74 107 75 118 74 130", "d") +
-        El(66, 96, 3, 5.2, "k") + Pa("M68 87C63 85 58 85.5 55 87", "d") +
-        Ci(59, 94, 6.4) + El(54.4, 91.4, 2.6, 2.4) +
-        Pa("M55 99.5L63.4 101.6L53 158L44 156z") + El(54.6, 124, 1.8, 3, "k") +
-        El(45.4, 163.2, 7.4, 4.6, "f", -12) + Ci(41.2, 162.4, 2.6) + Ci(50.2, 164.4, 2.6)
+        Pa("M86 98L74 93C70 98 68 108 69 120L74 137C80 131 85 119 86 105z") +
+        Pa("M71 99C74 107 75 118 74 130", "d") +
+        El(66, 96, 3, 5.2, "k") +
+        Pa("M68 87C63 85 58 85.5 55 87", "d") +
+        Ci(59, 94, 6.4) +
+        El(54.4, 91.4, 2.6, 2.4) +
+        Pa("M55 99.5L63.4 101.6L53 158L44 156z") +
+        El(54.6, 124, 1.8, 3, "k") +
+        El(45.4, 163.2, 7.4, 4.6, "f", -12) +
+        Ci(41.2, 162.4, 2.6) +
+        Ci(50.2, 164.4, 2.6)
     ),
 
     antebrazo: sym(
-      Pa("M52.6 165L56.8 166.6L48 224L43.6 223.4z") + El(54.2, 164.4, 3.1, 3.6) +
-        Pa("M45.2 168L49 168L39.2 224.4L33 222z") + El(45.8, 168.6, 3, 2.6) +
-        El(36.6, 226.4, 4.6, 2.6) + El(45.2, 225.2, 2.5, 3.6) +
+      Pa("M52.6 165L56.8 166.6L48 224L43.6 223.4z") +
+        El(54.2, 164.4, 3.1, 3.6) +
+        Pa("M45.2 168L49 168L39.2 224.4L33 222z") +
+        El(45.8, 168.6, 3, 2.6) +
+        El(36.6, 226.4, 4.6, 2.6) +
+        El(45.2, 225.2, 2.5, 3.6) +
         hand(40)
     ),
 
@@ -150,25 +214,33 @@ const ANAT = {
       sym(
         Pa("M96.6 203C88 198 72 197 63 206C58 214 58 226 63 236L72 245L78 238C84 232 90 228 93.4 224L96 214z") +
           Pa("M72 245L70.4 259L76 266L86 262.4L91 253L88.6 245L82 247L78 238z") +
-          El(78.4, 254.4, 3.6, 5.2, "k") + Ci(73, 243.4, 4.6, "k") + Ci(63.6, 208, 1.7, "k") +
-          Pa("M64 207C74 200 88 201 95 207", "d") + Pa("M93.6 224L96 212", "d")
+          El(78.4, 254.4, 3.6, 5.2, "k") +
+          Ci(73, 243.4, 4.6, "k") +
+          Ci(63.6, 208, 1.7, "k") +
+          Pa("M64 207C74 200 88 201 95 207", "d") +
+          Pa("M93.6 224L96 212", "d")
       ) +
       Pa("M91 214H109L105.4 244C103.6 252 101.6 258 100 263C98.4 258 96.4 252 94.6 244z") +
       sym(El(96.4, 224, 1.1, 1.1, "k") + El(97, 232.5, 1, 1, "k") + El(97.7, 240, 1, 1, "k")) +
-      Pa("M98 263h4l-2 9z") + Pa("M100 214V260", "d") + Pa("M96.4 254.2h7.2", "d"),
+      Pa("M98 263h4l-2 9z") +
+      Pa("M100 214V260", "d") +
+      Pa("M96.4 254.2h7.2", "d"),
 
     femur: sym(
       Ci(72, 241.4, 7) +
-        Pa("M71 246L67 252L61.2 249C60.8 255 62.4 260 66 262L72.4 256z") + El(63.6, 252.4, 4.2, 5.6) +
+        Pa("M71 246L67 252L61.2 249C60.8 255 62.4 260 66 262L72.4 256z") +
+        El(63.6, 252.4, 4.2, 5.6) +
         Pa("M62.6 261C64 258 70 258 70.6 262L82.4 340L74.6 343z") +
-        Pa("M66.6 345C66 351 72 358 80.4 358C82 352 82 348 80.6 344z") + Pa("M80.6 344C82 348 82 352 80.4 358C90 358 92 350 90 344z") +
+        Pa("M66.6 345C66 351 72 358 80.4 358C82 352 82 348 80.6 344z") +
+        Pa("M80.6 344C82 348 82 352 80.4 358C90 358 92 350 90 344z") +
         Pa("M79 350L81 358", "d") +
         El(79.6, 354.4, 4.6, 5.4, "k")
     ),
 
     tibia: sym(
       Pa("M70 360.6C70 357.6 90 357.6 92 360.6C92 364 88 366 81.6 366C74 366 70 364 70 360.6z") +
-        Pa("M77.4 366H85.6L83.8 433L79 433z") + El(81.4, 372.4, 2.3, 2.6, "k") +
+        Pa("M77.4 366H85.6L83.8 433L79 433z") +
+        El(81.4, 372.4, 2.3, 2.6, "k") +
         Pa("M70.6 364C72.4 363.6 74.6 364.4 74.6 366.6C75 391 74.4 414 74.6 433L71.8 433C71.8 414 71 391 70.6 364z") +
         El(70.6, 364.6, 2.6, 3.4) +
         Pa("M78.6 433H85.8L87.6 438C87.6 441 84 442 82 441.4C79.2 441.4 77.6 440 78.6 433z") +
@@ -182,7 +254,8 @@ const ANAT = {
     ecm: sym(
       Pa("M88.4 51.4L91.6 50.6C95 62 98.2 73.4 99.4 84L96.6 87.4C94 76 90.4 63 88.4 51.4z") +
         Pa("M91.8 57C92.8 66 91.8 76 88.6 86.4L84.8 86.8C87.4 77 89.6 67 90.2 58z") +
-        Pa("M90.6 57C92.8 66 95 75 96.6 84", "d") + Pa("M90 62C90 70 88.2 78 86.4 85", "d")
+        Pa("M90.6 57C92.8 66 95 75 96.6 84", "d") +
+        Pa("M90 62C90 70 88.2 78 86.4 85", "d")
     ),
 
     trapecio: sym(
@@ -223,7 +296,8 @@ const ANAT = {
 
     cadera: sym(
       Pa("M64 208C57 226 57 246 63 262L84 266L90 240L86 212z") +
-        Pa("M86 216C80 232 78 246 82 260", "d") + Pa("M70 214C66 230 66 248 70 262M76 212C72 230 72 248 76 264", "d")
+        Pa("M86 216C80 232 78 246 82 260", "d") +
+        Pa("M70 214C66 230 66 248 70 262M76 212C72 230 72 248 76 264", "d")
     ),
 
     muslo: sym(
@@ -246,42 +320,68 @@ const ANAT = {
       Ci(37, 252, 4.6) +
         Ci(82, 456, 4.6) +
         `<path class="s" style="stroke-width:1.5;stroke-dasharray:3 3;opacity:.75" d="M37 252L50 160L60 100L100 96M82 456L80 350L72 248L100 250"/>`
-    ),
+    )
   },
 
   organos: {
-    medula:
-      (() => {
-        /* contorno de la médula: bulbo, engrosamiento cervical, torácica, engrosamiento lumbar y cono medular */
-        const W = [[54, 5], [62, 5.4], [70, 6.8], [80, 7.6], [92, 6.8], [102, 4.8], [140, 4.4], [152, 5.2], [164, 7], [176, 6.2], [184, 3.8], [190, .8]];
-        const L = W.map(p => [f1(100 - p[1] / 2), p[0]]), R = W.map(p => [f1(100 + p[1] / 2), p[0]]).reverse();
-        const q = pts => pts.map((p, i) => (i ? "L" : "M") + p[0] + " " + p[1]).join("");
-        const roots = Array.from({ length: 24 }, (_, i) => {
-          const y = 62 + i * 5;
-          return `M98.4 ${y}L${f1(94.8 - i * .06)} ${y + 2}M101.6 ${y}L${f1(105.2 + i * .06)} ${y + 2}`;
-        }).join("");
-        const cauda = [-7, -5, -3.2, -1.4, 1.4, 3.2, 5, 7].map((o, i) => `M100 190C${100 + o * .3} 208 ${100 + o} 228 ${100 + o * .8} ${250 - (i % 3) * 3}`).join("");
-        return Pa(q(L) + "L" + q(R).slice(1) + "z") +
-          `<path class="s" style="stroke-width:.9" d="${cauda}"/>` +
-          `<path class="s" style="stroke-width:.7" d="M100 190L100 266"/>` +
-          Pa(roots, "d") +
-          Pa("M96.4 74C88 76 80 82 74 92M96 84C88 88 82 96 78 106M103.6 74C112 76 120 82 126 92M104 84C112 88 118 96 122 106", "d") +
-          Pa("M99 54V186", "d");
-      })(),
+    medula: (() => {
+      /* contorno de la médula: bulbo, engrosamiento cervical, torácica, engrosamiento lumbar y cono medular */
+      const W = [
+        [54, 5],
+        [62, 5.4],
+        [70, 6.8],
+        [80, 7.6],
+        [92, 6.8],
+        [102, 4.8],
+        [140, 4.4],
+        [152, 5.2],
+        [164, 7],
+        [176, 6.2],
+        [184, 3.8],
+        [190, 0.8]
+      ];
+      const L = W.map(p => [f1(100 - p[1] / 2), p[0]]),
+        R = W.map(p => [f1(100 + p[1] / 2), p[0]]).reverse();
+      const q = pts => pts.map((p, i) => (i ? "L" : "M") + p[0] + " " + p[1]).join("");
+      const roots = Array.from({ length: 24 }, (_, i) => {
+        const y = 62 + i * 5;
+        return `M98.4 ${y}L${f1(94.8 - i * 0.06)} ${y + 2}M101.6 ${y}L${f1(105.2 + i * 0.06)} ${y + 2}`;
+      }).join("");
+      const cauda = [-7, -5, -3.2, -1.4, 1.4, 3.2, 5, 7]
+        .map((o, i) => `M100 190C${100 + o * 0.3} 208 ${100 + o} 228 ${100 + o * 0.8} ${250 - (i % 3) * 3}`)
+        .join("");
+      return (
+        Pa(q(L) + "L" + q(R).slice(1) + "z") +
+        `<path class="s" style="stroke-width:.9" d="${cauda}"/>` +
+        `<path class="s" style="stroke-width:.7" d="M100 190L100 266"/>` +
+        Pa(roots, "d") +
+        Pa(
+          "M96.4 74C88 76 80 82 74 92M96 84C88 88 82 96 78 106M103.6 74C112 76 120 82 126 92M104 84C112 88 118 96 122 106",
+          "d"
+        ) +
+        Pa("M99 54V186", "d")
+      );
+    })(),
 
     higado:
       Pa("M66 150C78 141 100 141 112 146C114 158 104 170 90 173L82 172C72 170 66 162 66 150z") +
-      El(85, 173, 3, 4.2, "k") + Pa("M96 145.6C96 156 94.6 164 92 171", "d") + Pa("M72 152C82 150 94 150 106 149M70 160C80 160 88 158 96 156", "d"),
+      El(85, 173, 3, 4.2, "k") +
+      Pa("M96 145.6C96 156 94.6 164 92 171", "d") +
+      Pa("M72 152C82 150 94 150 106 149M70 160C80 160 88 158 96 156", "d"),
 
     estomago:
-      Pa("M111 149C123 144 134 153 132 167C130 179 118 185 110 179C106 175 110 170 116 169C120 168 121 160 116 157C113 155 111 152 111 149z") +
-      Pa("M117 152C124 152 128 160 126 168M118 160C122 162 123 168 121 172", "d") + Pa("M110 179C104 182 100 181 96 185", "d"),
+      Pa(
+        "M111 149C123 144 134 153 132 167C130 179 118 185 110 179C106 175 110 170 116 169C120 168 121 160 116 157C113 155 111 152 111 149z"
+      ) +
+      Pa("M117 152C124 152 128 160 126 168M118 160C122 162 123 168 121 172", "d") +
+      Pa("M110 179C104 182 100 181 96 185", "d"),
 
     intestino:
       `<path class="s" style="stroke-width:5" d="M76 228V200C76 192 80 188 88 188H112C120 188 124 192 124 200V228"/>` +
       `<path class="s" style="stroke-width:5" d="M76 228C76 236 90 236 100 232C108 230 116 232 124 228"/>` +
       `<path class="s" style="stroke-width:1.1;stroke-dasharray:1.6 3;opacity:.9" d="M76 228V200C76 192 80 188 88 188H112C120 188 124 192 124 200V228"/>` +
-      loops() + Pa("M76 230C72 234 71 238 74 239", "d"),
+      loops() +
+      Pa("M76 230C72 234 71 238 74 239", "d"),
 
     rinones: sym(
       Pa("M90 172C82 170 78 180 79 190C80 200 88 204 93 198C90 194 89 190 90 186C91 180 92 176 90 172z") +
@@ -290,16 +390,23 @@ const ANAT = {
         `<path class="s" style="stroke-width:1.6" d="M90 196C91 212 94 224 97 236"/>`
     ),
 
-    vejiga: Pa("M91 238C91 229 109 229 109 238C109 248 91 249 91 238z") + Pa("M94 235H106", "d") + Pa("M99 248.4L100 256L101 248.4", "d"),
+    vejiga:
+      Pa("M91 238C91 229 109 229 109 238C109 248 91 249 91 238z") +
+      Pa("M94 235H106", "d") +
+      Pa("M99 248.4L100 256L101 248.4", "d"),
 
     pulmones:
       Rc(98, 60, 4, 30, 2) +
       Pa("M98.4 65h3.2M98.4 69.4h3.2M98.4 73.8h3.2M98.4 78.2h3.2M98.4 82.6h3.2M98.4 87h3.2", "d") +
       `<path class="s" style="stroke-width:2" d="M100 90L90 102M100 90L110 100"/>` +
       Pa("M96 92C88 88 75 92 71 104C67 122 67 142 73 154C81 159 93 154 96 144z") +
-      Pa("M96 114L72 111M96 128L70 124", "d") + Pa("M94 100L84 112M94 118L80 130", "d") +
-      Pa("M104 92C113 88 125 92 129 104C133 122 133 142 127 154C119 159 109 156 105 148L105 144C110 138 112 128 108 120C106 116 104 114 104 108z") +
-      Pa("M129 118L110 124", "d") + Pa("M108 102L118 112M110 124L122 134", "d"),
+      Pa("M96 114L72 111M96 128L70 124", "d") +
+      Pa("M94 100L84 112M94 118L80 130", "d") +
+      Pa(
+        "M104 92C113 88 125 92 129 104C133 122 133 142 127 154C119 159 109 156 105 148L105 144C110 138 112 128 108 120C106 116 104 114 104 108z"
+      ) +
+      Pa("M129 118L110 124", "d") +
+      Pa("M108 102L118 112M110 124L122 134", "d"),
 
     vasos: sym(
       `<path class="s" style="stroke-width:4.2" d="M92.6 98C93 84 94 72 94.4 58"/>` +
@@ -310,7 +417,8 @@ const ANAT = {
 
     corazon:
       Pa("M95 121C95 113 103 108 110 112C118 114 122 122 118 128C113 134 108 140 105 143C101 138 95 130 95 121z") +
-      Pa("M92 114C90 108 94 104 99 106L100.4 117z") + Pa("M112 108C116 104 122 108 120.4 114.4L113.6 114z") +
+      Pa("M92 114C90 108 94 104 99 106L100.4 117z") +
+      Pa("M112 108C116 104 122 108 120.4 114.4L113.6 114z") +
       `<path class="s" style="stroke-width:2.6" d="M103 110C103 100 108 96 114 99C118.4 102 119 108 118 113"/>` +
       `<path class="s" style="stroke-width:1.8" d="M97 104C95.6 98 95.6 94 96.4 90"/>` +
       `<path class="s" style="stroke-width:2" d="M108 108C110 103 114 103 116.4 105.4"/>` +
@@ -319,13 +427,17 @@ const ANAT = {
     cerebro:
       sym(
         Pa("M99.4 8C88 6 80 14 81 26C82 34 90 39 99.4 38.4z") +
-          Pa("M99 14C94 14 92 18 88 17M99 21C94 20 90 24 85 22M99 28C94 27 91 31 86 30M99 34C95 34 92 36 89 36.6M92 10C91 14 94 17 94 21", "d") +
+          Pa(
+            "M99 14C94 14 92 18 88 17M99 21C94 20 90 24 85 22M99 28C94 27 91 31 86 30M99 34C95 34 92 36 89 36.6M92 10C91 14 94 17 94 21",
+            "d"
+          ) +
           Pa("M81.6 28C80.8 36 84.6 40.6 91 41.4", "d")
       ) +
       Pa("M86.6 38.4C90 44.6 95 47.4 100 47.4C105 47.4 110 44.6 113.4 38.4C107 41 93 41 86.6 38.4z") +
       Pa("M90 43.4C96 45 104 45 110 43.4", "d") +
-      Pa("M96 40H104V54L102.4 58.6H97.6L96 54z") + Pa("M100 8V38.6", "d"),
-  },
+      Pa("M96 40H104V54L102.4 58.6H97.6L96 54z") +
+      Pa("M100 8V38.6", "d")
+  }
 };
 
 /* Vista lateral del cuello (cara a la izquierda). Cada músculo es un <g class="z"> con data-z = id de zona. */
@@ -345,79 +457,171 @@ const smoothD = (pts, close) => {
 };
 /* Músculo en banda: P = curva guía (4 puntos), w = función de ancho(t), fib = fracciones del ancho para dibujar fibras */
 const strap = (P, w, fib) => {
-  const N = 16, Lp = [], Rp = [];
+  const N = 16,
+    Lp = [],
+    Rp = [];
   for (let i = 0; i <= N; i++) {
-    const t = i / N, a = bez(P, Math.max(0, t - .02)), b = bez(P, Math.min(1, t + .02)), c = bez(P, t);
-    let nx = -(b[1] - a[1]), ny = b[0] - a[0];
+    const t = i / N,
+      a = bez(P, Math.max(0, t - 0.02)),
+      b = bez(P, Math.min(1, t + 0.02)),
+      c = bez(P, t);
+    let nx = -(b[1] - a[1]),
+      ny = b[0] - a[0];
     const n = Math.hypot(nx, ny) || 1;
-    nx /= n; ny /= n;
-    Lp.push([c[0] + nx * w(t) / 2, c[1] + ny * w(t) / 2]);
-    Rp.push([c[0] - nx * w(t) / 2, c[1] - ny * w(t) / 2]);
+    nx /= n;
+    ny /= n;
+    Lp.push([c[0] + (nx * w(t)) / 2, c[1] + (ny * w(t)) / 2]);
+    Rp.push([c[0] - (nx * w(t)) / 2, c[1] - (ny * w(t)) / 2]);
   }
   const body = Pa(smoothD(Lp.concat(Rp.slice().reverse()), true));
-  const lines = (fib || []).map(fr => Pa(smoothD(Lp.map((p, i) => [lerp(p[0], Rp[i][0], fr), lerp(p[1], Rp[i][1], fr)]).slice(1, -1)), "d")).join("");
+  const lines = (fib || [])
+    .map(fr => Pa(smoothD(Lp.map((p, i) => [lerp(p[0], Rp[i][0], fr), lerp(p[1], Rp[i][1], fr)]).slice(1, -1)), "d"))
+    .join("");
   return body + lines;
 };
 
 /* Columna cervical lateral: eje (curva lordótica) y posición de cada vértebra */
 const NECK_Y = i => 76 + i * 10.4,
-      NECK_X = i => 112 - 9 * Math.sin(Math.PI * i / 6.6) - i * .5;
+  NECK_X = i => 112 - 9 * Math.sin((Math.PI * i) / 6.6) - i * 0.5;
 
 const neckMuscles = () => {
   const m = {};
   /* Esternocleidomastoideo: apófisis mastoides -> manubrio y clavícula (dos cabezas) */
-  m.ecm = strap([[128, 70], [112, 96], [97, 124], [87, 152]], t => 5 + 6.2 * Math.sin(Math.PI * Math.min(1, t * 1.04)) ** .7 + (t > .86 ? (t - .86) * 22 : 0), [.3, .5, .72]) +
-    Pa("M89 140L85.6 153M94 141L97 153", "d");
+  m.ecm =
+    strap(
+      [
+        [128, 70],
+        [112, 96],
+        [97, 124],
+        [87, 152]
+      ],
+      t => 5 + 6.2 * Math.sin(Math.PI * Math.min(1, t * 1.04)) ** 0.7 + (t > 0.86 ? (t - 0.86) * 22 : 0),
+      [0.3, 0.5, 0.72]
+    ) + Pa("M89 140L85.6 153M94 141L97 153", "d");
   /* Trapecio (fibras superiores): línea nucal y ligamento nucal -> tercio lateral de la clavícula y acromion */
-  m.trapecio = strap([[142, 70], [151, 100], [158, 128], [178, 154]], t => 11 + 7 * Math.sin(Math.PI * t) + (t > .8 ? 4 : 0), [.25, .5, .75]);
+  m.trapecio = strap(
+    [
+      [142, 70],
+      [151, 100],
+      [158, 128],
+      [178, 154]
+    ],
+    t => 11 + 7 * Math.sin(Math.PI * t) + (t > 0.8 ? 4 : 0),
+    [0.25, 0.5, 0.75]
+  );
   /* Esplenio de la cabeza y del cuello: ligamento nucal y T1-T3 -> mastoides y C1-C3 */
-  m.esplenio = strap([[118, 146], [121, 118], [126, 94], [133, 72]], t => 7 + 4.4 * Math.sin(Math.PI * t), [.3, .5, .7]);
+  m.esplenio = strap(
+    [
+      [118, 146],
+      [121, 118],
+      [126, 94],
+      [133, 72]
+    ],
+    t => 7 + 4.4 * Math.sin(Math.PI * t),
+    [0.3, 0.5, 0.7]
+  );
   /* Largo del cuello y de la cabeza: cara anterior de las vértebras, de T3 a la base del cráneo */
-  const lc = Array.from({ length: 15 }, (_, k) => { const i = -0.5 + k * .56; return [NECK_X(i) - 10.4, NECK_Y(i) + 3]; });
+  const lc = Array.from({ length: 15 }, (_, k) => {
+    const i = -0.5 + k * 0.56;
+    return [NECK_X(i) - 10.4, NECK_Y(i) + 3];
+  });
   const lcR = lc.map(p => [p[0] + 5.8, p[1]]);
-  m.largocuello = Pa(smoothD(lc.concat(lcR.slice().reverse()), true)) + Pa(smoothD(lc.map(p => [p[0] + 2.9, p[1]]).slice(1, -1)), "d");
+  m.largocuello =
+    Pa(smoothD(lc.concat(lcR.slice().reverse()), true)) +
+    Pa(smoothD(lc.map(p => [p[0] + 2.9, p[1]]).slice(1, -1)), "d");
   /* Multífidos y semiespinoso: fascículos oblicuos sobre las apófisis espinosas */
-  m.multifidos = Array.from({ length: 6 }, (_, k) => {
-    const i = k + .5, tx = NECK_X(i - 1.6) + 9.4, ty = NECK_Y(i - 1.6) + 2, bx = NECK_X(i + 1.1) + 14, by = NECK_Y(i + 1.1) + 6;
-    return Pa(`M${f1(tx)} ${f1(ty)}L${f1(tx + 6)} ${f1(ty + .4)}L${f1(bx + 3.4)} ${f1(by)}L${f1(bx - 3.6)} ${f1(by + 2.4)}z`);
-  }).join("") + Pa(smoothD(Array.from({ length: 9 }, (_, k) => [NECK_X(k * .78) + 14.6, NECK_Y(k * .78) + 5])), "d");
+  m.multifidos =
+    Array.from({ length: 6 }, (_, k) => {
+      const i = k + 0.5,
+        tx = NECK_X(i - 1.6) + 9.4,
+        ty = NECK_Y(i - 1.6) + 2,
+        bx = NECK_X(i + 1.1) + 14,
+        by = NECK_Y(i + 1.1) + 6;
+      return Pa(
+        `M${f1(tx)} ${f1(ty)}L${f1(tx + 6)} ${f1(ty + 0.4)}L${f1(bx + 3.4)} ${f1(by)}L${f1(bx - 3.6)} ${f1(by + 2.4)}z`
+      );
+    }).join("") +
+    Pa(smoothD(Array.from({ length: 9 }, (_, k) => [NECK_X(k * 0.78) + 14.6, NECK_Y(k * 0.78) + 5])), "d");
   return m;
 };
 const NECK = neckMuscles();
 const NECK_ORDER = ["largocuello", "multifidos", "esplenio", "trapecio", "ecm"];
 
 function neckFigure(cls) {
-  const SP = [0, 0, 11, 8, 9, 11, 17];       /* longitud de la apófisis espinosa: C2 y C7 son las más largas */
+  const SP = [0, 0, 11, 8, 9, 11, 17]; /* longitud de la apófisis espinosa: C2 y C7 son las más largas */
   const bones = Array.from({ length: 7 }, (_, i) => {
-    const x = NECK_X(i), y = NECK_Y(i), h = i === 0 ? 5.6 : 8, w = i === 0 ? 13 : 10.4 + i * .3;
-    const body = `M${f1(x - w / 2)} ${f1(y)}Q${f1(x)} ${f1(y + 1)} ${f1(x + w / 2)} ${f1(y)}L${f1(x + w / 2 - .7)} ${f1(y + h)}Q${f1(x)} ${f1(y + h - 1)} ${f1(x - w / 2 + .7)} ${f1(y + h)}z`;
-    const arch = i === 0
-      ? `M${f1(x + w / 2)} ${f1(y + 1)}Q${f1(x + w / 2 + 9)} ${f1(y + 1.4)} ${f1(x + w / 2 + 11)} ${f1(y + 3.4)}L${f1(x + w / 2)} ${f1(y + h)}z`
-      : `M${f1(x + w / 2 - .5)} ${f1(y + 1.6)}L${f1(x + 9.6)} ${f1(y + 2)}L${f1(x + 10.4 + SP[i])} ${f1(y + 4.4 + (i > 4 ? 1.4 : 0))}L${f1(x + 9.6)} ${f1(y + h - 1.2)}L${f1(x + w / 2 - .5)} ${f1(y + h - 1.4)}z`;
-    return Pa(body, "f") + Pa(arch, "f") + (i ? Ln(f1(x - w / 2), f1(y + h - 2), f1(x - w / 2 - 5), f1(y + h + .8), 1.5) : "") +
-      Pa(`M${f1(x - w / 2 + 1)} ${f1(y + h + .4)}Q${f1(x)} ${f1(y + h + 2.4)} ${f1(x + w / 2 - 1)} ${f1(y + h + .4)}`, "s");
+    const x = NECK_X(i),
+      y = NECK_Y(i),
+      h = i === 0 ? 5.6 : 8,
+      w = i === 0 ? 13 : 10.4 + i * 0.3;
+    const body = `M${f1(x - w / 2)} ${f1(y)}Q${f1(x)} ${f1(y + 1)} ${f1(x + w / 2)} ${f1(y)}L${f1(x + w / 2 - 0.7)} ${f1(y + h)}Q${f1(x)} ${f1(y + h - 1)} ${f1(x - w / 2 + 0.7)} ${f1(y + h)}z`;
+    const arch =
+      i === 0
+        ? `M${f1(x + w / 2)} ${f1(y + 1)}Q${f1(x + w / 2 + 9)} ${f1(y + 1.4)} ${f1(x + w / 2 + 11)} ${f1(y + 3.4)}L${f1(x + w / 2)} ${f1(y + h)}z`
+        : `M${f1(x + w / 2 - 0.5)} ${f1(y + 1.6)}L${f1(x + 9.6)} ${f1(y + 2)}L${f1(x + 10.4 + SP[i])} ${f1(y + 4.4 + (i > 4 ? 1.4 : 0))}L${f1(x + 9.6)} ${f1(y + h - 1.2)}L${f1(x + w / 2 - 0.5)} ${f1(y + h - 1.4)}z`;
+    return (
+      Pa(body, "f") +
+      Pa(arch, "f") +
+      (i ? Ln(f1(x - w / 2), f1(y + h - 2), f1(x - w / 2 - 5), f1(y + h + 0.8), 1.5) : "") +
+      Pa(
+        `M${f1(x - w / 2 + 1)} ${f1(y + h + 0.4)}Q${f1(x)} ${f1(y + h + 2.4)} ${f1(x + w / 2 - 1)} ${f1(y + h + 0.4)}`,
+        "s"
+      )
+    );
   }).join("");
-  const T1 = Pa(`M${f1(NECK_X(7) - 6)} ${f1(NECK_Y(7))}H${f1(NECK_X(7) + 6)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 9)}H${f1(NECK_X(7) - 5)}z`, "f") +
-    Pa(`M${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 2)}L${f1(NECK_X(7) + 30)} ${f1(NECK_Y(7) + 8)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 7)}z`, "f");
+  const T1 =
+    Pa(
+      `M${f1(NECK_X(7) - 6)} ${f1(NECK_Y(7))}H${f1(NECK_X(7) + 6)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 9)}H${f1(NECK_X(7) - 5)}z`,
+      "f"
+    ) +
+    Pa(
+      `M${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 2)}L${f1(NECK_X(7) + 30)} ${f1(NECK_Y(7) + 8)}L${f1(NECK_X(7) + 5)} ${f1(NECK_Y(7) + 7)}z`,
+      "f"
+    );
   const head =
-    Pa("M82 38L79 44L72 56L77 59L76 63L77 66L76 69L78 77L84 80C94 82 104 80 108 74L116 76L132 74L144 70C152 62 158 50 156 36C154 20 142 8 126 6C112 4 98 8 90 16C83 22 80 30 82 38z") +
+    Pa(
+      "M82 38L79 44L72 56L77 59L76 63L77 66L76 69L78 77L84 80C94 82 104 80 108 74L116 76L132 74L144 70C152 62 158 50 156 36C154 20 142 8 126 6C112 4 98 8 90 16C83 22 80 30 82 38z"
+    ) +
     Pa("M82 38C84 36 88 36 90 38M110 74C112 66 112 60 110 56", "s") +
-    El(91, 41, 5.2, 3.8, "f") + Pa("M92 50C102 52 112 52 118 50", "s") + Pa("M77 66H86", "s") +
+    El(91, 41, 5.2, 3.8, "f") +
+    Pa("M92 50C102 52 112 52 118 50", "s") +
+    Pa("M77 66H86", "s") +
     Pa("M100 67C112 67 124 69 138 70", "s") +
-    El(122, 58, 4.4, 8, "f", -8) + Pa("M121 54C123 56 123 61 121 63", "s") + Ci(129, 69, 3.4, "f");
+    El(122, 58, 4.4, 8, "f", -8) +
+    Pa("M121 54C123 56 123 61 121 63", "s") +
+    Ci(129, 69, 3.4, "f");
   const skin =
     Pa("M84 80C80 98 80 124 82 152", "s") + Pa("M146 72C151 84 151 104 153 122C155 138 163 150 184 158", "s");
-  const deep =  /* músculos sin zona propia, solo de referencia */
-    strap([[112, 84], [104, 110], [99, 134], [94, 154]], t => 5.4 + 2 * Math.sin(Math.PI * t)) +
-    strap([[118, 80], [132, 104], [148, 128], [170, 148]], t => 5 + 2 * Math.sin(Math.PI * t));
+  const deep =
+    /* músculos sin zona propia, solo de referencia */
+    strap(
+      [
+        [112, 84],
+        [104, 110],
+        [99, 134],
+        [94, 154]
+      ],
+      t => 5.4 + 2 * Math.sin(Math.PI * t)
+    ) +
+    strap(
+      [
+        [118, 80],
+        [132, 104],
+        [148, 128],
+        [170, 148]
+      ],
+      t => 5 + 2 * Math.sin(Math.PI * t)
+    );
   const context =
-    `<path class="s" style="stroke-width:3.6;opacity:.55" d="M90 98C88 112 88 130 91 152"/>` + /* tráquea */
-    Array.from({ length: 9 }, (_, i) => `<path class="s" style="stroke-width:.8" d="M86 ${100 + i * 5.6}H94.6"/>`).join("") +
-    Pa("M82 96C80 91 85 87 91 89L93 98C89 100 85 100 82 96z", "f") + /* cartílago tiroides */
-    Pa("M88 80L102 78L100 85L90 87z", "f") + /* hueso hioides */
-    Pa("M94 156C106 161 120 160 134 156C148 158 164 162 184 166", "s") + /* clavícula */
-    Pa("M80 150L96 148L98 180L84 182z", "f") + /* manubrio */
-    Pa("M132 146L190 160M140 154L186 172", "s") /* espina y borde de la escápula */;
+    `<path class="s" style="stroke-width:3.6;opacity:.55" d="M90 98C88 112 88 130 91 152"/>` /* tráquea */ +
+    Array.from({ length: 9 }, (_, i) => `<path class="s" style="stroke-width:.8" d="M86 ${100 + i * 5.6}H94.6"/>`).join(
+      ""
+    ) +
+    Pa("M82 96C80 91 85 87 91 89L93 98C89 100 85 100 82 96z", "f") /* cartílago tiroides */ +
+    Pa("M88 80L102 78L100 85L90 87z", "f") /* hueso hioides */ +
+    Pa("M94 156C106 161 120 160 134 156C148 158 164 162 184 166", "s") /* clavícula */ +
+    Pa("M80 150L96 148L98 180L84 182z", "f") /* manubrio */ +
+    Pa("M132 146L190 160M140 154L186 172", "s"); /* espina y borde de la escápula */
   return `<svg class="body neck" viewBox="30 -14 170 204" role="group" aria-label="Vista lateral del cuello: músculos cervicales">
 <g class="gh">${skin}${head}${deep}${bones}${T1}${context}</g>
 ${NECK_ORDER.map(id => `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role="button">${NECK[id]}</g>`).join("")}
@@ -427,19 +631,20 @@ ${NECK_ORDER.map(id => `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role
 
 /* Orden de apilamiento Z para capas superpuestas */
 const ORDER = {
-  huesos: ["costillas", "humero", "antebrazo", "pelvis", "femur", "tibia", "pie", "craneo", "cervical", "toracica", "lumbar"],
-  organos: [
-    "vasos",
-    "pulmones",
-    "higado",
-    "estomago",
-    "rinones",
-    "intestino",
-    "vejiga",
-    "corazon",
-    "medula",
-    "cerebro",
+  huesos: [
+    "costillas",
+    "humero",
+    "antebrazo",
+    "pelvis",
+    "femur",
+    "tibia",
+    "pie",
+    "craneo",
+    "cervical",
+    "toracica",
+    "lumbar"
   ],
+  organos: ["vasos", "pulmones", "higado", "estomago", "rinones", "intestino", "vejiga", "corazon", "medula", "cerebro"]
 };
 
 /* Silueta: tres pasadas (contorno, base oscura, tinte)
@@ -471,6 +676,6 @@ function figure(tab, cls) {
   const ids = ORDER[tab] || Object.keys(set);
 
   return `<svg class="body" viewBox="0 0 200 470" role="group" aria-label="Figura anatómica interactiva: ${tab}"><defs><radialGradient id="bg" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#7fb2ff" stop-opacity=".22"/><stop offset="1" stop-color="#7fb2ff" stop-opacity="0"/></radialGradient><linearGradient id="bs" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9ec5ff"/><stop offset="1" stop-color="#4a63c8"/></linearGradient></defs><ellipse cx="100" cy="235" rx="98" ry="228" fill="url(#bg)"/><g class="rings"><circle cx="100" cy="235" r="98"/><circle cx="100" cy="235" r="74"/></g>${BODY}${tab === "huesos" ? "" : `<g class="gh">${GHOST}</g>`}<rect class="scan" x="0" y="0" width="200" height="3"/>${ids
-    .map((id) => (set[id] ? `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role="button">${set[id]}</g>` : ""))
+    .map(id => (set[id] ? `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role="button">${set[id]}</g>` : ""))
     .join("")}</svg>`;
 }

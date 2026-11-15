@@ -73,11 +73,23 @@ svg.body.neck {
 }
 
 svg.neck text {
-  font: 400 7px 'IBM Plex Mono', ui-monospace, monospace;
+  font:
+    400 7px "IBM Plex Mono",
+    ui-monospace,
+    monospace;
   fill: var(--mu);
 }
 
 /* Cuello lateral: huesos de referencia un poco más visibles */
-svg.neck .gh .f { fill: rgba(var(--fig-rgb), .13); stroke: rgba(var(--fig-rgb), .38); stroke-width: .7; }
-svg.neck .gh .s { stroke: rgba(var(--fig-rgb), .34); stroke-width: 1.1; }
-svg.neck .nl2 { font-size: 6px; }
+svg.neck .gh .f {
+  fill: rgba(var(--fig-rgb), 0.13);
+  stroke: rgba(var(--fig-rgb), 0.38);
+  stroke-width: 0.7;
+}
+svg.neck .gh .s {
+  stroke: rgba(var(--fig-rgb), 0.34);
+  stroke-width: 1.1;
+}
+svg.neck .nl2 {
+  font-size: 6px;
+}

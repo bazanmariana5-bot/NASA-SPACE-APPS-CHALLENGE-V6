@@ -1,14 +1,21 @@
 /* importer.js — lector CSV que respeta comillas y validación de filas importadas (CSV o SVG). Funciones puras, sin DOM. */
 "use strict";
 
-const norm = s => String(s == null ? "" : s).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const norm = s =>
+  String(s == null ? "" : s)
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
 /* CSV: no divide a ciegas por comas. Una coma, un punto y coma o un salto de línea dentro de comillas pertenece al campo;
    "" dentro de un campo entrecomillado es una comilla literal. Detecta "," o ";" mirando solo la primera línea fuera de comillas. */
 function csvParse(text) {
   text = String(text).replace(/^\uFEFF/, "");
-  let q = false, nc = 0, ns = 0;
-  
+  let q = false,
+    nc = 0,
+    ns = 0;
+
   for (const ch of text) {
     if (ch === '"') {
       q = !q;
@@ -21,7 +28,9 @@ function csvParse(text) {
 
   const D = ns > nc ? ";" : ",";
   const rows = [];
-  let row = [], f = "", inQ = false;
+  let row = [],
+    f = "",
+    inQ = false;
 
   const end = () => {
     row.push(f);
@@ -58,13 +67,15 @@ function csvParse(text) {
 
   if (inQ) throw new Error("Comillas sin cerrar en el CSV");
   if (f !== "" || row.length) end();
-  
+
   return rows;
 }
 
 /* número: acepta "58.2" y "58,2" (coma decimal); cualquier otra cosa es NaN */
 function parseNum(x) {
-  let t = String(x == null ? "" : x).trim().replace(/\s/g, "");
+  let t = String(x == null ? "" : x)
+    .trim()
+    .replace(/\s/g, "");
   if (t === "") return NaN;
   if (/^[-+]?\d+,\d+$/.test(t)) t = t.replace(",", ".");
   return /^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(t) ? +t : NaN;
@@ -75,20 +86,20 @@ function tableToRows(t) {
   if (t.length < 2) return { rows: [], err: "El CSV no tiene filas de datos." };
 
   const h = t[0].map(norm),
-        at = n => h.findIndex(x => n.includes(x)),
-        iD = at(["dia", "day"]);
+    at = n => h.findIndex(x => n.includes(x)),
+    iD = at(["dia", "day"]);
 
   if (iD < 0) return { rows: [], err: 'Falta la columna "dia".' };
 
   const iC = at(["tripulante", "crew", "persona"]),
-        iK = at(["parametro", "clave", "key"]),
-        iV = at(["valor", "value"]),
-        skip = ["nota", "notas", "observacion", "observaciones"],
-        rows = [];
+    iK = at(["parametro", "clave", "key"]),
+    iV = at(["valor", "value"]),
+    skip = ["nota", "notas", "observacion", "observaciones"],
+    rows = [];
 
   t.slice(1).forEach(r => {
     const c = iC >= 0 ? (r[iC] || "").trim() : "",
-          d = parseNum(r[iD]);
+      d = parseNum(r[iD]);
 
     if (iK >= 0 && iV >= 0) {
       rows.push({ c, d, k: (r[iK] || "").trim(), v: parseNum(r[iV]) });
@@ -106,7 +117,7 @@ function tableToRows(t) {
 /* validación: o = {today, known:Set, crew:fn(texto)->id|null, negOk:fn(clave)->bool} */
 function validateRows(rows, o) {
   const good = [],
-        rej = { crew: 0, unk: 0, bad: 0, neg: 0, rng: 0 };
+    rej = { crew: 0, unk: 0, bad: 0, neg: 0, rng: 0 };
 
   rows.forEach(r => {
     const c = o.crew(r.c);

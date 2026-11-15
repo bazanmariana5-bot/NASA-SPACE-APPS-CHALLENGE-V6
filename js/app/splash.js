@@ -4,11 +4,12 @@
 
 window.KSSplash = { done: false };
 (() => {
-  const MIN = 2000,                 /* tiempo mínimo visible (ms) */
-        el = typeof document !== "undefined" && document.getElementById("splash");
+  const MIN = 2000 /* tiempo mínimo visible (ms) */,
+    el = typeof document !== "undefined" && document.getElementById("splash");
   const finish = () => {
     window.KSSplash.done = true;
-    if (typeof document.dispatchEvent === "function" && typeof CustomEvent === "function") document.dispatchEvent(new CustomEvent("ks-splash-done"));
+    if (typeof document.dispatchEvent === "function" && typeof CustomEvent === "function")
+      document.dispatchEvent(new CustomEvent("ks-splash-done"));
   };
   if (!el || typeof setTimeout !== "function") return finish();
   const t0 = Date.now();
@@ -18,9 +19,13 @@ window.KSSplash = { done: false };
     gone = true;
     el.classList.add("out");
     el.setAttribute("aria-hidden", "true");
-    setTimeout(() => { el.hidden = true; finish(); }, 750);
+    setTimeout(() => {
+      el.hidden = true;
+      finish();
+    }, 750);
   };
   const ready = () => setTimeout(hide, Math.max(0, MIN - (Date.now() - t0)));
-  if (document.readyState === "complete") ready(); else addEventListener("load", ready);
-  setTimeout(hide, 6000);           /* tope: nunca queda trabada */
+  if (document.readyState === "complete") ready();
+  else addEventListener("load", ready);
+  setTimeout(hide, 6000); /* tope: nunca queda trabada */
 })();

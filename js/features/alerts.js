@@ -19,7 +19,10 @@ const ICON_WARN = `<svg viewBox="0 0 48 48" class="alert-ico" aria-hidden="true"
 
 const ICON_HEART = `<svg viewBox="0 0 64 60" class="vital-heart-svg" aria-hidden="true" focusable="false"><path d="M32 57C9 40 3 27 3 18 3 9.500 9.500 3 18 3c6 0 11 3 14 8 3-5 8-8 14-8 8.500 0 15 6.500 15 15 0 9-6 22-29 39z"/><rect class="ex" x="28.500" y="13" width="7" height="22" rx="3.500"/><circle class="ex" cx="32" cy="43.500" r="4"/></svg>`;
 
-const setVeil = lv => { const v = $("alert-veil"); if (v) v.dataset.level = lv || ""; };
+const setVeil = lv => {
+  const v = $("alert-veil");
+  if (v) v.dataset.level = lv || "";
+};
 
 function hideAlert(kind) {
   const el = alertEls()[kind];
@@ -56,14 +59,16 @@ function showAlert(kind, html) {
 /* Busca emergencias vitales en los 3 tripulantes */
 function findEmergencies() {
   const out = [];
-  CREW.forEach(cr => ZONES.forEach(z => {
-    Engine.ev(z, C(S.day, cr), cr.id).rows.forEach(r => {
-      const rules = EMERG[z.id + "." + r.p.id];
-      if (!rules) return;
-      const hit = rules.find(([op, lim]) => op === "lt" ? r.v <= lim : r.v >= lim);
-      if (hit) out.push({ cr, z, r, txt: hit[2], arrest: hit[3] === "paro" });
-    });
-  }));
+  CREW.forEach(cr =>
+    ZONES.forEach(z => {
+      Engine.ev(z, C(S.day, cr), cr.id).rows.forEach(r => {
+        const rules = EMERG[z.id + "." + r.p.id];
+        if (!rules) return;
+        const hit = rules.find(([op, lim]) => (op === "lt" ? r.v <= lim : r.v >= lim));
+        if (hit) out.push({ cr, z, r, txt: hit[2], arrest: hit[3] === "paro" });
+      });
+    })
+  );
   return out;
 }
 
@@ -76,16 +81,16 @@ function showVital(e) {
   if (!el) return;
   activeAlertTarget = e;
   const name = esc(e.cr.name),
-        pv = `${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}`;
+    pv = `${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}`;
 
   const arrest = e.arrest;
   const title = arrest ? "Paro cardiorrespiratorio confirmado" : "Emergencia vital",
-        who = arrest
-          ? `El tripulante <b>${name}</b> está sufriendo un paro cardiorrespiratorio.`
-          : `El tripulante <b>${name}</b> presenta ${esc(e.txt)}.`,
-        defib = arrest
-          ? `<div class="vital-defib"><div class="defib-text"><b>Despejen la zona</b><span id="defib-msg">El desfibrilador está a punto de activarse. Nadie debe tocar al paciente.</span></div><div class="defib-charge" role="progressbar" aria-label="Carga del desfibrilador"><i></i></div></div>`
-          : `<p class="vital-note">Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia.</p>`;
+    who = arrest
+      ? `El tripulante <b>${name}</b> está sufriendo un paro cardiorrespiratorio.`
+      : `El tripulante <b>${name}</b> presenta ${esc(e.txt)}.`,
+    defib = arrest
+      ? `<div class="vital-defib"><div class="defib-text"><b>Despejen la zona</b><span id="defib-msg">El desfibrilador está a punto de activarse. Nadie debe tocar al paciente.</span></div><div class="defib-charge" role="progressbar" aria-label="Carga del desfibrilador"><i></i></div></div>`
+      : `<p class="vital-note">Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia.</p>`;
 
   el.classList.toggle("arrest", !!arrest);
   el.innerHTML = `
@@ -130,7 +135,10 @@ function showVital(e) {
   }
   el.classList.remove("charged");
   const card = el.querySelector(".vital-card");
-  if (card) { card.setAttribute("tabindex", "-1"); card.focus({ preventScroll: true }); }
+  if (card) {
+    card.setAttribute("tabindex", "-1");
+    card.focus({ preventScroll: true });
+  }
 }
 
 function checkAndTriggerAlerts(force = false) {
@@ -174,20 +182,25 @@ function checkAndTriggerAlerts(force = false) {
 /* ---------- Precaución ---------- */
 function triggerYellowAlert(a) {
   activeAlertTarget = a;
-  showAlert("yellow", `
+  showAlert(
+    "yellow",
+    `
     <div class="alert-emblem">${ICON_WARN}</div>
     <div class="alert-main">
       <div class="alert-head"><span class="alert-kicker">Precaución</span><span class="alert-go">Ver zona</span></div>
       <div class="alert-info">${alertValue(a)}</div>
     </div>
     <i class="alert-bar"></i>
-  `);
+  `
+  );
 }
 
 /* ---------- Alerta crítica: panel grande ---------- */
 function triggerRedAlert(a) {
   activeAlertTarget = a;
-  showAlert("red", `
+  showAlert(
+    "red",
+    `
     <button type="button" class="alert-x" data-alert-close="red" aria-label="Descartar aviso"><span class="icon-close" aria-hidden="true"></span></button>
     <div class="alert-row">
       <div class="alert-emblem">${ICON_WARN}<i class="vital-ring"></i></div>
@@ -206,7 +219,8 @@ function triggerRedAlert(a) {
       <button type="button" class="btn o" data-alert-close="red">Entendido</button>
     </div>
     <i class="alert-bar"></i>
-  `);
+  `
+  );
 }
 
 function goToAlertTarget() {

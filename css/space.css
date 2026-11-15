@@ -1,0 +1,150 @@
+/* css/space.css — Escena espacial animada, astronauta y capa de interacción (botones, tarjetas).
+   Se carga al final para ajustar los componentes sin tocar sus archivos. */
+
+:root {
+  --font-display: 'Sora', 'Space Grotesk', system-ui, sans-serif;
+  --ease-pop: cubic-bezier(.2, 1.2, .3, 1);
+}
+
+/* ---------- Formas dibujadas en CSS (leyendas y chips) ---------- */
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: currentColor; margin-right: 6px; vertical-align: baseline; flex: none; }
+.ln { display: inline-block; width: 18px; height: 3px; border-radius: 2px; background: currentColor; margin-right: 6px; vertical-align: middle; }
+.ln.dsh { background: repeating-linear-gradient(90deg, currentColor 0 5px, transparent 5px 9px); }
+.ln.vrt { width: 3px; height: 14px; }
+.u-c-fff { color: var(--sel) !important; }
+.nl .dot { margin: 0 0 0 auto; }
+
+/* ---------- Escena de fondo ---------- */
+.scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, var(--scene-top) 0%, var(--scene-bot) 100%); }
+:root { --scene-top: #03050d; --scene-bot: #0a1024; --neb-a: rgba(112, 82, 230, .34); --neb-b: rgba(24, 148, 205, .26); --neb-c: rgba(230, 80, 160, .16); --earth-a: #1d5fd0; --earth-b: #0a2a6e; --astro-op: .9; }
+:root[data-theme="light"] { --scene-top: #dfe8fb; --scene-bot: #f4f7fe; --neb-a: rgba(112, 82, 230, .14); --neb-b: rgba(24, 148, 205, .14); --neb-c: rgba(230, 80, 160, .08); --earth-a: #7aa7ee; --earth-b: #b9d0f6; --astro-op: .8; }
+
+.scene .neb { position: absolute; inset: -20%; filter: blur(40px); animation: nebDrift 70s ease-in-out infinite alternate;
+  background: radial-gradient(38% 32% at 24% 28%, var(--neb-a), transparent 70%), radial-gradient(34% 30% at 78% 20%, var(--neb-b), transparent 70%), radial-gradient(30% 26% at 62% 78%, var(--neb-c), transparent 70%); }
+@keyframes nebDrift { to { transform: translate3d(-4%, 3%, 0) rotate(4deg) scale(1.08); } }
+
+.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: var(--star-op); }
+
+/* Limbo de la Tierra al pie de la pantalla */
+.scene .earth { position: absolute; left: 50%; bottom: -118vmin; width: 150vmin; aspect-ratio: 1; margin-left: -75vmin; border-radius: 50%;
+  background: radial-gradient(circle at 50% 0%, var(--earth-a), var(--earth-b) 42%, transparent 70%);
+  box-shadow: 0 -2px 60px 6px rgba(120, 180, 255, .45), inset 0 14px 40px rgba(170, 215, 255, .6); opacity: .85; animation: earthBreath 12s ease-in-out infinite alternate; }
+@keyframes earthBreath { to { box-shadow: 0 -2px 90px 12px rgba(120, 180, 255, .6), inset 0 18px 50px rgba(170, 215, 255, .75); } }
+
+/* Astronauta flotando de fondo */
+.scene .astro { position: absolute; right: clamp(-60px, 4vw, 90px); bottom: 7vh; width: clamp(180px, 26vw, 400px); opacity: var(--astro-op); animation: astroFloat 14s ease-in-out infinite; transform-origin: 50% 50%; filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .45)); }
+.scene .astro svg { width: 100%; height: auto; display: block; overflow: visible; }
+@keyframes astroFloat {
+  0%   { transform: translate3d(0, 0, 0) rotate(-8deg); }
+  50%  { transform: translate3d(-18px, -34px, 0) rotate(5deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
+}
+.astro .arm-l { transform-origin: 82px 148px; animation: wave 6s ease-in-out infinite; }
+.astro .tether { stroke-dasharray: 2 7; animation: tether 4s linear infinite; }
+.astro .glint { animation: glint 7s ease-in-out infinite; }
+@keyframes wave { 50% { transform: rotate(-9deg); } }
+@keyframes tether { to { stroke-dashoffset: -18; } }
+@keyframes glint { 0%, 70%, 100% { opacity: .25; } 80% { opacity: .9; } }
+
+/* ---------- Tipografía y encabezado ---------- */
+body > header h1, .hero h2 { font-family: var(--font-display); letter-spacing: -.01em; }
+body > header h1 { font-size: 17px; }
+.hero h2 { font-size: 28px; }
+
+body > header { margin: 10px auto 8px; width: calc(100% - 16px); max-width: 1320px; border-color: rgba(var(--ac-rgb), .28); box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+
+/* ---------- Superficies de vidrio ---------- */
+.g { box-shadow: 0 12px 40px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .06); }
+:root[data-theme="light"] .g { box-shadow: 0 10px 34px rgba(30, 60, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .8); }
+
+/* ---------- Guía didáctica ---------- */
+.guide { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; padding: 12px 16px; font-size: 13px; color: var(--mu); }
+.guide b { color: var(--tx); font-weight: 600; }
+.guide .gi { display: inline-flex; align-items: center; gap: 8px; }
+.guide .dot { margin: 0; width: 11px; height: 11px; }
+
+/* ---------- Interacción: botones ---------- */
+.btn, .tab, .ib, .chip, .pr, .nl, .lang button, select {
+  transition: transform .22s var(--ease-pop), box-shadow .22s, background-color .2s, border-color .2s, color .2s, filter .2s;
+}
+.btn { position: relative; overflow: hidden; }
+.btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, .45) 50%, transparent 70%); transform: translateX(-120%); transition: transform .6s ease; pointer-events: none; }
+@media (hover: hover) {
+  .btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 8px 22px rgba(var(--ac-rgb), .45); }
+  .btn:hover::after { transform: translateX(120%); }
+  .btn.o:hover { background: rgba(var(--ac-rgb), .14); border-color: var(--ac); box-shadow: 0 8px 22px rgba(var(--ac-rgb), .25); }
+  .tab:hover { transform: translateY(-2px); border-color: var(--ac); background: rgba(var(--ac-rgb), .12); }
+  .tab.on:hover { background: var(--ac); filter: brightness(1.1); }
+  .ib:hover { transform: scale(1.1) rotate(-4deg); border-color: var(--ac); background: rgba(var(--ac-rgb), .14); }
+  .chip:hover, .pr:hover { transform: translateY(-2px); border-color: var(--ac); }
+  .nl:hover { transform: translateX(4px); }
+  select:hover { border-color: var(--ac); }
+}
+.btn:active, .tab:active, .ib:active, .chip:active { transform: scale(.96); }
+
+/* ---------- Interacción: las tarjetas se agrandan ---------- */
+.card, .gc, .cc, .kp div, .hero, .plc {
+  transition: transform .3s var(--ease-pop), box-shadow .3s, border-color .25s, background-color .25s;
+}
+@media (hover: hover) {
+  .card:hover, .gc:hover, .cc:hover { transform: scale(1.04); z-index: 5; border-color: var(--ac); box-shadow: 0 18px 48px rgba(0, 0, 0, .4), 0 0 0 1px rgba(var(--ac-rgb), .5), 0 0 30px rgba(var(--ac-rgb), .22); }
+  :root[data-theme="light"] .card:hover, :root[data-theme="light"] .gc:hover, :root[data-theme="light"] .cc:hover { box-shadow: 0 18px 40px rgba(30, 60, 120, .22), 0 0 0 1px rgba(var(--ac-rgb), .5); }
+  .kp div:hover { transform: scale(1.08); border-color: var(--ac); }
+}
+.card, .gc, .cc { position: relative; }
+
+/* Los carriles con scroll recortan lo que crece: se deja aire alrededor */
+.rail { padding: 12px 6px; margin: -12px -6px; }
+.stage > *, .main > * { overflow: visible; }
+
+/* Móvil: sin crecer tanto para no desbordar */
+@media (max-width: 700px) {
+  .card:hover, .gc:hover, .cc:hover { transform: scale(1.02); }
+  .scene .astro { opacity: calc(var(--astro-op) * .55); width: 52vw; right: -6vw; }
+}
+
+/* ---------- Foco visible más claro ---------- */
+button:focus-visible, select:focus-visible, input:focus-visible { box-shadow: 0 0 0 4px rgba(var(--ac-rgb), .3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene .neb, .scene .earth, .scene .astro, .astro .arm-l, .astro .tether, .astro .glint { animation: none !important; }
+  .vital-card { transform: none !important; }
+}
+
+/* ---------- Fondo según el entorno de la misión (imágenes estáticas, sin animación) ---------- */
+.envs > div { position: absolute; opacity: 0; transition: opacity .9s ease; pointer-events: none; background-repeat: no-repeat; }
+
+/* Luna: la mitad izquierda del disco, asomando por el borde derecho */
+.env-moon { top: -12vh; right: 0; height: 124vh; width: 62vh; background-image: url("../img/luna.jpg"), var(--img-moon); background-size: auto 100%, 100% 100%; background-position: right center, center; }
+/* Marte: planeta grande al fondo */
+.env-mars { top: 50%; left: 50%; width: min(118vmin, 980px); aspect-ratio: 1; margin: calc(min(118vmin, 980px) / -2 + 4vh) 0 0 calc(min(118vmin, 980px) / -2 + 6vw); background-image: url("../img/marte.jpg"), var(--img-mars); background-size: contain, 100% 100%; background-position: center, center; }
+/* Estación: un tramo de la estación entrando por la izquierda */
+.env-iss { left: -14vw; top: 10vh; width: min(80vw, 980px); aspect-ratio: 1500 / 1100; transform: rotate(-8deg); background-image: url("../img/estacion.jpg"), var(--img-iss); background-size: contain, 100% 100%; background-position: center, center; }
+
+:root:not([data-env]) .env-iss, :root[data-env="iss"] .env-iss, :root[data-env="moon"] .env-moon, :root[data-env="mars"] .env-mars { opacity: .92; }
+:root[data-theme="light"] .env-iss, :root[data-theme="light"] .env-moon, :root[data-theme="light"] .env-mars { filter: brightness(.9) contrast(1.05); }
+
+/* Limbo de la Tierra: solo desde la estación */
+.scene .earth { left: 0; right: 0; bottom: 0; width: 100%; height: auto; aspect-ratio: 2000 / 620; margin: 0; border-radius: 0; box-shadow: none; background: url("../img/tierra.jpg") center bottom / cover no-repeat, var(--img-earth) center bottom / 100% 100% no-repeat; opacity: .95; }
+:root[data-env="moon"] .scene .earth, :root[data-env="mars"] .scene .earth { opacity: 0; transition: opacity .9s; }
+:root[data-env="moon"] .scene .astro { right: auto; left: 3vw; }
+
+/* Movimiento lento y sereno del fondo */
+.scene .astro { display: none; }
+.scene .neb { opacity: .6; animation: nebDrift 90s ease-in-out infinite alternate; }
+.env-moon { animation: moonDrift 40s ease-in-out infinite alternate; transform-origin: 100% 50%; }
+.env-mars { animation: marsDrift 50s ease-in-out infinite alternate; }
+.env-iss { animation: issFloat 36s ease-in-out infinite alternate; }
+.scene .earth { animation: earthRise 45s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+@keyframes moonDrift { from { transform: scale(1) translate3d(0, 0, 0); } to { transform: scale(1.12) translate3d(-26px, -30px, 0); } }
+@keyframes marsDrift { from { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); } to { transform: scale(1.1) translate3d(-40px, 20px, 0) rotate(4deg); } }
+@keyframes issFloat { from { transform: rotate(-8deg) translate3d(0, 0, 0); } to { transform: rotate(-5deg) translate3d(60px, -34px, 0) scale(1.05); } }
+@keyframes earthRise { from { transform: scale(1) translateY(0); } to { transform: scale(1.04) translateY(-6px); } }
+
+@media (max-width: 700px) {
+  .env-moon { width: 44vh; } .env-iss { width: 120vw; top: 22vh; }
+}
+
+/* Menos desenfoque para que el fondo del entorno se distinga detrás de los paneles */
+.g { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+:root:not([data-theme="light"]) .envs > div { mix-blend-mode: screen; }

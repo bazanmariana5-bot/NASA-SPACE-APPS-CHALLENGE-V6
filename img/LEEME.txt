@@ -1,0 +1,12 @@
+Fotos reales para el fondo (opcional)
+-------------------------------------
+Copia aqui fotos reales y se usan solas en lugar de las imagenes generadas:
+
+  luna.jpg      Luna llena sobre fondo negro (se muestra la mitad)
+  marte.jpg     Marte sobre fondo negro
+  estacion.jpg  Estacion Espacial sobre fondo negro
+  tierra.jpg    Borde de la Tierra visto desde la orbita, fondo negro arriba
+
+Las fotos de la NASA (images.nasa.gov) son de dominio publico.
+El negro de la foto se vuelve transparente automaticamente.
+Si un archivo no existe, se usa la imagen generada.

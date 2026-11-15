@@ -20,7 +20,7 @@
   <title>Kinesoft: Asistente Médico de Tripulación</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/anatomy.css">
@@ -31,9 +31,17 @@
   <link rel="stylesheet" href="css/plan.css">
   <link rel="stylesheet" href="css/alerts.css">
   <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/envimg.css">
+  <link rel="stylesheet" href="css/space.css">
 </head>
 <body>
-  <div class="sky"><i></i><i></i></div>
+  <div class="scene" aria-hidden="true">
+    <div class="neb"></div>
+    <canvas id="stars"></canvas>
+    <div class="envs"><div class="env-moon"></div><div class="env-mars"></div><div class="env-iss"></div></div>
+    <div class="earth"></div>
+  </div>
+  <div id="alert-veil" aria-hidden="true"></div>
   <div id="tip" class="mono"></div>
   <div id="toast"></div>
 
@@ -54,7 +62,6 @@
       <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button>
       <button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
     </div>
-    <div id="google_translate_element" aria-hidden="true"></div>
   </header>
 
   <div id="scrim"></div>
@@ -78,6 +85,13 @@
   <div class="app">
     <main class="main main-grid">
       <section class="g hero" id="hero"></section>
+      <div class="g guide" role="note" aria-label="Guía de colores">
+        <span><b>Cómo leer el panel:</b> toca una zona o una tarjeta para ver el detalle.</span>
+        <span class="gi t0"><i class="dot"></i>Normal</span>
+        <span class="gi t1"><i class="dot"></i>Precaución</span>
+        <span class="gi t2"><i class="dot"></i>Alerta</span>
+        <span class="gi t3"><i class="dot"></i>Sin sensor</span>
+      </div>
       <div class="rw">
         <button class="ib" data-r="tabs" data-d="-1" aria-label="Anterior">‹</button>
         <div class="rail" id="tabs"></div>
@@ -117,10 +131,11 @@
   <script src="js/tests/cpet.js"></script>
   <script src="js/features/days.js"></script>
   <script src="js/features/upload.js"></script>
+  <script src="js/features/voice.js"></script>
   <script src="js/features/alerts.js"></script>
+  <script src="js/ui/space.js"></script>
   <script src="js/app/nav.js"></script>
   <script src="js/app/theme.js"></script>
   <script src="js/app/lang.js"></script>
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 </body>
 </html>

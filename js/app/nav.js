@@ -328,14 +328,14 @@ const Nav = {
             if (s >= 0 && s < 3) w = Math.max(w, s);
             return `<li><button class="nl ${on ? "on" : ""}" data-nav="${i}"${
               on ? ' aria-current="page"' : ""
-            }><span>${l.n}</span>${s >= 0 ? `<i class="t${s}" title="${SN[s]}">●</i>` : ""}</button></li>`;
+            }><span>${l.n}</span>${s >= 0 ? `<i class="dot t${s}" title="${SN[s]}"></i>` : ""}</button></li>`;
           })
           .join("");
         const o = this.ex.has(g.id);
         return `<section class="ng ${o ? "open" : ""} ${g.tab === S.tab ? "cur" : ""}"><button class="ngh" data-ng="${
           g.id
         }" aria-expanded="${o}">${g.ic ? `<span>${g.ic}</span>` : ""}<b>${g.n}</b>${
-          w >= 0 ? `<i class="t${w}">●</i>` : ""
+          w >= 0 ? `<i class="dot t${w}"></i>` : ""
         }<em>›</em></button><ul>${items}</ul></section>`;
       })
       .join("");

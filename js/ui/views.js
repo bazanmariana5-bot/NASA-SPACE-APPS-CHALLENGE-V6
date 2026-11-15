@@ -14,7 +14,7 @@ function insp(z) {
         pi = Math.min(S.par[z.id] || 0, Math.max(0, z.p.length - 1)),
         pr = z.p[pi];
   return `<div class="rw u-jc-space-between"><b>${z.n}</b><span class="src ${e.real ? "r" : ""}">${e.real ? "Dato real" : "Modelo simulado"}</span></div><div class="u-m-6-0">${bd(e.st)} <small class="u-c-mu">${z.sys}</small></div>
-${e.rows.length ? `<div class="pl">${e.rows.map((r, i) => `<button class="pr ${i === pi ? "on" : ""}" data-p="${i}"><span>${r.p.n}${r.real ? ' <i class="src r">Dato real</i>' : ""}</span><b class="mono">${fmt(r.p, r.v)} <em>${r.p.u}</em></b>${r.p.dir === "none" ? "" : `<span class="t${r.s}"><span class="bar"><i style="width:${r.sv * 100}%"></i></span></span>`}</button>`).join("")}</div>${z.id === "lumbar" ? heightRec(e) : ""}${chart(z, pr)}<div class="lg"><span class="u-c-7fb2ff">- - Base en Tierra ${fmt(pr, pr.base)}</span><span class="u-c-warn">- - Precaución</span><span class="u-c-bad">- - Alerta</span><span>━ Modelo</span><span class="u-c-fff">● Real</span></div>` : `<p class="u-c-mu u-fs-13">${z.txt}</p>`}
+${e.rows.length ? `<div class="pl">${e.rows.map((r, i) => `<button class="pr ${i === pi ? "on" : ""}" data-p="${i}"><span>${r.p.n}${r.real ? ' <i class="src r">Dato real</i>' : ""}</span><b class="mono">${fmt(r.p, r.v)} <em>${r.p.u}</em></b>${r.p.dir === "none" ? "" : `<span class="t${r.s}"><span class="bar"><i style="width:${r.sv * 100}%"></i></span></span>`}</button>`).join("")}</div>${z.id === "lumbar" ? heightRec(e) : ""}${chart(z, pr)}<div class="lg"><span class="u-c-7fb2ff">- - Base en Tierra ${fmt(pr, pr.base)}</span><span class="u-c-warn">- - Precaución</span><span class="u-c-bad">- - Alerta</span><span><i class="ln"></i>Modelo</span><span class="u-c-fff"><i class="dot"></i>Real</span></div>` : `<p class="u-c-mu u-fs-13">${z.txt}</p>`}
 <details><summary>Ver detalle clínico</summary><p>${z.txt}</p><p>Fuente de datos: ${z.src}</p></details>${z.tab !== "mente" && z.p.length ? `<button class="btn o sm u-mt-10" data-reg="${z.id}">Registrar datos de esta zona</button>` : ""}`;
 }
 
@@ -28,7 +28,7 @@ function cards(zs, sel, btn) {
 const NECK_IDS = ["ecm", "trapecio", "esplenio", "largocuello", "multifidos"];
 
 /* Recuadro "vista lateral del cuello" (solo en la capa de músculos); los botones identifican cada músculo. */
-const neckBox = (cls, chips) => `<div class="neckz">${neckFigure(id => cls[id])}${chips ? `<div class="row u-jc-center u-mt-8">${NECK_IDS.map(id => `<button class="chip zc ${/sel/.test(cls[id]) ? "on" : ""}" data-z="${id}"><i class="t${cls[id][1]}">●</i> ${ZONES.find(q => q.id === id).n}</button>`).join("")}</div>` : ""}</div>`;
+const neckBox = (cls, chips) => `<div class="neckz">${neckFigure(id => cls[id])}${chips ? `<div class="row u-jc-center u-mt-8">${NECK_IDS.map(id => `<button class="chip zc ${/sel/.test(cls[id]) ? "on" : ""}" data-z="${id}"><i class="dot t${cls[id][1]}"></i>${ZONES.find(q => q.id === id).n}</button>`).join("")}</div>` : ""}</div>`;
 
 const zoneFig = (tab, zs, sel, nochips) => {
   const cls = {};
@@ -36,7 +36,7 @@ const zoneFig = (tab, zs, sel, nochips) => {
   return memo("fig|" + tab + "|" + (nochips ? 1 : 0) + "|" + JSON.stringify(cls), () => figure(tab, id => cls[id]) + (tab === "musculos" ? neckBox(cls, !nochips) : ""));
 };
 
-const legend = () => `<div class="lg u-jc-center">${SN.map((n, i) => `<span class="t${i}">● ${n}</span>`).join("")}</div>`;
+const legend = () => `<div class="lg u-jc-center">${SN.map((n, i) => `<span class="t${i}"><i class="dot"></i>${n}</span>`).join("")}</div>`;
 
 function viewBody(tab) {
   const t = TABS.find(x => x.id === tab),
@@ -80,6 +80,6 @@ function viewPanel() {
 
   return `<div class="g pn"><div class="rw u-jc-space-between u-fw-wrap"><div><b>Selecciona un tripulante</b><p class="u-m-2-0-0 u-c-mu u-fs-13">Cada gráfico muestra la evolución de un estado de salud de <b class="u-c-tx">${cr.name}</b> desde el día 0 hasta el día ${S.today} de la misión.</p></div></div><div class="ccw">${cc}</div></div>
 <div class="g pn"><div class="rw u-fw-wrap u-gap-8">${CATS.map(c => `<button class="chip ${S.cat === c[0] ? "on" : ""}" data-cat="${c[0]}">${c[1]}</button>`).join("")}<span class="u-flex-1"></span><button class="chip ${S.cmp ? "on" : ""}" data-cmp="1" aria-pressed="${!!S.cmp}">Comparar con el resto de la tripulación</button></div>
-<div class="lg u-mt-10"><span style="color:${cr.col}">━ ${cr.name} (modelo)</span><span class="u-c-fff">● Dato real registrado</span><span class="u-c-7fb2ff">- - Base en Tierra</span><span class="u-c-warn">- - Precaución</span><span class="u-c-bad">- - Alerta</span><span>│ Día ${S.day}</span>${S.cmp ? CREW.filter(x => x.id !== cr.id).map(x => `<span style="color:${x.col}">━ ${x.name} (modelo)</span>`).join("") : ""}</div></div>
+<div class="lg u-mt-10"><span style="color:${cr.col}"><i class="ln"></i>${cr.name} (modelo)</span><span class="u-c-fff"><i class="dot"></i>Dato real registrado</span><span class="u-c-7fb2ff"><i class="ln dsh"></i>Base en Tierra</span><span class="u-c-warn"><i class="ln dsh"></i>Precaución</span><span class="u-c-bad"><i class="ln dsh"></i>Alerta</span><span><i class="ln vrt"></i>Día ${S.day}</span>${S.cmp ? CREW.filter(x => x.id !== cr.id).map(x => `<span style="color:${x.col}"><i class="ln"></i>${x.name} (modelo)</span>`).join("") : ""}</div></div>
 <div class="cg">${grid}</div><p class="u-c-mu u-fs-12 u-m-0-4">Toca un gráfico para ver la zona del cuerpo. Los puntos blancos son registros reales guardados en la pestaña Registro; la línea de color es el modelo simulado según el entorno, el cumplimiento de ejercicio y el día de misión.</p>`;
 }

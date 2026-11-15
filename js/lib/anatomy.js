@@ -292,7 +292,7 @@ function neckFigure(cls) {
   return `<svg class="body neck" viewBox="0 0 170 150" role="group" aria-label="Vista lateral del cuello: músculos cervicales">
 <g class="gh">${El(92, 28, 32, 24) + Pa("M62 36C58 48 62 58 72 62L84 60", "s") + bones}</g>
 ${NECK_ORDER.map(id => `<g class="z ${cls(id)}" data-z="${id}" tabindex="0" role="button">${NECK[id]}</g>`).join("")}
-<text class="nl1" x="8" y="12">Vista lateral</text><text class="nl2" x="162" y="12" text-anchor="end">Frente ←</text>
+<text class="nl1" x="8" y="12">Vista lateral</text><text class="nl2" x="162" y="12" text-anchor="end">Frente</text>
 </svg>`;
 }
 

@@ -19,7 +19,7 @@
   --fig-rgb: 190, 215, 255;  /* trazos de la figura anatómica */
   --edge-rgb: 5, 8, 18;      /* contornos de zonas */
 
-  --surf: rgba(10, 16, 32, .55);   /* tarjetas */
+  --surf: rgba(10, 16, 32, .78);   /* tarjetas */
   --field: rgba(5, 8, 18, .7);     /* campos de formulario */
   --solid: #0a1020;                /* diálogos */
   --drawer: rgba(8, 12, 26, .95);  /* menú lateral y tooltip */
@@ -69,7 +69,7 @@
   --fig-rgb: 40, 70, 130;
   --edge-rgb: 255, 255, 255;
 
-  --surf: rgba(255, 255, 255, .62);
+  --surf: rgba(255, 255, 255, .8);
   --field: rgba(255, 255, 255, .9);
   --solid: #fff;
   --drawer: rgba(255, 255, 255, .97);

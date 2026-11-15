@@ -168,7 +168,7 @@ ZONES.forEach(z => z.p.forEach(p => {
 /* ---- emergencias vitales: "zona.param": [[operador, umbral, situación], ...] ----
    Solo los parámetros listados acá disparan el aviso de Emergencia vital. lt = menor o igual, gt = mayor o igual. */
 const EMERG = {
-  "corazon.hr":    [["lt", 30, "bradicardia extrema con posible paro cardíaco"], ["gt", 180, "taquicardia extrema con posible arritmia grave"]],
+  "corazon.hr":    [["lt", 30, "bradicardia extrema", "paro"], ["gt", 180, "taquicardia extrema con posible arritmia grave"]],
   "corazon.lvef":  [["lt", 30, "falla cardíaca severa"]],
   "corazon.sbp":   [["lt", 70, "hipotensión grave con posible shock"], ["gt", 180, "crisis hipertensiva"]],
   "pulmones.spo2": [["lt", 85, "hipoxia severa (saturación de oxígeno críticamente baja)"]],
@@ -177,6 +177,7 @@ const EMERG = {
   "higado.glu":    [["lt", 50, "hipoglucemia grave"], ["gt", 400, "hiperglucemia grave"]]
 };
 
+/* Cuarto elemento "paro": la alerta confirma el paro cardiorrespiratorio, avisa que se despeje la zona y que el desfibrilador está por activarse. */
 const EMERG_MSG = (nombre, situacion) =>
   `Emergencia vital. El astronauta ${nombre} presenta ${situacion}. Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia.`;
 

@@ -131,7 +131,16 @@
     set(b.dataset.lang);
   });
 
-  window.KSLang = { get: function () { return lang; } };
+  /* Traduce un texto largo línea por línea (para la voz de INTI). cb(texto, ok) */
+  function tr(text, cb) {
+    var lines = String(text).split(/(?<=[.:;])\s+|\n/).filter(function (x) { return x.trim(); }), left = lines.length, out = [];
+    if (!left) return cb("", false);
+    lines.forEach(function (ln, i) {
+      var t = ln.trim(), fin = function () { out[i] = cache[t] || t; if (!--left) cb(out.join(" "), lines.every(function (q) { return cache[q.trim()]; })); };
+      if (cache[t]) fin(); else need(t, fin);
+    });
+  }
+  window.KSLang = { get: function () { return lang; }, tr: tr };
   paint(stored());
   if (stored() === "en") set("en");
 })();

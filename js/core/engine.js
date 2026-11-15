@@ -29,6 +29,8 @@ const Engine = {
     if (g("sueno.sq") && g("cognicion.cog")) m.push("Deterioro cognitivo por déficit de sueño: siesta estratégica de 25 min y luz azul enriquecida antes de reevaluar.");
     if (g("reaccion.rt")) m.push("Fatiga neuroconductual: reevaluar o descansar 20 min antes de autorizar tareas de precisión; EVA sin habilitar si el puntaje es 4 o menos.");
     if (g("cognicion.lat") && (g("cognicion.lap") || g("esfuerzo.co2"))) m.push("Posible hipercapnia de cabina: revisar los depuradores de CO₂ antes de atribuirlo a fatiga del tripulante.");
+    if (g("cerebro.pic") || g("cerebro.ppc")) m.push("Presión intracraneal o de perfusión cerebral alterada: reposo con la cabeza elevada, evitar maniobras de esfuerzo (Valsalva) y avisar al médico de vuelo.");
+    if (g("cerebro.gcs")) m.push("Glasgow menor a 15: reevaluar el nivel de conciencia, revisar oxígeno y CO₂ de la cabina y avisar de inmediato al médico de vuelo.");
     return m;
   }
 };

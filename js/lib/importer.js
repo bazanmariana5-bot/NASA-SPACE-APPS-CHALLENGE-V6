@@ -126,7 +126,7 @@ function validateRows(rows, o) {
       rej.neg++;
       return;
     }
-    if (!Number.isInteger(r.d) || r.d < 0 || r.d >= o.today) {
+    if (!Number.isInteger(r.d) || r.d < 0 || r.d > o.today) {
       rej.rng++;
       return;
     }

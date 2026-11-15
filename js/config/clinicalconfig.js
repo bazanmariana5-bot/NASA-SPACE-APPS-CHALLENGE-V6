@@ -7,6 +7,9 @@ const CREW = [
   { id: "c3", name: "Pablo Gómez", role: "Ing. de sistemas", bio: "Robótica y soporte · 35 años · 1,75 m · 70 kg", age: 35, h: 175, sens: .9, col: "var(--cw3)" }
 ];
 
+/* Tripulantes agregados por la persona (se guardan en el equipo). */
+try { JSON.parse(localStorage.getItem("ks-crew-extra") || "[]").forEach(c => { if (c && c.id && c.name && !CREW.some(x => x.id === c.id)) CREW.push(c); }); } catch (e) {}
+
 const ENVS = {
   iss: { n: "Estación Espacial (microgravedad)", k: 1, fk: 1, gz: 1, lat: "0,3 s", note: "Órbita baja: microgravedad total, 16 amaneceres al día y comunicación casi inmediata con Tierra." },
   mars: { n: "Tránsito a Marte (espacio profundo)", k: 1.1, fk: 1, gz: 1, lat: "hasta 22 min", note: "Más radiación y retraso de comunicación: el tripulante debe autoevaluarse con autonomía." },
@@ -18,10 +21,12 @@ const TABS = [
   { id: "huesos", n: "Huesos", cm: "Protocolo ARED: sentadilla y peso muerto, bisfosfonatos y vitamina D. El cumplimiento de ejercicio se ajusta en el menú de tripulación." },
   { id: "musculos", n: "Músculos", cm: "Cicloergómetro y resistencia isoinercial (ARED) 45 min diarios." },
   { id: "organos", n: "Órganos", cm: "Control de fluidos, sodio moderado y pantalones de presión negativa (LBNP)." },
-  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, test de colores, reacción y ánimo; obligatorio antes de una EVA o acoplamiento." },
+  { id: "mente", n: "Evaluaciones", cm: "Registro matutino de sueño, memoria de 10 colores, reacción y ánimo; obligatorio antes de una EVA o acoplamiento." },
   { id: "registro", n: "Registro", cm: "" },
   { id: "riesgos", n: "Riesgos NASA", cm: "" },
-  { id: "plan", n: "Plan de ejercicio", cm: "" }
+  { id: "plan", n: "Plan de ejercicio", cm: "" },
+  { id: "betta", n: "Traje INTI", cm: "" },
+  { id: "hud", n: "Casco HUD", cm: "" }
 ];
 
 const SN = ["Normal", "Precaución", "Alerta", "Sin sensor"];
@@ -81,18 +86,34 @@ const ZONES = [
   Z("musculos", "muslo", "Muslo (cuádriceps)", "El cuádriceps es el gran músculo antigravitatorio. Si el área de corte baja de 60 a 52 cm² en tres meses, el software calcula el porcentaje de cambio y avisa.", [mus("quad", "Área del cuádriceps (eco)", "cm²", 60, 3.6), mus("isq", "Área de isquiotibiales (eco)", "cm²", 34, 2.6), mus("ared", "Repeticiones en ARED (sentadilla, 80 kgf)", "rep", 15, 3, .1, .2), stiff("rigq", "Rigidez del cuádriceps (miotonómetro)", 10, 2.5), stiff("rigi", "Rigidez de isquiotibiales (miotonómetro)", 11, 2)], MS),
   Z("musculos", "pantorrilla", "Pantorrilla", "Sóleo y gastrocnemio sostienen el cuerpo de pie y son los que más rápido se atrofian en microgravedad.", [mus("sur", "Espesor del tríceps sural", "mm", 52, 4), mus("tal", "Elevación de talones (rep)", "rep", 25, 3.5, .1, .2), stiff("rigg", "Rigidez de gemelos (miotonómetro)", 12, 3), stiff("rigs", "Rigidez del sóleo (miotonómetro)", 13, 3)], MS),
   Z("musculos", "bia", "Composición corporal (BIA)", "La bioimpedancia, con electrodos en manos y pies, estima la masa libre de grasa y el agua corporal total; separa pérdida muscular de cambios de líquidos.", [mus("ffm", "Masa libre de grasa (BIA)", "kg", 62, 1.1), P("tbw", "Agua corporal total (BIA)", "L", 45, c => 45 * (1 - .01 * c.m * c.fk), "none", 0, 0)], "Bioimpedancia eléctrica."),
-  Z("organos", "cerebro", "Cerebro y ojos", "En microgravedad los líquidos suben hacia la cabeza. Esto puede aumentar la presión dentro del cráneo y deformar la parte posterior del ojo. " + NO, [], "Sin sensor.", "Neuro-ocular"),
+  Z("organos", "cerebro", "Sistema nervioso central (cerebro y médula espinal)", "El sistema nervioso central necesita sangre y oxígeno continuos. En microgravedad los líquidos suben hacia la cabeza y puede subir la presión dentro del cráneo. Se vigilan cuatro grupos: perfusión cerebral (flujo, presión intracraneal, presión arterial media y presión de perfusión), metabolismo (oxígeno y glucosa), actividad eléctrica (ondas beta, alfa, theta y delta del EEG) y función clínica (escala de Glasgow, tono y reflejos).", [
+    fl("fsc", "Flujo sanguíneo cerebral (FSC)", "ml/100 g/min", 50, -12, "lt", 42, 35),
+    fl("fscg", "FSC en sustancia gris", "ml/100 g/min", 77, -12, "lt", 65, 55),
+    fl("fscb", "FSC en sustancia blanca", "ml/100 g/min", 25, -10, "lt", 21, 18),
+    P("pic", "Presión intracraneal (PIC)", "mmHg", 10, c => 10 * (1 + .45 * c.m * c.fk), "gt", 15, 20, 1, { mn: 0 }),
+    P("pam", "Presión arterial media (PAM)", "mmHg", 93, c => 93 * (1 + .03 * c.m * c.fk), "lt", 70, 60, 0, { mx: 160 }),
+    P("ppc", "Presión de perfusión cerebral (PPC = PAM - PIC)", "mmHg", 83, c => 93 * (1 + .03 * c.m * c.fk) - 10 * (1 + .45 * c.m * c.fk), "lt", 60, 50, 0, { mx: 150 }),
+    fl("cmro2", "Consumo cerebral de oxígeno (CMRO2)", "ml O2/100 g/min", 3.5, -6, "lt", 3, 2.5),
+    fl("cmrg", "Metabolismo cerebral de la glucosa", "µmol/100 g/min", 27, -6, "lt", 22, 18),
+    fl("beta", "Ondas beta del EEG (13 a 30 Hz)", "% de potencia", 32, -20, "lt", 22, 15, 0),
+    fl("alfa", "Ondas alfa del EEG (8 a 13 Hz)", "% de potencia", 38, -15, "lt", 28, 20, 0),
+    fl("theta", "Ondas theta del EEG (4 a 8 Hz)", "% de potencia", 18, 30, "gt", 27, 35, 0),
+    fl("delta", "Ondas delta del EEG (1 a 4 Hz)", "% de potencia", 12, 40, "gt", 20, 30, 0),
+    P("gcs", "Escala de coma de Glasgow (GCS)", "puntos (3 a 15)", 15, c => 15 * (1 - .02 * c.m * c.fk), "lt", 14, 12, 0, { mn: 3, mx: 15 }),
+    P("ashw", "Tono muscular (Ashworth modificada, 0 a 4)", "puntos", .2, c => .2 + .5 * c.m * c.fk, "gt", 1, 2, 1, { mn: 0, mx: 4 }),
+    P("refl", "Reflejos osteotendinosos (0 a 4)", "puntos", 2, c => 2 + .5 * c.m * c.fk, "gt", 3, 4, 1, { mn: 1, mx: 4 })
+  ], "Neuromonitorización: perfusión, metabolismo, EEG y examen neurológico. Valores de referencia clínicos; el modelo simula su deriva en microgravedad.", "Sistema nervioso central"),
   Z("organos", "vasos", "Cuello: yugular y carótida", "La sangre se acumula en el cuello y la vena yugular puede estancarse, con riesgo de coágulos. Las arterias además se vuelven más rígidas.", [P("ijv", "Estasis de la vena yugular", "grado 1 a 4", 1, c => 1 + .012 * c.d * c.fk, "gt", 2, 3), fl("stif", "Rigidez carotídea", "m/s", 6, 2, "gt", 6.36, 6.72, 2)], "Ecografía vascular Doppler.", "Cardiovascular"),
   Z("organos", "pulmones", "Pulmones", "Sin gravedad las vísceras abdominales suben y el diafragma se eleva: baja la capacidad residual. También se vigila el polvo en cabina y tras caminatas espaciales.", [fl("fvc", "Capacidad vital forzada", "L", 4.8, -1.4, "lt", 4.56, 4.32, 2), fl("fev1", "Volumen espiratorio en 1 s", "L", 3.9, -1.1, "lt", 3.7, 3.51, 2), fl("frc", "Capacidad residual funcional", "L", 2.6, -2.8, "lt", 2.21, 2.08, 2), fl("spo2", "Saturación de oxígeno", "%", 98, -.1, "lt", 95, 94), fl("pi", "Índice de perfusión", "%", 4, -4, "lt", 1, .5)], "Espirometría y oximetría de pulso.", "Respiratorio"),
-  Z("organos", "corazon", "Corazón", "Sin gravedad el corazón trabaja menos y se achica un poco. También cambia la regulación de la presión al ponerse de pie, lo que causa mareos al volver a la gravedad.", [fl("lvef", "Volumen sistolico", "%", 62, -.8, "lt", 55, 50), mt("lvm", "Índice de masa del ventrículo izquierdo", "g/m²", 80, -2.5, "lt", 74, 72), fl("sv", "Volumen sistólico", "mL", 78, -2.6, "lt", 70, 66.3), fl("hr", "Frecuencia cardíaca en reposo", "lpm", 66, 1.2, "gt", 85, 95, 0), fl("hrv", "Variabilidad de la frecuencia (RMSSD)", "ms", 52, -4, "lt", 45, 39, 0), fl("ort", "Índice de tolerancia ortostática", "0 a 100", 90, -4.5, "lt", 75, 60, 0), fl("sbp", "Presión sistólica", "mmHg", 118, .6, "gt", 130, 140, 0), fl("dbp", "Presión diastólica", "mmHg", 76, .5, "gt", 85, 90, 0)], "Ecocardiografía, Holter, tensiómetro y prueba de presión negativa (LBNP).", "Cardiovascular"),
+  Z("organos", "corazon", "Corazón", "Sin gravedad el corazón trabaja menos y se achica un poco. También cambia la regulación de la presión al ponerse de pie, lo que causa mareos al volver a la gravedad.", [fl("lvef", "Fracción de eyección (FEVI)", "%", 62, -.8, "lt", 55, 50), mt("lvm", "Índice de masa del ventrículo izquierdo", "g/m²", 80, -2.5, "lt", 74, 72), fl("sv", "Volumen sistólico", "mL", 78, -2.6, "lt", 70, 66.3), fl("hr", "Frecuencia cardíaca en reposo", "lpm", 66, 1.2, "gt", 85, 95, 0), fl("hrv", "Variabilidad de la frecuencia (RMSSD)", "ms", 52, -4, "lt", 45, 39, 0), fl("ort", "Índice de tolerancia ortostática", "0 a 100", 90, -4.5, "lt", 75, 60, 0), fl("sbp", "Presión sistólica", "mmHg", 118, .6, "gt", 130, 140, 0), fl("dbp", "Presión diastólica", "mmHg", 76, .5, "gt", 85, 90, 0)], "Ecocardiografía, Holter, tensiómetro y prueba de presión negativa (LBNP).", "Cardiovascular"),
   Z("organos", "higado", "Hígado y glucosa", "El hígado regula la glucosa. Aunque aún no tiene sensor propio, la glucosa capilar es un indicador básico de autoevaluación (estrés, nutrición y resistencia a la insulina).", [fl("glu", "Glucosa en sangre", "mg/dL", 90, .4, "gt", 110, 126, 0)], "Glucómetro capilar.", "Metabólico"),
   Z("organos", "estomago", "Estómago", "\u200b" + NO, [], "Sin sensor.", "Otro"),
   Z("organos", "rinones", "Riñones", "El hueso que se pierde libera calcio que los riñones eliminan por la orina. Junto con menos agua ingerida, sube el riesgo de cálculos renales.", [mt("cal", "Calcio en orina", "mg/día", 180, 8, "gt", 230, 300, 0), fl("diu", "Diuresis", "L/día", 2.4, -3, "lt", 2, 1.7)], "Ecografía renal y balance hídrico.", "Renal"),
   Z("organos", "intestino", "Intestino y temperatura corporal", NO + " La temperatura corporal sí se vigila como indicador básico de infección o estrés térmico.", [fl("temp", "Temperatura corporal", "°C", 36.6, .05, "gt", 37.5, 38.3, 1)], "Termómetro de oído o cutáneo.", "Otro"),
   Z("organos", "vejiga", "Vejiga", "\u200b" + NO, [], "Sin sensor.", "Otro"),
   Z("mente", "sueno", "Sueño", "Combina el anillo biométrico (actigrafía y PPG) con un autorreporte de 15 s. En órbita se duerme 6,0–6,5 h en vez de 8,5 h.", [fl("tst", "Tiempo total de sueño (TST)", "h", 7.5, -1.5, "lt", 6, 5), fl("eff", "Eficiencia del sueño", "%", 90, -.5, "lt", 82, 75, 0), fl("nhrv", "HRV nocturna (RMSSD)", "ms", 60, -1.5, "lt", 54, 48, 0), fl("sq", "Calidad global (1 a 5)", "puntos", 4.5, -1.5, "lt", 3, 2)], "Anillo biométrico (actigrafía triaxial y fotopletismografía) y autorreporte matutino.", "Neurocognitivo"),
-  Z("mente", "cognicion", "Memoria de trabajo (test de colores)", "Secuencia de 10 colores en menos de 45 s. Exige corteza prefrontal e hipocampo y es el primero en fallar por SANS, hipercapnia de cabina, falta de sueño o radiación. Puntaje de 0 a 100: 85+ óptimo, 70–84 normal, 55–69 deterioro leve, menos de 55 alerta crítica.", [fl("cog", "Puntaje cognitivo", "0 a 100", 92, -1, "lt", 70, 55, 0), fl("acc", "Aciertos de posición", "de 10", 9.2, -1, "lt", 8, 7), fl("span", "Racha sin error", "pasos", 8.5, -2, "lt", 6, 5), fl("lat", "Latencia de inicio", "ms", 650, 1, "gt", 1000, 1200, 0), fl("itv", "Intervalo entre toques", "ms", 480, 1.5, "gt", 560, 624, 0), ev0("lap", "Lapsos atencionales", "eventos", c => Math.max(0, (c.d - 120) / 60), 1, 2)], "Test secuencial cromático inspirado en WinSCAT y bloques de Corsi.", "Neurocognitivo"),
-  Z("mente", "reaccion", "Velocidad de reacción", "Tres intentos tras el cambio de rojo a verde. El puntaje de 1 a 10 habilita caminatas espaciales con 6 o más y las bloquea con 4 o menos. Las salidas en falso restan 1 punto y un intento de más de 500 ms resta 2.", [fl("rt", "Tiempo medio de reacción", "ms", 220, 1.5, "gt", 260, 320, 0), fl("fast", "Mejor intento", "ms", 190, 1.5, "gt", 230, 280, 0), fl("rs", "Puntaje de reacción (1 a 10)", "puntos", 8.5, -1, "lt", 6, 4), ev0("fs", "Salidas en falso", "eventos", c => Math.max(0, (c.d - 150) / 70), 1, 2), ev0("rl", "Intentos mayores a 500 ms", "eventos", c => Math.max(0, (c.d - 180) / 60), 1, 2)], "Adaptación de la tarea de vigilancia psicomotora (PVT) de la NASA.", "Neurocognitivo"),
+  Z("mente", "cognicion", "Memoria de trabajo (test de 10 colores)", "Se muestran 10 colores en orden aleatorio que nunca se repite y la persona los coloca en el mismo orden: 1 punto por acierto. Exige corteza prefrontal e hipocampo y es el primero en fallar por SANS, hipercapnia de cabina, falta de sueño o radiación. Escala de 1 a 10: 1 a 3 deficiente o crítico (rojo), 4 a 6 precaución (amarillo), 7 bueno, 8 y 9 muy bueno, 10 excelente (verde).", [fl("cog", "Puntaje de memoria", "1 a 10", 9, -0.2, "lt", 6, 3, 0), fl("acc", "Aciertos de posición", "de 10", 9, -0.2, "lt", 6, 3), fl("span", "Racha sin error", "pasos", 8.5, -2, "lt", 6, 5), fl("lat", "Latencia de inicio", "ms", 650, 1, "gt", 1000, 1200, 0), fl("itv", "Intervalo entre toques", "ms", 480, 1.5, "gt", 560, 624, 0), ev0("lap", "Lapsos atencionales", "eventos", c => Math.max(0, (c.d - 120) / 60), 1, 2)], "Test de memoria cromática inspirado en WinSCAT y bloques de Corsi.", "Neurocognitivo"),
+  Z("mente", "reaccion", "Velocidad de reacción", "Tres intentos tras el cambio de rojo a verde. Escala del tiempo: de 0 a 1 s muy bueno (verde), de 1 a 3 s precaución (amarillo), más de 3 s crítico (rojo). El puntaje de 1 a 10 habilita caminatas espaciales con 6 o más y las bloquea con 4 o menos. Las salidas en falso restan 1 punto y un intento de más de 500 ms resta 2.", [fl("rt", "Tiempo medio de reacción", "ms", 220, 1.5, "gt", 1000, 3000, 0), fl("fast", "Mejor intento", "ms", 190, 1.5, "gt", 1000, 3000, 0), fl("rs", "Puntaje de reacción (1 a 10)", "puntos", 8.5, -1, "lt", 6, 4), ev0("fs", "Salidas en falso", "eventos", c => Math.max(0, (c.d - 150) / 70), 1, 2), ev0("rl", "Intentos mayores a 500 ms", "eventos", c => Math.max(0, (c.d - 180) / 60), 1, 2)], "Adaptación de la tarea de vigilancia psicomotora (PVT) de la NASA.", "Neurocognitivo"),
   Z("mente", "animo", "Ánimo del día", "Escala del 1 al 10 con etiquetas rápidas y bitácora de dos líneas. Con 3 o menos, o una caída de 4 puntos, se avisa de forma confidencial al equipo médico; 5 o 6 durante 7 días seguidos sugiere una videollamada con la familia.", [fl("mood", "Puntaje de ánimo (1 a 10)", "puntos", 7.5, -.8, "lt", 5, 3)], "Autorreporte nocturno de menos de 30 s.", "Emocional"),
   Z("mente", "esfuerzo", "Prueba de esfuerzo (CEVIS)", "Ergoespirometría en cicloergómetro: modo submáximo en órbita cada 15 a 21 días (se detiene al 85 % de FC máx. o RER 1,05) y máximo antes y después del vuelo. Se detiene sola con SpO₂ menor a 90 %, PtcCO₂ mayor a 55 mmHg, presión sistólica mayor a 220 mmHg o arritmia.", [mt("vo2", "VO₂máx estimado", "mL/kg/min", 50, -.6, "lt", 45, 42.5, 0), mt("awe", "Eficiencia aeróbica del trabajo", "mL O₂/min/W", 10.2, .8, "gt", 11.5, 12.5), mt("pw", "Potencia en umbral ventilatorio", "W/kg", 2.6, -1, "lt", 2.4, 2.29), mt("hrr", "Recuperación de FC al minuto", "lpm", 22, -1.2, "lt", 18, 12, 0), mt("borg", "Esfuerzo percibido Borg (Etapa 2)", "6 a 20", 12, 1.5, "gt", 14, 17, 0), fl("co2", "PtcCO₂ de cabina", "mmHg", 38, .8, "gt", 48, 55, 0)], "Cicloergómetro con aislamiento de vibraciones y analizador de gases respiración a respiración.", "Cardiopulmonar")
 ];
@@ -122,6 +143,21 @@ const LIM = {
   "pulmones.pi": [null, 10],
   "corazon.lvef": [null, 70],
   "corazon.lvm": [null, 102],
+  "cerebro.fsc": [null, 100],
+  "cerebro.fscg": [null, 130],
+  "cerebro.fscb": [null, 60],
+  "cerebro.pic": [null, 60],
+  "cerebro.pam": [null, 160],
+  "cerebro.ppc": [null, 150],
+  "cerebro.cmro2": [null, 8],
+  "cerebro.cmrg": [null, 60],
+  "cerebro.beta": [null, 100],
+  "cerebro.alfa": [null, 100],
+  "cerebro.theta": [null, 100],
+  "cerebro.delta": [null, 100],
+  "cerebro.gcs": [3, 15],
+  "cerebro.ashw": [null, 4],
+  "cerebro.refl": [1, 4],
   "corazon.sv": [null, 100],
   "corazon.hr": [45, null],
   "corazon.hrv": [null, 75],
@@ -136,7 +172,7 @@ const LIM = {
   "sueno.eff": [null, 100],
   "sueno.nhrv": [null, 120],
   "sueno.sq": [null, 5],
-  "cognicion.cog": [null, 100],
+  "cognicion.cog": [1, 10],
   "cognicion.acc": [null, 10],
   "cognicion.span": [null, 10],
   "cognicion.lat": [150, null],
@@ -211,10 +247,11 @@ const REACT = [
 ];
 
 const COG = [
-  [85, "OPTIMAL", "Memoria y velocidad intactas. Habilitado sin restricciones para operaciones críticas y EVA."],
-  [70, "NORMAL_VARIATION", "Leve oscilación dentro de tolerancia orbital. Mantener rutina y repetir en 24 h."],
-  [55, "MILD_IMPAIRMENT", "Deterioro leve o fatiga ejecutiva. Reasignar tareas de precisión; revisar sueño y ventilación."],
-  [-1, "CRITICAL_ALERT", "Déficit significativo. Bloqueo preventivo de tareas críticas y EVA; protocolo médico con Tierra."]
+  [10, "Excelente", "Memoria de trabajo perfecta. Habilitado sin restricciones para operaciones críticas y EVA."],
+  [8, "Muy bueno", "Memoria y velocidad muy buenas. Mantener rutina y repetir en 24 h."],
+  [7, "Bueno", "Memoria dentro de lo esperado. Mantener rutina y repetir en 24 h."],
+  [4, "Precaución", "Fatiga ejecutiva posible. Reasignar tareas de precisión; revisar sueño y ventilación."],
+  [1, "Deficiente / crítico", "Déficit significativo. Bloqueo preventivo de tareas críticas y EVA; protocolo médico con Tierra."]
 ];
 
 const PALETTE = [
@@ -311,6 +348,7 @@ const PANEL = [
   ["corazon", "hr", "organos"],
   ["corazon", "sbp", "organos"],
   ["corazon", "ort", "organos"],
+  ["cerebro", "pic", "organos"],
   ["pulmones", "fvc", "organos"],
   ["pulmones", "spo2", "organos"],
   ["rinones", "cal", "organos"],

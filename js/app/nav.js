@@ -10,7 +10,9 @@ const VIEWS = {
   plan: viewPlan,
   huesos: () => viewBody("huesos"),
   musculos: () => viewBody("musculos"),
-  organos: () => viewBody("organos")
+  organos: () => viewBody("organos"),
+  betta: viewBetta,
+  hud: viewHud
 };
 
 /* Árbol del menú. Hoja: n=texto, z=zona, p=parámetro, a=ancla, x=estado extra. Las zonas no listadas se agregan solas. */
@@ -64,7 +66,7 @@ const MENU = [
       { n: "Cardiovascular", z: "corazon", p: "lvef" },
       { n: "Cuello: yugular y carótida", z: "vasos" },
       { n: "Pulmonar", z: "pulmones", p: "fvc" },
-      { n: "Cerebro y ojos", z: "cerebro" },
+      { n: "Sistema nervioso central", z: "cerebro", p: "fsc" },
       { n: "Renal", z: "rinones", p: "cal" },
       { n: "Metabólico", z: "higado", p: "glu" }
     ]
@@ -75,7 +77,7 @@ const MENU = [
     tab: "mente",
     k: [
       { n: "Sueño", z: "sueno" },
-      { n: "Test de colores", z: "cognicion" },
+      { n: "Memoria de 10 colores", z: "cognicion" },
       { n: "PVT de reacción", z: "reaccion" },
       { n: "Ánimo", z: "animo" },
       { n: "Prueba de esfuerzo (CEVIS)", z: "esfuerzo" }
@@ -111,7 +113,9 @@ const MENU = [
       { n: "Estabilización para el regreso", a: "pl-regreso" },
       { n: "Todas las rutinas", a: "pl-rut" }
     ]
-  }
+  },
+  { id: "betta", n: "Traje INTI", tab: "betta", k: [] },
+  { id: "hud", n: "Casco HUD", tab: "hud", k: [] }
 ];
 
 const AUTO = ["huesos", "musculos", "organos"];

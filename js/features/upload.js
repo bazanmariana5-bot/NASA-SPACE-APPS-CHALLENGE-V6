@@ -66,7 +66,7 @@ const impReport = (r, tg) => {
   const j = r.rej,
         x = [
           [j.neg, "con valor negativo (no permitido)"],
-          [j.rng, `con día fuera de 0 a ${S.today - 1}`],
+          [j.rng, `con día fuera de 0 a ${S.today}`],
           [j.unk, "con parámetro desconocido"],
           [j.bad, "con valor no numérico"],
           [j.crew, tg === "all" ? "sin tripulante o desconocido (con “Los 3 juntos” cada fila debe indicar su tripulante)" : "de otro tripulante o desconocido (solo se cargan las filas de " + crewOf(tg).name + " o sin tripulante)"]
@@ -97,7 +97,7 @@ function download(name, type, body) {
 function csvExport(tg) {
   const ids = tg === "all" ? CREW.map(c => c.id) : [tg || S.crew],
         L = ["dia,tripulante,parametro,valor"];
-  ids.forEach(cid => Object.entries(Store.days(cid)).filter(([d]) => +d < S.today).sort((a, b) => a[0] - b[0]).forEach(([d, r]) => Object.entries(r.v || {}).forEach(([k, v]) => L.push([d, cid, k, v].map(csvCell).join(",")))));
+  ids.forEach(cid => Object.entries(Store.days(cid)).filter(([d]) => +d <= S.today).sort((a, b) => a[0] - b[0]).forEach(([d, r]) => Object.entries(r.v || {}).forEach(([k, v]) => L.push([d, cid, k, v].map(csvCell).join(",")))));
   download(`respaldo_${tg === "all" ? "tripulacion" : tg || S.crew}_dia${S.today}.csv`, "text/csv;charset=utf-8", "\uFEFF" + L.join("\r\n") + "\r\n");
 }
 
@@ -107,11 +107,11 @@ function svgExport(tg) {
         pr = zs.p.length ? zs.p[Math.min(S.par[zs.id] || 0, zs.p.length - 1)] : null;
   const of = cid => {
     const o = {};
-    Object.entries(Store.days(cid)).forEach(([d, r]) => { if (+d < S.today && r.v && Object.keys(r.v).length) o[d] = r.v; });
+    Object.entries(Store.days(cid)).forEach(([d, r]) => { if (+d <= S.today && r.v && Object.keys(r.v).length) o[d] = r.v; });
     return o;
   };
   const pl = tg === "all" ? { app: "kinesoft-orbital", crews: Object.fromEntries(CREW.map(c => [c.id, of(c.id)])) } : { app: "kinesoft-orbital", crew: tg, data: of(tg) };
-  const meta = `<metadata>${esc(JSON.stringify(pl))}</metadata><desc>Formato: data = {día: {zona.parametro: valor}}. Solo se leen días anteriores al día ${S.today}.</desc>`,
+  const meta = `<metadata>${esc(JSON.stringify(pl))}</metadata><desc>Formato: data = {día: {zona.parametro: valor}}. Solo se leen los días de 0 al día ${S.today}.</desc>`,
         ch = pr ? lineChartRaw(zs, pr, { w: 560, h: 220 }) : '<svg viewBox="0 0 560 220"></svg>';
   download(`respaldo_${tg === "all" ? "tripulacion" : tg}_dia${S.today}.svg`, "image/svg+xml", ch.replace(/<svg /, '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/<svg[^>]*>/, m => m + meta));
 }
@@ -151,7 +151,7 @@ let upTarget = S.crew;
 function openUpload() {
   const t = S.today;
   upTarget = S.crew;
-  openDlg(head("Cargar días anteriores", "Archivo SVG or CSV con días de 0 a " + (t - 1) + ".") +
+  openDlg(head("Cargar días anteriores", "Archivo SVG o CSV con días de 0 a " + t + ".") +
     `<div class="row u-mb-10" id="ups"><b class="u-fs-13">Cargar para:</b>${CREW.map(c => `<button type="button" class="chip ${c.id === upTarget ? "on" : ""}" data-up="${c.id}">${esc(c.name)}</button>`).join("")}<button type="button" class="chip" data-up="all">Los 3 juntos</button></div>
     <div class="row"><label class="btn u-cur-pointer" for="upf">Elegir archivo (.svg o .csv)</label><input class="u-pos-absolute u-w-1 u-h-1 u-op-0" type="file" id="upf" accept=".svg,.csv,image/svg+xml,text/csv">
     <button type="button" class="btn o sm" id="csvx">Plantilla CSV</button><button type="button" class="btn o sm" id="svgx">Plantilla SVG</button></div>

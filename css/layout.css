@@ -372,22 +372,61 @@ button {
   position: relative;
 }
 
-#google_translate_element select {
-  background: var(--bg-surface, #0f172a);
-  color: var(--text-main, #f2f5ff);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
+/* ---- Selector de idioma ES | EN ----
+   Control propio con los mismos tokens que el resto de la cabecera; maneja el
+   widget de Google Translate, que queda oculto. */
+#google_translate_element {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
-#google_translate_element select:hover {
-  border-color: var(--primary, #3d7bff);
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 10px;
 }
-.goog-te-gadget {
-  font-size: 0px !important;
+
+.lang svg {
+  margin: 0 4px 0 6px;
+  color: var(--mu);
+  flex: none;
 }
-.goog-te-gadget span {
-  display: none;
+
+.lang button {
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--mu);
+  transition: background .15s, color .15s;
 }
+
+.lang button:hover {
+  background: var(--hov);
+  color: var(--tx);
+}
+
+.lang button[aria-pressed="true"] {
+  background: var(--ac);
+  color: var(--on-ac);
+}
+
+/* Oculta la barra y los resaltes que Google Translate inyecta en la página. */
+body { top: 0 !important; }
+.skiptranslate:not(#google_translate_element):not(.lang),
+iframe.skiptranslate,
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-tooltip { display: none !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }

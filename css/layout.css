@@ -371,3 +371,23 @@ button {
   min-height: 380px;
   position: relative;
 }
+
+#google_translate_element select {
+  background: var(--bg-surface, #0f172a);
+  color: var(--text-main, #f2f5ff);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+#google_translate_element select:hover {
+  border-color: var(--primary, #3d7bff);
+}
+.goog-te-gadget {
+  font-size: 0px !important;
+}
+.goog-te-gadget span {
+  display: none;
+}

@@ -479,6 +479,22 @@ html.vital-open body {
 #alert-toast-vital.charged .vital-defib {
   animation-duration: 0.35s;
 }
+.vital-defib {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+}
+.defib-count {
+  font:
+    800 clamp(56px, 11vw, 88px)/1 "Sora",
+    "Space Grotesk",
+    sans-serif;
+  min-width: 1ch;
+}
+.defib-charge {
+  flex-basis: 100%;
+}
 .defib-text {
   display: grid;
   gap: 2px;
@@ -506,7 +522,7 @@ html.vital-open body {
   background: #2a1d00;
   transform-origin: left;
   transform: scaleX(0);
-  animation: charge 8s linear forwards;
+  animation: charge 5s linear forwards;
 }
 @keyframes charge {
   to {

@@ -11,6 +11,7 @@ let lastAlertSignature = "";
 const alertTimers = { yellow: null, red: null, vital: null };
 let lastVitalSig = "";
 let defibTimer = null;
+const DEFIB_SECONDS = 5;
 
 const alertEls = () => ({ yellow: $("alert-toast-yellow"), red: $("alert-toast-red"), vital: $("alert-toast-vital") });
 
@@ -30,7 +31,7 @@ function hideAlert(kind) {
   if (el) el.classList.remove("on", "paused");
   if (kind === "red" || kind === "vital") setVeil("");
   if (kind === "vital") {
-    clearTimeout(defibTimer);
+    clearInterval(defibTimer);
     if (typeof Voice !== "undefined") Voice.stop();
     document.documentElement.classList.remove("vital-open");
   }
@@ -54,6 +55,30 @@ function showAlert(kind, html) {
 
   clearTimeout(alertTimers[kind]);
   alertTimers[kind] = setTimeout(() => hideAlert(kind), ALERT_MS[kind]);
+}
+
+/* Cuenta regresiva de 5 segundos del desfibrilador; al llegar a cero pide despejar la zona. */
+function startDefibCountdown(el) {
+  clearInterval(defibTimer);
+  let left = DEFIB_SECONDS;
+  const set = (id, txt) => {
+    const n = $(id);
+    if (n) n.textContent = txt;
+  };
+  defibTimer = setInterval(() => {
+    left--;
+    set("defib-n", String(Math.max(left, 0)));
+    if (left > 0)
+      return set("defib-msg", `Descarga del desfibrilador en ${left} ${left === 1 ? "segundo" : "segundos"}`);
+    clearInterval(defibTimer);
+    el.classList.add("charged");
+    set("defib-head", "¡Despejen!");
+    set("defib-msg", "Descarga en curso. Nadie debe tocar al paciente");
+    if (typeof TTS !== "undefined" && typeof Voice !== "undefined" && !Voice.muted) {
+      const en = TTS.lang() === "en";
+      TTS.speak(en ? "Clear!" : "¡Despejen!", { lang: en ? "en" : "es" });
+    }
+  }, 1000);
 }
 
 /* Busca emergencias vitales en los 3 tripulantes */
@@ -86,12 +111,12 @@ function showVital(e) {
     pv = `${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}`;
 
   const arrest = e.arrest;
-  const title = arrest ? "Paro cardiorrespiratorio confirmado" : e.infarct ? "Infarto en curso" : "Emergencia vital",
+  const title = arrest ? "Paro cardiorrespiratorio" : "Emergencia vital",
     who = arrest
-      ? `El tripulante <b>${name}</b> está sufriendo un paro cardiorrespiratorio.`
+      ? `El usuario <b>${name}</b> está sufriendo un paro cardiorrespiratorio. Aléjese de la zona: el desfibrilador se activará en instantes.`
       : `El tripulante <b>${name}</b> presenta ${esc(e.txt)}.`,
     defib = arrest
-      ? `<div class="vital-defib"><div class="defib-text"><b>Despejen la zona</b><span id="defib-msg">El desfibrilador está a punto de activarse. Nadie debe tocar al paciente.</span></div><div class="defib-charge" role="progressbar" aria-label="Carga del desfibrilador"><i></i></div></div>`
+      ? `<div class="vital-defib"><div class="defib-count mono" id="defib-n" aria-live="assertive">${DEFIB_SECONDS}</div><div class="defib-text"><b id="defib-head">Aléjese de la zona</b><span id="defib-msg">Descarga del desfibrilador en ${DEFIB_SECONDS} segundos</span></div><div class="defib-charge" role="progressbar" aria-label="Carga del desfibrilador"><i></i></div></div>`
       : `<p class="vital-note">Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia.</p>`;
 
   el.classList.toggle("arrest", !!arrest);
@@ -99,9 +124,9 @@ function showVital(e) {
     <div class="vital-card">
       <button type="button" class="alert-x" data-alert-close="vital" aria-label="Descartar emergencia"><span class="icon-close" aria-hidden="true"></span></button>
       <div class="vital-row">
-        <div class="vital-emblem">${arrest || e.infarct ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
+        <div class="vital-emblem">${arrest ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
         <div class="vital-text">
-          <div class="vital-kicker">Emergencia vital</div>
+          <div class="vital-kicker">${arrest ? "Alerta: peligro inminente para la salud" : "Emergencia vital"}</div>
           <h2 class="vital-title">${title}</h2>
           <p class="vital-who">${who}</p>
         </div>
@@ -119,20 +144,10 @@ function showVital(e) {
   document.documentElement.classList.add("vital-open");
 
   if (arrest) {
-    clearTimeout(defibTimer);
-    defibTimer = setTimeout(() => {
-      const m = $("defib-msg");
-      if (m) m.textContent = "Desfibrilador cargado. Aléjense del paciente.";
-      el.classList.add("charged");
-    }, 8000);
+    startDefibCountdown(el);
     Voice.start({
-      es: `El tripulante ${e.cr.name} está sufriendo un paro cardiorrespiratorio. Despejen la zona. El desfibrilador está a punto de activarse.`,
-      en: `Crew member ${e.cr.name} is suffering a cardiorespiratory arrest. Clear the area. The defibrillator is about to activate.`
-    });
-  } else if (e.infarct) {
-    Voice.start({
-      es: `Emergencia vital. El tripulante ${e.cr.name} está sufriendo un infarto. Se solicita asistencia médica inmediata.`,
-      en: `Vital emergency. Crew member ${e.cr.name} is having a heart attack. Immediate medical assistance is requested.`
+      es: `Alerta. Peligro inminente para la salud. El usuario ${e.cr.name} está sufriendo un paro cardiorrespiratorio. Aléjese de la zona. El desfibrilador se activará en instantes. Despejen.`,
+      en: `Alert. Imminent danger to health. User ${e.cr.name} is suffering a cardiorespiratory arrest. Stay away from the area. The defibrillator will activate in moments. Clear the area.`
     });
   } else {
     Voice.start({

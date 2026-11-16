@@ -1,13 +1,13 @@
 /* js/features/evento.js — Evento programado de la demostración.
-   A los 90 segundos de abrir la página, uno de los tripulantes sufre un infarto: se le suben la frecuencia
-   cardíaca y la presión y salta la emergencia vital (ver showVital en alerts.js).
+   A los 90 segundos de abrir la página, uno de los tripulantes sufre un paro cardiorrespiratorio: el pulso y la presión
+   caen a cero y salta la emergencia vital con aviso de desfibrilador (ver showVital en alerts.js).
    Los valores del evento viven solo en memoria: no se guardan en el registro y desaparecen al recargar. */
 "use strict";
 
 const LiveEvent = (() => {
   const DELAY_MS = 90000;
-  /* Valores durante el infarto; la frecuencia cardíaca supera el límite de emergencia (EMERG). */
-  const VALUES = { "corazon.hr": 188, "corazon.sbp": 84, "corazon.hrv": 18 };
+  /* Valores durante el paro; la frecuencia cardíaca queda por debajo del límite de EMERG ("paro"). */
+  const VALUES = { "corazon.hr": 0, "corazon.sbp": 0, "corazon.hrv": 0 };
   let crewId = null;
 
   /* Valor forzado de un parámetro del tripulante afectado en el día actual de la misión. */
@@ -21,7 +21,7 @@ const LiveEvent = (() => {
       z = ZONES.find(q => q.id === "corazon");
     if (!cr || !z) return null;
     const r = Engine.ev(z, C(S.day, cr), cr.id).rows.find(x => x.p.id === "hr");
-    return r ? { cr, z, r, txt: "un infarto agudo de miocardio", arrest: false, infarct: true } : null;
+    return r ? { cr, z, r, txt: "paro cardiorrespiratorio", arrest: true } : null;
   }
 
   function start(id) {

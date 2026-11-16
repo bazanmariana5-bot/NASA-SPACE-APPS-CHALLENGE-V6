@@ -19,10 +19,19 @@ KSTranslate.add({
   "hipoglucemia grave": "severe hypoglycemia",
   "hiperglucemia grave": "severe hyperglycemia",
   "Emergencia vital": "Vital emergency",
-  "Descartar": "Dismiss",
+  "Alerta: peligro inminente para la salud": "Alert: imminent danger to health",
+  "Paro cardiorrespiratorio": "Cardiorespiratory arrest",
+  "El usuario": "The user",
+  "está sufriendo un paro cardiorrespiratorio. Aléjese de la zona: el desfibrilador se activará en instantes":
+    "is suffering a cardiorespiratory arrest. Stay away from the area: the defibrillator will activate in moments",
+  "Aléjese de la zona": "Stay away from the area",
+  "Descarga del desfibrilador en # segundos": "Defibrillator shock in # seconds",
+  "Descarga del desfibrilador en # segundo": "Defibrillator shock in # second",
+  "¡Despejen": "Clear",
+  "Descarga en curso. Nadie debe tocar al paciente": "Shock in progress. Nobody must touch the patient",
+
+  Descartar: "Dismiss",
   "Descartar emergencia": "Dismiss emergency",
-  "Infarto en curso": "Heart attack in progress",
-  "un infarto agudo de miocardio": "an acute myocardial infarction",
   "Emergencia vital. El astronauta": "Vital emergency. The astronaut",
   "Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia":
     "Immediate assistance requested. Stay calm and follow the emergency protocols",

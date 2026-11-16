@@ -19,6 +19,10 @@ KSTranslate.add({
   "hipoglucemia grave": "severe hypoglycemia",
   "hiperglucemia grave": "severe hyperglycemia",
   "Emergencia vital": "Vital emergency",
+  "Descartar": "Dismiss",
+  "Descartar emergencia": "Dismiss emergency",
+  "Infarto en curso": "Heart attack in progress",
+  "un infarto agudo de miocardio": "an acute myocardial infarction",
   "Emergencia vital. El astronauta": "Vital emergency. The astronaut",
   "Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia":
     "Immediate assistance requested. Stay calm and follow the emergency protocols",

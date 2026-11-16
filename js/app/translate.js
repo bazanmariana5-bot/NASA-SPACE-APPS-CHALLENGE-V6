@@ -25,7 +25,8 @@ const KSTranslate = (() => {
     ["Abrir ", "Open "],
     ["Día #: ", "Day #: "],
     ["- ", "- "],
-    ["Detecto ", "I detect "]
+    ["Detecto ", "I detect "],
+    ["presenta ", "has "]
   ];
   const isUnit = key => {
     const toks = key
@@ -164,7 +165,7 @@ const KSTranslate = (() => {
       const t = raw.trim();
       if (t.startsWith(es)) {
         const rest = translate(t.slice(es.length), depth + 1);
-        if (rest !== null) return en + rest;
+        if (rest !== null) return raw.match(/^\s*/)[0] + en + rest + raw.match(/\s*$/)[0];
       }
     }
 

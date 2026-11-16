@@ -8,7 +8,8 @@ const Engine = {
       rows = z.p.map(p => {
         const k = z.id + "." + p.id,
           real = !!(rec && rec.v && rec.v[k] != null),
-          v = real ? rec.v[k] : p.v(c);
+          forced = typeof LiveEvent !== "undefined" ? LiveEvent.value(cid, k, S.day) : undefined,
+          v = forced !== undefined ? forced : real ? rec.v[k] : p.v(c);
         return { p, v, real, s: stat(p, v), sv: sev(p, v) };
       });
     return { rows, st: rows.length ? Math.max(...rows.map(r => r.s)) : 3, real: rows.some(r => r.real) };

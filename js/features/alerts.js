@@ -59,6 +59,8 @@ function showAlert(kind, html) {
 /* Busca emergencias vitales en los 3 tripulantes */
 function findEmergencies() {
   const out = [];
+  const live = typeof LiveEvent !== "undefined" ? LiveEvent.emergency() : null;
+  if (live) out.push(live);
   CREW.forEach(cr =>
     ZONES.forEach(z => {
       Engine.ev(z, C(S.day, cr), cr.id).rows.forEach(r => {
@@ -84,7 +86,7 @@ function showVital(e) {
     pv = `${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}`;
 
   const arrest = e.arrest;
-  const title = arrest ? "Paro cardiorrespiratorio confirmado" : "Emergencia vital",
+  const title = arrest ? "Paro cardiorrespiratorio confirmado" : e.infarct ? "Infarto en curso" : "Emergencia vital",
     who = arrest
       ? `El tripulante <b>${name}</b> está sufriendo un paro cardiorrespiratorio.`
       : `El tripulante <b>${name}</b> presenta ${esc(e.txt)}.`,
@@ -97,7 +99,7 @@ function showVital(e) {
     <div class="vital-card">
       <button type="button" class="alert-x" data-alert-close="vital" aria-label="Descartar emergencia"><span class="icon-close" aria-hidden="true"></span></button>
       <div class="vital-row">
-        <div class="vital-emblem">${arrest ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
+        <div class="vital-emblem">${arrest || e.infarct ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
         <div class="vital-text">
           <div class="vital-kicker">Emergencia vital</div>
           <h2 class="vital-title">${title}</h2>
@@ -126,6 +128,11 @@ function showVital(e) {
     Voice.start({
       es: `El tripulante ${e.cr.name} está sufriendo un paro cardiorrespiratorio. Despejen la zona. El desfibrilador está a punto de activarse.`,
       en: `Crew member ${e.cr.name} is suffering a cardiorespiratory arrest. Clear the area. The defibrillator is about to activate.`
+    });
+  } else if (e.infarct) {
+    Voice.start({
+      es: `Emergencia vital. El tripulante ${e.cr.name} está sufriendo un infarto. Se solicita asistencia médica inmediata.`,
+      en: `Vital emergency. Crew member ${e.cr.name} is having a heart attack. Immediate medical assistance is requested.`
     });
   } else {
     Voice.start({

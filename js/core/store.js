@@ -92,7 +92,12 @@ const Store = {
       if (typeof SEED === "undefined") return 0;
       if (!force && localStorage.getItem(this.SEED_FLAG)) return 0;
       /* Si el navegador tenía la versión anterior de los datos, se reemplaza por la nueva. */
-      if (localStorage.getItem("orbital_seed_v1") || localStorage.getItem("orbital_seed_v2") || localStorage.getItem("orbital_seed_v3")) force = true;
+      if (
+        localStorage.getItem("orbital_seed_v1") ||
+        localStorage.getItem("orbital_seed_v2") ||
+        localStorage.getItem("orbital_seed_v3")
+      )
+        force = true;
       const all = this.all();
       let n = 0;
       Object.entries(SEED).forEach(([c, params]) => {

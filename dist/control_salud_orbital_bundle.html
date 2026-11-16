@@ -6203,7 +6203,12 @@ const Store = {
       if (typeof SEED === "undefined") return 0;
       if (!force && localStorage.getItem(this.SEED_FLAG)) return 0;
       /* Si el navegador tenía la versión anterior de los datos, se reemplaza por la nueva. */
-      if (localStorage.getItem("orbital_seed_v1") || localStorage.getItem("orbital_seed_v2") || localStorage.getItem("orbital_seed_v3")) force = true;
+      if (
+        localStorage.getItem("orbital_seed_v1") ||
+        localStorage.getItem("orbital_seed_v2") ||
+        localStorage.getItem("orbital_seed_v3")
+      )
+        force = true;
       const all = this.all();
       let n = 0;
       Object.entries(SEED).forEach(([c, params]) => {
@@ -6243,7 +6248,8 @@ const Engine = {
       rows = z.p.map(p => {
         const k = z.id + "." + p.id,
           real = !!(rec && rec.v && rec.v[k] != null),
-          v = real ? rec.v[k] : p.v(c);
+          forced = typeof LiveEvent !== "undefined" ? LiveEvent.value(cid, k, S.day) : undefined,
+          v = forced !== undefined ? forced : real ? rec.v[k] : p.v(c);
         return { p, v, real, s: stat(p, v), sv: sev(p, v) };
       });
     return { rows, st: rows.length ? Math.max(...rows.map(r => r.s)) : 3, real: rows.some(r => r.real) };
@@ -8458,6 +8464,8 @@ function showAlert(kind, html) {
 /* Busca emergencias vitales en los 3 tripulantes */
 function findEmergencies() {
   const out = [];
+  const live = typeof LiveEvent !== "undefined" ? LiveEvent.emergency() : null;
+  if (live) out.push(live);
   CREW.forEach(cr =>
     ZONES.forEach(z => {
       Engine.ev(z, C(S.day, cr), cr.id).rows.forEach(r => {
@@ -8483,7 +8491,7 @@ function showVital(e) {
     pv = `${esc(e.z.n)} · ${esc(e.r.p.n)}: ${fmt(e.r.p, e.r.v)} ${esc(e.r.p.u)}`;
 
   const arrest = e.arrest;
-  const title = arrest ? "Paro cardiorrespiratorio confirmado" : "Emergencia vital",
+  const title = arrest ? "Paro cardiorrespiratorio confirmado" : e.infarct ? "Infarto en curso" : "Emergencia vital",
     who = arrest
       ? `El tripulante <b>${name}</b> está sufriendo un paro cardiorrespiratorio.`
       : `El tripulante <b>${name}</b> presenta ${esc(e.txt)}.`,
@@ -8496,7 +8504,7 @@ function showVital(e) {
     <div class="vital-card">
       <button type="button" class="alert-x" data-alert-close="vital" aria-label="Descartar emergencia"><span class="icon-close" aria-hidden="true"></span></button>
       <div class="vital-row">
-        <div class="vital-emblem">${arrest ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
+        <div class="vital-emblem">${arrest || e.infarct ? ICON_HEART : ICON_WARN}<i class="vital-ring"></i><i class="vital-ring r2"></i></div>
         <div class="vital-text">
           <div class="vital-kicker">Emergencia vital</div>
           <h2 class="vital-title">${title}</h2>
@@ -8525,6 +8533,11 @@ function showVital(e) {
     Voice.start({
       es: `El tripulante ${e.cr.name} está sufriendo un paro cardiorrespiratorio. Despejen la zona. El desfibrilador está a punto de activarse.`,
       en: `Crew member ${e.cr.name} is suffering a cardiorespiratory arrest. Clear the area. The defibrillator is about to activate.`
+    });
+  } else if (e.infarct) {
+    Voice.start({
+      es: `Emergencia vital. El tripulante ${e.cr.name} está sufriendo un infarto. Se solicita asistencia médica inmediata.`,
+      en: `Vital emergency. Crew member ${e.cr.name} is having a heart attack. Immediate medical assistance is requested.`
     });
   } else {
     Voice.start({
@@ -8683,6 +8696,54 @@ addEventListener("keydown", e => {
     hideAlert("vital");
   }
 });
+
+  </script>
+  <script>
+/* js/features/evento.js — Evento programado de la demostración.
+   A los 90 segundos de abrir la página, uno de los tripulantes sufre un infarto: se le suben la frecuencia
+   cardíaca y la presión y salta la emergencia vital (ver showVital en alerts.js).
+   Los valores del evento viven solo en memoria: no se guardan en el registro y desaparecen al recargar. */
+"use strict";
+
+const LiveEvent = (() => {
+  const DELAY_MS = 90000;
+  /* Valores durante el infarto; la frecuencia cardíaca supera el límite de emergencia (EMERG). */
+  const VALUES = { "corazon.hr": 188, "corazon.sbp": 84, "corazon.hrv": 18 };
+  let crewId = null;
+
+  /* Valor forzado de un parámetro del tripulante afectado en el día actual de la misión. */
+  const value = (cid, key, day) =>
+    crewId === cid && day === S.today && VALUES[key] !== undefined ? VALUES[key] : undefined;
+
+  /* Emergencia con el mismo formato que devuelve findEmergencies(). */
+  function emergency() {
+    if (!crewId || S.day !== S.today) return null;
+    const cr = CREW.find(c => c.id === crewId),
+      z = ZONES.find(q => q.id === "corazon");
+    if (!cr || !z) return null;
+    const r = Engine.ev(z, C(S.day, cr), cr.id).rows.find(x => x.p.id === "hr");
+    return r ? { cr, z, r, txt: "un infarto agudo de miocardio", arrest: false, infarct: true } : null;
+  }
+
+  function start(id) {
+    const pick = id || CREW[Math.floor(Math.random() * CREW.length)].id;
+    crewId = pick;
+    render();
+    checkAndTriggerAlerts(true);
+  }
+
+  if (CREW.length) setTimeout(() => start(), DELAY_MS);
+
+  return {
+    value,
+    emergency,
+    start,
+    DELAY_MS,
+    get crewId() {
+      return crewId;
+    }
+  };
+})();
 
   </script>
   <script>
@@ -10857,7 +10918,8 @@ const KSTranslate = (() => {
     ["Abrir ", "Open "],
     ["Día #: ", "Day #: "],
     ["- ", "- "],
-    ["Detecto ", "I detect "]
+    ["Detecto ", "I detect "],
+    ["presenta ", "has "]
   ];
   const isUnit = key => {
     const toks = key
@@ -10996,7 +11058,7 @@ const KSTranslate = (() => {
       const t = raw.trim();
       if (t.startsWith(es)) {
         const rest = translate(t.slice(es.length), depth + 1);
-        if (rest !== null) return en + rest;
+        if (rest !== null) return raw.match(/^\s*/)[0] + en + rest + raw.match(/\s*$/)[0];
       }
     }
 
@@ -12039,6 +12101,10 @@ KSTranslate.add({
   "hipoglucemia grave": "severe hypoglycemia",
   "hiperglucemia grave": "severe hyperglycemia",
   "Emergencia vital": "Vital emergency",
+  "Descartar": "Dismiss",
+  "Descartar emergencia": "Dismiss emergency",
+  "Infarto en curso": "Heart attack in progress",
+  "un infarto agudo de miocardio": "an acute myocardial infarction",
   "Emergencia vital. El astronauta": "Vital emergency. The astronaut",
   "Se solicita asistencia inmediata. Mantengan la calma y sigan los protocolos de emergencia":
     "Immediate assistance requested. Stay calm and follow the emergency protocols",

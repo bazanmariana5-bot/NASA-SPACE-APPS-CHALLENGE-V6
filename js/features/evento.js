@@ -1,11 +1,11 @@
 /* js/features/evento.js — Evento programado de la demostración.
-   Al minuto de abrir la página, uno de los tripulantes sufre un paro cardiorrespiratorio: el pulso y la presión
+   Al minuto y medio de abrir la página, uno de los tripulantes sufre un paro cardiorrespiratorio: el pulso y la presión
    caen a cero y salta la emergencia vital con aviso de desfibrilador (ver showVital en alerts.js).
    Los valores del evento viven solo en memoria: no se guardan en el registro y desaparecen al recargar. */
 "use strict";
 
 const LiveEvent = (() => {
-  const DELAY_MS = 60000;
+  const DELAY_MS = 90000;
   /* Valores durante el paro; la frecuencia cardíaca queda por debajo del límite de EMERG ("paro"). */
   const VALUES = { "corazon.hr": 0, "corazon.sbp": 0, "corazon.hrv": 0 };
   let crewId = null;
@@ -31,7 +31,11 @@ const LiveEvent = (() => {
     checkAndTriggerAlerts(true);
   }
 
-  if (CREW.length) setTimeout(() => start(), DELAY_MS);
+  const schedule = () => setTimeout(() => start(), DELAY_MS);
+  if (CREW.length) {
+    if (typeof KSSplash === "undefined" || KSSplash.done) schedule();
+    else document.addEventListener("ks-splash-done", schedule, { once: true });
+  }
 
   return {
     value,

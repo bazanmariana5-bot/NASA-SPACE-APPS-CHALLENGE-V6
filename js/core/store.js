@@ -3,7 +3,7 @@
 
 const Store = {
   K: "orbital_logs_v4",
-  SEED_FLAG: "orbital_seed_v1",
+  SEED_FLAG: "orbital_seed_v4",
   ver: 0,
   _raw: null,
   _cache: {},
@@ -91,6 +91,8 @@ const Store = {
     try {
       if (typeof SEED === "undefined") return 0;
       if (!force && localStorage.getItem(this.SEED_FLAG)) return 0;
+      /* Si el navegador tenía la versión anterior de los datos, se reemplaza por la nueva. */
+      if (localStorage.getItem("orbital_seed_v1") || localStorage.getItem("orbital_seed_v2") || localStorage.getItem("orbital_seed_v3")) force = true;
       const all = this.all();
       let n = 0;
       Object.entries(SEED).forEach(([c, params]) => {
@@ -106,6 +108,9 @@ const Store = {
       });
       this._save(all);
       localStorage.setItem(this.SEED_FLAG, "1");
+      localStorage.removeItem("orbital_seed_v1");
+      localStorage.removeItem("orbital_seed_v2");
+      localStorage.removeItem("orbital_seed_v3");
       return n;
     } catch (e) {
       return 0;
